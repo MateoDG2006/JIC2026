@@ -1,0 +1,223 @@
+
+<style>
+  :root { --gap: 16px; }
+  h2.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+  .plan-wrap { padding: 1.5rem 0; font-size: 14px; }
+
+  .phase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--gap); margin-bottom: 2rem; }
+
+  .phase-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+  .phase-card:hover { border-color: var(--color-border-primary); }
+  .phase-card.active { border-color: var(--color-border-info); }
+
+  .phase-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .phase-badge {
+    font-size: 11px; font-weight: 500; padding: 3px 10px;
+    border-radius: var(--border-radius-md);
+  }
+  .phase-title { font-weight: 500; font-size: 14px; color: var(--color-text-primary); }
+  .phase-duration { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 10px; }
+
+  .task-list { list-style: none; margin: 0; padding: 0; }
+  .task-list li { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 6px; font-size: 13px; color: var(--color-text-secondary); line-height: 1.4; }
+  .task-list li .dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+
+  .deliverable { font-size: 12px; margin-top: 10px; padding: 6px 10px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); color: var(--color-text-secondary); }
+  .deliverable strong { color: var(--color-text-primary); font-weight: 500; }
+
+  .timeline { position: relative; margin-bottom: 2rem; }
+  .tl-bar { display: flex; border-radius: var(--border-radius-md); overflow: hidden; height: 28px; }
+  .tl-seg { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; transition: opacity .15s; cursor: pointer; }
+  .tl-seg:hover { opacity: .8; }
+  .tl-labels { display: flex; margin-top: 4px; }
+  .tl-lbl { font-size: 11px; color: var(--color-text-tertiary); text-align: center; }
+
+  .week-ref { display: flex; justify-content: space-between; font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 1.5rem; }
+  .metric-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: .75rem 1rem; }
+  .metric-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+  .metric-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .metric-sub { font-size: 11px; color: var(--color-text-tertiary); }
+
+  .section-title { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: .06em; margin: 1.5rem 0 .75rem; }
+</style>
+
+<div class="plan-wrap">
+  <h2 class="sr-only">Planificación del proyecto SMILES2vec: fases, timeline y métricas.</h2>
+
+  <div class="section-title">Timeline — 12 semanas</div>
+  <div class="timeline">
+    <div class="tl-bar" id="tlbar"></div>
+    <div class="week-ref"><span>Sem 1</span><span>Sem 4</span><span>Sem 8</span><span>Sem 12</span></div>
+  </div>
+
+  <div class="section-title">Fases del proyecto</div>
+  <div class="phase-grid" id="phases"></div>
+
+  <div class="section-title">Resumen</div>
+  <div class="summary-grid">
+    <div class="metric-card">
+      <div class="metric-label">Duración total</div>
+      <div class="metric-value">12</div>
+      <div class="metric-sub">semanas</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Datasets</div>
+      <div class="metric-value">4</div>
+      <div class="metric-sub">Tox21 · HIV · FreeSolv · ESOL</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Arquitecturas BO</div>
+      <div class="metric-value">4</div>
+      <div class="metric-sub">GRU · LSTM · CNN-GRU · CNN-LSTM</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Target AUC</div>
+      <div class="metric-value">0.81</div>
+      <div class="metric-sub">Tox21 (con pretraining)</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const phases = [
+  {
+    id: 0,
+    label: "Fase 1", weeks: "Sem 1–2", duration: "2 semanas",
+    title: "Setup & Datos",
+    color: "#3B8BD4", text: "#042C53", bg: "#E6F1FB", dot: "#3B8BD4",
+    tasks: [
+      "Configurar entorno: Python, TensorFlow/PyTorch, RDKit, Optuna",
+      "Descargar datasets MoleculeNet (Tox21, HIV, FreeSolv, ESOL)",
+      "Implementar pipeline de preprocesamiento: limpieza, one-hot encoding, padding a 250 chars",
+      "Crear diccionario de caracteres SMILES únicos",
+      "Validar splits train/val/test y oversampling para clases desbalanceadas",
+      "Escribir tests de preprocessing"
+    ],
+    deliverable: "Pipeline de datos funcional + tests pasando"
+  },
+  {
+    id: 1,
+    label: "Fase 2", weeks: "Sem 3–4", duration: "2 semanas",
+    title: "Arquitectura base",
+    color: "#1D9E75", text: "#04342C", bg: "#E1F5EE", dot: "#1D9E75",
+    tasks: [
+      "Implementar las 4 clases arquitectónicas: GRU, LSTM, CNN-GRU, CNN-LSTM",
+      "Capa embedding + 1D Conv (kernel=3, stride=1) + BiGRU/BiLSTM",
+      "Heads de clasificación (softmax + BCE) y regresión (lineal + MAE)",
+      "Loop de entrenamiento con early stopping (patience=25) y 5-fold CV",
+      "Logging de métricas: AUC para clasificación, RMSE para regresión"
+    ],
+    deliverable: "4 arquitecturas entrenables + baseline en ESOL"
+  },
+  {
+    id: 2,
+    label: "Fase 3", weeks: "Sem 5–7", duration: "3 semanas",
+    title: "Bayesian Optimization",
+    color: "#D85A30", text: "#4A1B0C", bg: "#FAECE7", dot: "#D85A30",
+    tasks: [
+      "Integrar Optuna como optimizador bayesiano (alternativa a SigOpt)",
+      "Definir espacio de búsqueda: embedding [10–60], conv [4–192], rnn [8–384]",
+      "60 trials por clase + 6 seeds manuales (unidades [8,16,32,64,128,256])",
+      "Optimizar sobre Tox21 nr-ahr (clasificación) y FreeSolv (regresión)",
+      "Monitorear correlación val/test para detectar overfitting al conjunto de val",
+      "Seleccionar arquitectura ganadora: CNN-GRU con em=50, conv=192, rnn=[224,384]"
+    ],
+    deliverable: "Hyperparams óptimos + plots de correlación val/test"
+  },
+  {
+    id: 3,
+    label: "Fase 4", weeks: "Sem 8–9", duration: "2 semanas",
+    title: "Entrenamiento completo",
+    color: "#BA7517", text: "#412402", bg: "#FAEEDA", dot: "#BA7517",
+    tasks: [
+      "Entrenar CNN-GRU óptimo en los 4 datasets completos",
+      "5-fold CV: reportar media ± std de métricas",
+      "Aplicar pretraining (ChemNet approach) para mejorar AUC",
+      "Comparar contra baselines: MLP con fingerprints, Chemception, ConvGraph",
+      "Validar generalización en HIV dataset (no incluido en BO)"
+    ],
+    deliverable: "Modelos entrenados: AUC ≥ 0.80 (Tox21/HIV), RMSE ≤ 1.2 (FreeSolv)"
+  },
+  {
+    id: 4,
+    label: "Fase 5", weeks: "Sem 10–11", duration: "2 semanas",
+    title: "Interpretabilidad",
+    color: "#534AB7", text: "#26215C", bg: "#EEEDFE", dot: "#534AB7",
+    tasks: [
+      "Implementar red de explicación: ResNet 20 capas con SELU activations",
+      "Loss de la máscara: reconstrucción + L2 regularización + penalización de entropía",
+      "Entrenar máscara sobre ESOL (modelo base congelado) con Adam, lr [1e-2 → 1e-6]",
+      "Extraer top-3 caracteres por predicción y validar vs conocimiento químico",
+      "Calcular accuracy de interpretabilidad: hidrofílico (O,N) vs hidrofóbico (C,Cl,Br,I)",
+      "Target: ≥ 88% top-3 accuracy en dataset de solubilidad"
+    ],
+    deliverable: "Explanation mask funcional + accuracy ≥ 88%"
+  },
+  {
+    id: 5,
+    label: "Fase 6", weeks: "Sem 12", duration: "1 semana",
+    title: "Visualización & PyMOL",
+    color: "#639922", text: "#173404", bg: "#EAF3DE", dot: "#639922",
+    tasks: [
+      "Mapear valores de la máscara a átomos en estructura molecular (RDKit)",
+      "Generar scripts PyMOL que colorean átomos por peso de atención",
+      "Integrar con repositorio pymol-claude-code para visualización 3D",
+      "Documentación final, ejemplos de uso, README completo"
+    ],
+    deliverable: "Visualizaciones PyMOL + repositorio documentado"
+  }
+];
+
+const colors = phases.map(p => p.color);
+const widths = [2/12, 2/12, 3/12, 2/12, 2/12, 1/12];
+
+const tlbar = document.getElementById('tlbar');
+widths.forEach((w, i) => {
+  const seg = document.createElement('div');
+  seg.className = 'tl-seg';
+  seg.style.cssText = `flex: ${w}; background: ${phases[i].color}; color: white;`;
+  seg.textContent = `F${i+1}`;
+  seg.onclick = () => scrollToPhase(i);
+  tlbar.appendChild(seg);
+});
+
+const grid = document.getElementById('phases');
+phases.forEach((p, i) => {
+  const card = document.createElement('div');
+  card.className = 'phase-card';
+  card.id = `phase-${i}`;
+
+  const tasks = p.tasks.map(t => `
+    <li>
+      <span class="dot" style="background:${p.dot}"></span>
+      <span>${t}</span>
+    </li>`).join('');
+
+  card.innerHTML = `
+    <div class="phase-header">
+      <span class="phase-badge" style="background:${p.bg};color:${p.text}">${p.label}</span>
+      <span class="phase-title">${p.title}</span>
+    </div>
+    <div class="phase-duration"><i class="ti ti-calendar" aria-hidden="true"></i> ${p.weeks} · ${p.duration}</div>
+    <ul class="task-list">${tasks}</ul>
+    <div class="deliverable"><strong>Entregable:</strong> ${p.deliverable}</div>
+  `;
+  grid.appendChild(card);
+});
+
+function scrollToPhase(i) {
+  document.querySelectorAll('.phase-card').forEach(c => c.classList.remove('active'));
+  document.getElementById(`phase-${i}`).classList.add('active');
+  document.getElementById(`phase-${i}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+</script>

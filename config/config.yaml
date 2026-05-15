@@ -1,0 +1,27 @@
+# Fuente única de verdad — ver docs/04_entrenamiento.md y docs/02_modelo_gin.md
+model:
+  node_feat_dim: 45
+  hidden_dim: 128
+  n_layers: 3
+  n_tasks: 12
+  dropout: 0.3
+
+training:
+  lr: 0.001
+  batch_size: 32
+  max_epochs: 250
+  early_stopping_patience: 50
+  grad_clip_norm: 1.0
+  model_save_path: outputs/models/best_gin_model.pt
+
+scheduler:
+  factor: 0.5
+  patience: 20
+
+evaluation:
+  n_folds: 5
+  split: scaffold
+
+wandb:
+  project: gnn-toxicity-panama
+  entity: null
