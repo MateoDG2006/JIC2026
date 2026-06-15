@@ -1,4 +1,17 @@
-"""Loop de entrenamiento — docs/04_entrenamiento.md."""
+"""
+Loop de entrenamiento para la GNN-GIN.
+
+Contiene las funciones principales:
+  - train_epoch(): un pase completo por el dataset de entrenamiento
+  - evaluate(): evaluar AUC-ROC en un dataset
+  - train(): loop completo con early stopping y logging opcional a wandb
+
+El entrenamiento usa:
+  - MaskedBCELoss: ignora las posiciones sin medición (NaN en Tox21)
+  - Gradient clipping: evita explosión de gradientes
+  - ReduceLROnPlateau: reduce el learning rate si val_auc no mejora
+  - Early stopping: detiene si val_auc no mejora por N épocas seguidas
+"""
 
 from __future__ import annotations
 
@@ -21,11 +34,26 @@ def train_epoch(
     device: torch.device,
     grad_clip: float = 1.0,
 ) -> float:
+    """Ejecuta una época de entrenamiento.
+
+    Args:
+        model: modelo GINToxicity
+        loader: DataLoader de PyG con grafos moleculares
+        optimizer: optimizador (Adam)
+        loss_fn: MaskedBCELoss
+        device: dispositivo (cuda/cpu)
+        grad_clip: norma máxima para clipping de gradientes
+
+    Returns:
+        Pérdida promedio de la época
+    """
     model.train()
     total = 0.0
     for batch in loader:
         batch = batch.to(device)
-        logits = model(batch.x, batch.edge_index, batch.batch)
+        # Pasar edge_attr al modelo para que GINEConv use features de enlaces
+        edge_attr = batch.edge_attr if hasattr(batch, "edge_attr") else None
+        logits = model(batch.x, batch.edge_index, batch.batch, edge_attr=edge_attr)
         loss = loss_fn(logits, batch.y, batch.mask)
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
@@ -42,13 +70,19 @@ def evaluate(
     device: torch.device,
     task_names: list[str] | None = None,
 ) -> tuple[dict[str, float], float]:
+    """Evalúa el modelo calculando AUC-ROC por tarea.
+
+    Returns:
+        Tupla (auc_por_tarea, auc_promedio)
+    """
     model.eval()
     all_logits: list[torch.Tensor] = []
     all_y: list[torch.Tensor] = []
     all_m: list[torch.Tensor] = []
     for batch in loader:
         batch = batch.to(device)
-        logits = model(batch.x, batch.edge_index, batch.batch)
+        edge_attr = batch.edge_attr if hasattr(batch, "edge_attr") else None
+        logits = model(batch.x, batch.edge_index, batch.batch, edge_attr=edge_attr)
         all_logits.append(logits.cpu())
         all_y.append(batch.y.cpu())
         all_m.append(batch.mask.cpu())
@@ -67,6 +101,20 @@ def train(
     task_names: list[str] | None = None,
     use_wandb: bool = False,
 ) -> float:
+    """Loop completo de entrenamiento con early stopping.
+
+    Args:
+        model: modelo GINToxicity (ya movido al device)
+        train_loader: DataLoader de entrenamiento
+        val_loader: DataLoader de validación
+        config: diccionario con hiperparámetros (de config.yaml)
+        device: dispositivo (cuda/cpu)
+        task_names: nombres de las 12 tareas para el reporte
+        use_wandb: si True, loguea métricas a Weights & Biases
+
+    Returns:
+        Mejor AUC-ROC de validación alcanzado
+    """
     opt = torch.optim.Adam(model.parameters(), lr=float(config["training"]["lr"]))
     sched = torch.optim.lr_scheduler.ReduceLROnPlateau(
         opt,
@@ -88,39 +136,34 @@ def train(
 
     for epoch in range(max_epochs):
         tl = train_epoch(
-            model,
-            train_loader,
-            opt,
-            loss_fn,
-            device,
+            model, train_loader, opt, loss_fn, device,
             grad_clip=float(config["training"]["grad_clip_norm"]),
         )
         _, val_auc = evaluate(model, val_loader, device, task_names)
+
+        # Si val_auc es NaN (puede pasar en épocas tempranas), no
+        # pasarlo al scheduler porque ReduceLROnPlateau puede fallar
         if not np.isfinite(val_auc):
             if use_wandb:
-                wandb.log(
-                    {
-                        "epoch": epoch,
-                        "train_loss": tl,
-                        "val_auc": float("nan"),
-                        "lr": opt.param_groups[0]["lr"],
-                    }
-                )
+                wandb.log({
+                    "epoch": epoch, "train_loss": tl,
+                    "val_auc": float("nan"),
+                    "lr": opt.param_groups[0]["lr"],
+                })
             bad += 1
             if bad >= patience:
                 break
             continue
 
         sched.step(val_auc)
+
         if use_wandb:
-            wandb.log(
-                {
-                    "epoch": epoch,
-                    "train_loss": tl,
-                    "val_auc": val_auc,
-                    "lr": opt.param_groups[0]["lr"],
-                }
-            )
+            wandb.log({
+                "epoch": epoch, "train_loss": tl,
+                "val_auc": val_auc, "lr": opt.param_groups[0]["lr"],
+            })
+
+        # Early stopping: guardar el mejor modelo y detener si no mejora
         if val_auc > best:
             best = val_auc
             bad = 0
@@ -128,5 +171,7 @@ def train(
         else:
             bad += 1
             if bad >= patience:
+                print(f"Early stopping en época {epoch}. "
+                      f"Mejor val_AUC: {best:.4f}")
                 break
     return best

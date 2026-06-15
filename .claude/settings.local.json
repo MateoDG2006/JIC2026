@@ -6,7 +6,8 @@
       "Bash(Get-Content *)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\mateo\\\\Desktop\\\\JIC2026\" -Recurse -Force)",
       "Bash(Select-Object -ExpandProperty FullName)",
-      "Bash(Sort-Object)"
+      "Bash(Sort-Object)",
+      "mcp__visualize__show_widget"
     ]
   }
 }

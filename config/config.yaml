@@ -1,27 +1,30 @@
-# Fuente única de verdad — ver docs/04_entrenamiento.md y docs/02_modelo_gin.md
+# Configuración central del proyecto GNN-GIN para toxicidad.
+# Todos los hiperparámetros del modelo y entrenamiento están aquí.
+
 model:
-  node_feat_dim: 45
-  hidden_dim: 128
-  n_layers: 3
-  n_tasks: 12
-  dropout: 0.3
+  node_feat_dim: 45      # dimensión de features por átomo (ver featurizer.py)
+  edge_feat_dim: 9       # dimensión de features por enlace (usado por GINEConv)
+  hidden_dim: 128        # dimensión oculta de las capas GIN (probar también 256)
+  n_layers: 3            # número de capas GIN (probar 4 y 5)
+  n_tasks: 12            # número de tareas Tox21
+  dropout: 0.3           # dropout entre capas
 
 training:
-  lr: 0.001
-  batch_size: 32
-  max_epochs: 250
-  early_stopping_patience: 50
-  grad_clip_norm: 1.0
+  lr: 0.001                              # learning rate inicial
+  batch_size: 32                         # tamaño de batch
+  max_epochs: 250                        # máximo de épocas
+  early_stopping_patience: 50            # épocas sin mejora antes de parar
+  grad_clip_norm: 1.0                    # norma máxima para gradient clipping
   model_save_path: outputs/models/best_gin_model.pt
 
 scheduler:
-  factor: 0.5
-  patience: 20
+  factor: 0.5            # multiplicar LR por este factor al reducir
+  patience: 20           # épocas sin mejora antes de reducir LR
 
 evaluation:
-  n_folds: 5
-  split: scaffold
+  n_folds: 5             # número de folds para cross-validation
+  split: scaffold         # tipo de split (siempre scaffold)
 
 wandb:
   project: gnn-toxicity-panama
-  entity: null
+  entity: null           # tu usuario de wandb (null = default)

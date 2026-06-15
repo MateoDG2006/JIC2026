@@ -1,4 +1,12 @@
-"""ToxicityDataset PyG y TASK_NAMES (AGENTS.md regla 7)."""
+"""
+Dataset de toxicidad para PyTorch Geometric.
+
+Carga los grafos moleculares pre-procesados (graphs_train.pt, etc.)
+y los expone como un Dataset iterable compatible con DataLoader de PyG.
+
+También define TASK_NAMES: los nombres de las 12 tareas de toxicidad
+de Tox21, en el mismo orden que las columnas de las etiquetas.
+"""
 
 from __future__ import annotations
 
@@ -9,27 +17,41 @@ import torch
 from torch.utils.data import Dataset
 from torch_geometric.data import Data
 
-# Orden alineado con DeepChem molnet.load_tox21 tasks
+# Las 12 dianas biológicas de Tox21, en el orden de DeepChem.
+# Este orden es CRÍTICO: las columnas de y (etiquetas) siguen este orden.
 TASK_NAMES: list[str] = [
-    "NR-AR",
-    "NR-AR-LBD",
-    "NR-AhR",
-    "NR-Aromatase",
-    "NR-ER",
-    "NR-ER-LBD",
-    "NR-PPAR-gamma",
-    "SR-ARE",
-    "SR-AtAD5",
-    "SR-HSE",
-    "SR-MMP",
-    "SR-p53",
+    "NR-AR",           # Receptor de andrógenos
+    "NR-AR-LBD",       # Dominio ligando del receptor de andrógenos
+    "NR-AhR",          # Receptor aril-hidrocarburo
+    "NR-Aromatase",    # Aromatasa (CYP19)
+    "NR-ER",           # Receptor de estrógenos
+    "NR-ER-LBD",       # Dominio ligando del receptor de estrógenos
+    "NR-PPAR-gamma",   # Receptor PPAR-γ (metabolismo)
+    "SR-ARE",          # Respuesta antioxidante (estrés oxidativo)
+    "SR-AtAD5",        # Daño al ADN
+    "SR-HSE",          # Estrés por calor
+    "SR-MMP",          # Potencial de membrana mitocondrial
+    "SR-p53",          # Vía p53 (daño al ADN / carcinogénesis)
 ]
 
 N_TASKS = len(TASK_NAMES)
 
 
 class ToxicityDataset(Dataset):
-    """Carga listas de `Data` desde `root/graphs_{split}.pt` (docs/01_pipeline_datos.md)."""
+    """Carga grafos moleculares desde archivos .pt pre-procesados.
+
+    Los archivos se generan con scripts/prepare_tox21_graphs.py y contienen
+    listas de objetos Data de PyG, cada uno con:
+      - x: features de nodos (átomos)
+      - edge_index: conectividad
+      - edge_attr: features de aristas (enlaces)
+      - y: etiquetas de toxicidad (12 tareas)
+      - mask: máscara de mediciones válidas
+
+    Args:
+        root: directorio donde están los archivos .pt (data/processed/)
+        split: "train", "val" o "test"
+    """
 
     def __init__(self, root: str | Path, split: Literal["train", "val", "test"]) -> None:
         self.root = Path(root)

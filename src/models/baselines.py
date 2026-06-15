@@ -1,4 +1,14 @@
-"""Baselines — docs/03_baselines.md."""
+"""
+Modelos baseline para comparar contra la GNN-GIN.
+
+Estos son 3 modelos INDEPENDIENTES que sirven como referencia:
+  1. Random Forest + fingerprints Morgan ECFP4 (AUC esperado ~0.77)
+  2. MLP + fingerprints Morgan ECFP4 (AUC esperado ~0.79)
+  3. SMILES2vec CNN-GRU (AUC esperado ~0.81)
+
+Si la GNN no supera a estos baselines, algo está mal.
+Si el RF no llega a ~0.72-0.76 con scaffold split, los datos tienen un bug.
+"""
 
 from __future__ import annotations
 
@@ -10,15 +20,25 @@ from sklearn.ensemble import RandomForestClassifier
 
 try:
     from rdkit.Chem.rdFingerprintGenerator import GetMorganGenerator
-except ImportError:  # RDKit antiguo
+except ImportError:
     GetMorganGenerator = None  # type: ignore[misc, assignment]
 
+
+# ── Fingerprints Morgan (ECFP4) ──────────────────────────────────────────
 
 def morgan_fingerprints(
     smiles_list: list[str],
     radius: int = 2,
     n_bits: int = 2048,
 ) -> np.ndarray:
+    """Genera fingerprints Morgan ECFP4 para una lista de SMILES.
+
+    Un fingerprint es un vector binario de 2048 bits que codifica
+    los subestructuras circulares de radio 2 alrededor de cada átomo.
+    Es la representación clásica para modelos de ML en quimioinformática.
+
+    SMILES inválidos generan un vector de ceros (en vez de fallar).
+    """
     fps: list[list[int]] = []
     if GetMorganGenerator is not None:
         mfpgen = GetMorganGenerator(radius=radius, fpSize=n_bits)
@@ -31,7 +51,6 @@ def morgan_fingerprints(
             fps.append(list(fp))
     else:
         from rdkit.Chem import AllChem
-
         for smi in smiles_list:
             mol = Chem.MolFromSmiles(smi)
             if mol is None:
@@ -42,8 +61,15 @@ def morgan_fingerprints(
     return np.asarray(fps, dtype=np.float32)
 
 
+# ── Baseline 1: Random Forest ────────────────────────────────────────────
+
 class RandomForestBaseline:
-    """Un bosque por tarea Tox21; cada uno entrena solo con muestras medidas (mask)."""
+    """Un Random Forest separado por cada tarea Tox21.
+
+    Entrena 12 clasificadores independientes, cada uno solo con las
+    muestras que tienen medición para esa tarea (mask=True).
+    Usa class_weight='balanced_subsample' para compensar el desbalance.
+    """
 
     def __init__(
         self,
@@ -60,6 +86,7 @@ class RandomForestBaseline:
         self._estimators: list[RandomForestClassifier | None] = []
 
     def fit(self, smiles_list: list[str], y: np.ndarray, mask: np.ndarray) -> None:
+        """Entrena un RF por tarea usando solo muestras con medición."""
         X = morgan_fingerprints(smiles_list)
         n_tasks = y.shape[1]
         self._estimators = []
@@ -70,18 +97,14 @@ class RandomForestBaseline:
             if m.sum() < 2 or len(np.unique(y_t)) < 2:
                 self._estimators.append(None)
                 if self.verbose:
-                    print(
-                        f"    [{t + 1}/{n_tasks}] omitida (pocas muestras o una sola clase)",
-                        flush=True,
-                    )
+                    print(f"    [{t + 1}/{n_tasks}] omitida "
+                          f"(pocas muestras o una sola clase)", flush=True)
                 continue
             if self.verbose:
                 n_pos = int((y_t == 1).sum())
-                print(
-                    f"    [{t + 1}/{n_tasks}] RandomForest "
-                    f"(n={int(m.sum())}, positivos={n_pos}, árboles={self.n_estimators})…",
-                    flush=True,
-                )
+                print(f"    [{t + 1}/{n_tasks}] RandomForest "
+                      f"(n={int(m.sum())}, positivos={n_pos}, "
+                      f"árboles={self.n_estimators})...", flush=True)
             clf = RandomForestClassifier(
                 n_estimators=self.n_estimators,
                 n_jobs=self.n_jobs,
@@ -95,13 +118,14 @@ class RandomForestBaseline:
             self._estimators.append(clf)
 
     def predict_proba(self, smiles_list: list[str]) -> np.ndarray:
+        """Predice probabilidades para todas las tareas."""
         X = morgan_fingerprints(smiles_list)
         n = X.shape[0]
         n_tasks = len(self._estimators)
         probs = np.zeros((n, n_tasks), dtype=np.float64)
         for t, clf in enumerate(self._estimators):
             if self.verbose:
-                print(f"    RF predict_proba tarea {t + 1}/{n_tasks}…", flush=True)
+                print(f"    RF predict_proba tarea {t + 1}/{n_tasks}...", flush=True)
             if clf is None:
                 probs[:, t] = 0.5
                 continue
@@ -116,7 +140,15 @@ class RandomForestBaseline:
         return probs
 
 
+# ── Baseline 2: MLP ──────────────────────────────────────────────────────
+
 class MLPBaseline(nn.Module):
+    """Red neuronal feedforward con 2 capas ocultas.
+
+    Recibe fingerprints Morgan (2048 bits) y predice 12 tareas.
+    Arquitectura: 2048 → 512 → 256 → 12
+    """
+
     def __init__(
         self,
         input_dim: int = 2048,
@@ -139,9 +171,14 @@ class MLPBaseline(nn.Module):
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Retorna logits (sin sigmoid). Aplicar sigmoid para probabilidades."""
         return self.net(x)
 
 
+# ── Vocabulario SMILES para SMILES2vec ────────────────────────────────────
+
+# Mapa de caracteres SMILES → índices enteros para el embedding.
+# El padding usa índice 0 (espacio).
 _SMILES_ORDERED_UNIQUE: list[str] = []
 for ch in (
     "0123456789"
@@ -152,17 +189,31 @@ for ch in (
     if ch not in _SMILES_ORDERED_UNIQUE:
         _SMILES_ORDERED_UNIQUE.append(ch)
 CHAR_TO_IDX: dict[str, int] = {c: i + 1 for i, c in enumerate(_SMILES_ORDERED_UNIQUE)}
-CHAR_TO_IDX[" "] = 0
+CHAR_TO_IDX[" "] = 0  # padding
 VOCAB_SIZE = max(CHAR_TO_IDX.values()) + 1
 
 
 def smiles_to_indices(smiles: str, max_len: int = 250) -> list[int]:
+    """Convierte un SMILES a una secuencia de índices enteros.
+    Trunca a max_len caracteres y rellena con espacios (índice 0)."""
     s = smiles[:max_len].ljust(max_len)
     return [CHAR_TO_IDX.get(c, 0) for c in s]
 
 
+# ── Baseline 3: SMILES2vec (CNN-GRU) ─────────────────────────────────────
+
 class SMILES2vec(nn.Module):
-    """CNN-GRU baseline (Goh et al. KDD 2018) — docs/03_baselines.md."""
+    """Modelo CNN-GRU que lee SMILES como texto (Goh et al. KDD 2018).
+
+    Pipeline interno:
+      1. Embedding: cada caracter → vector de 50 dims
+      2. Conv1D: extrae patrones locales de 3 caracteres
+      3. GRU bidireccional (2 capas): captura dependencias secuenciales
+      4. Clasificador: último estado oculto → 12 tareas
+
+    Usa h_n (estado oculto final) del GRU en lugar del último timestep
+    de la secuencia de salida, que es más estable para clasificación.
+    """
 
     def __init__(
         self,
@@ -177,14 +228,28 @@ class SMILES2vec(nn.Module):
         super().__init__()
         self.embedding = nn.Embedding(vocab_size, embed_dim)
         self.conv = nn.Conv1d(embed_dim, conv_filters, kernel_size=3, padding=1)
-        self.gru1 = nn.GRU(conv_filters, gru1_units, batch_first=True, bidirectional=True)
-        self.gru2 = nn.GRU(gru1_units * 2, gru2_units, batch_first=True, bidirectional=True)
-        self.classifier = nn.Sequential(nn.Dropout(dropout), nn.Linear(gru2_units * 2, n_tasks))
+        self.gru1 = nn.GRU(
+            conv_filters, gru1_units, batch_first=True, bidirectional=True
+        )
+        self.gru2 = nn.GRU(
+            gru1_units * 2, gru2_units, batch_first=True, bidirectional=True
+        )
+        self.classifier = nn.Sequential(
+            nn.Dropout(dropout),
+            nn.Linear(gru2_units * 2, n_tasks),
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        emb = self.embedding(x).permute(0, 2, 1)
+        """x: (batch, seq_len) — índices enteros de caracteres SMILES."""
+        # Embedding: (batch, seq_len) → (batch, seq_len, embed_dim)
+        emb = self.embedding(x)
+        # Conv1D espera (batch, channels, seq_len)
+        emb = emb.permute(0, 2, 1)
         conv = torch.relu(self.conv(emb)).permute(0, 2, 1)
+        # GRU bidireccional: procesa la secuencia en ambas direcciones
         out1, _ = self.gru1(conv)
+        # h_n: (2, batch, gru2_units) — 2 direcciones
         _, h_n = self.gru2(out1)
+        # Concatenar las 2 direcciones del estado oculto final
         h_final = torch.cat([h_n[0], h_n[1]], dim=-1)
         return self.classifier(h_final)
