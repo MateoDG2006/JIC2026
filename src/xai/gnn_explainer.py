@@ -117,16 +117,35 @@ def explain_molecule(
     if nm is None:
         raise RuntimeError("GNNExplainer no devolvió node_mask")
 
-    # Si la máscara tiene múltiples columnas (una por feature), promediar
-    node_imp = nm.squeeze()
-    if node_imp.dim() > 1:
-        node_imp = node_imp.mean(dim=-1)
+    num_nodes = data.x.size(0)
+    feat_dim = data.x.size(1)
+    node_imp = nm.reshape(-1)
+
+    # node_mask_type="attributes" puede devolver (N, F) o, en grafos muy
+    # pequeños, un vector plano de longitud F en lugar de N.
+    if node_imp.numel() == num_nodes:
+        pass
+    elif node_imp.numel() == num_nodes * feat_dim:
+        node_imp = node_imp.reshape(num_nodes, feat_dim).mean(dim=-1)
+    elif num_nodes == 1 and node_imp.numel() == feat_dim:
+        node_imp = node_imp.mean().view(1)
+    elif nm.dim() >= 2 and nm.size(0) == num_nodes:
+        node_imp = nm.mean(dim=-1).reshape(-1)
+    else:
+        raise ValueError(
+            f"node_mask incompatible: {tuple(nm.shape)} para "
+            f"{num_nodes} nodos × {feat_dim} features"
+        )
 
     # Si no hay máscara de aristas, crear una de ceros
-    edge_imp = (
-        em
-        if em is not None
-        else torch.zeros(data.edge_index.size(1), device=data.x.device)
-    )
+    n_edges = data.edge_index.size(1)
+    if em is None or em.numel() == 0:
+        edge_imp = torch.zeros(n_edges, device=data.x.device)
+    else:
+        edge_imp = em.reshape(-1)
+        if edge_imp.numel() != n_edges:
+            edge_imp = edge_imp[:n_edges] if edge_imp.numel() > n_edges else torch.zeros(
+                n_edges, device=data.x.device
+            )
 
     return node_imp, edge_imp

@@ -1663,10 +1663,10 @@ python src/data/featurizer.py --input data/raw/pubchem_panama_cids.csv \
 # ── Entrenamiento ──────────────────────────────────────────────────────────
 
 # Entrenar baselines
-python scripts/train_baselines.py --config config/config.yaml
+python scripts/fase2/train_baselines.py --config config/config.yaml
 
 # Entrenar GNN-GIN (un fold)
-python scripts/train_gin.py --config config/config.yaml --fold 0
+python scripts/fase3/train_gin.py --config config/config.yaml --fold 0
 
 # 5-fold Cross-Validation completo
 python scripts/run_cv.py --config config/config.yaml
@@ -1674,16 +1674,16 @@ python scripts/run_cv.py --config config/config.yaml
 # ── XAI y reportes ────────────────────────────────────────────────────────
 
 # Generar explicaciones XAI para corpus panameño
-python scripts/explain_panama.py --model outputs/models/best_gin_model.pt \
+python scripts/fase5/explain_panama.py --model outputs/models/best_gin_model.pt \
                                   --corpus data/processed/panama_corpus.pt
 
 # Validar predicciones contra etiquetas GHS de PubChem
-python scripts/validate_ghs.py --predictions outputs/results/panama_predictions.csv \
+python scripts/fase5/validate_ghs.py --predictions outputs/results/panama_predictions.csv \
                                 --ghs data/raw/pubchem_ghs_labels.csv \
                                 --output outputs/reports/ghs_validation.csv
 
 # Generar reporte MIDA/MINSA
-python scripts/generate_report.py --results outputs/xai/ \
+python scripts/fase5/generate_report.py --results outputs/xai/ \
                                    --output outputs/reports/
 ```
 

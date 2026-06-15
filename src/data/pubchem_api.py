@@ -8,9 +8,13 @@ Se usa para construir el corpus de plaguicidas panameños (Fase V):
   4. Hazard GHS: etiquetas de peligro para validación externa
 
 IMPORTANTE: Este módulo NO se usa para entrenar el modelo.
-El entrenamiento usa DeepChem (scripts/prepare_tox21_graphs.py).
+El entrenamiento usa DeepChem (scripts/fase1/prepare_tox21_graphs.py).
 Este módulo construye un corpus aparte de plaguicidas de Panamá
-para evaluarlos con el modelo ya entrenado.
+para evaluarlos con el modelo ya entrenado y validar contra GHS.
+
+Endpoints principales:
+  - PUG Compound/Classification: CIDs y SMILES
+  - PUG View: etiquetas GHS (Record → Safety and Hazards → GHS)
 """
 
 from __future__ import annotations
@@ -60,6 +64,19 @@ def _atomic_save_dataframe(df: pd.DataFrame, path: str | Path) -> None:
     tmp.replace(p)
 
 
+def _smiles_from_props(props: dict[str, Any]) -> str:
+    """Extrae SMILES de la respuesta property/ de PubChem.
+
+    Desde 2025 PubChem renombró CanonicalSMILES → ConnectivitySMILES y
+    IsomericSMILES → SMILES. Aceptamos ambos nombres por compatibilidad.
+    """
+    for key in ("SMILES", "ConnectivitySMILES", "IsomericSMILES", "CanonicalSMILES"):
+        value = props.get(key)
+        if isinstance(value, str) and value:
+            return value
+    return ""
+
+
 # ── AIDs oficiales de los 12 ensayos Tox21 en PubChem BioAssay ───────────
 # Cada AID corresponde a un ensayo biológico publicado por el NIH.
 TOX21_AIDS: dict[str, int] = {
@@ -77,16 +94,25 @@ TOX21_AIDS: dict[str, int] = {
     "SR-p53": 743241,
 }
 
-# ── Familias de plaguicidas en el árbol PubChem Classification ────────────
-# HID = Hierarchy ID. El nodo raíz es HID 72 ("Pesticides").
-FAMILY_HIDS: dict[str, int] = {
-    "Organophosphates": 73,
-    "Carbamates": 78,
-    "Triazines": 126,
-    "Azole_fungicides": 103,
-    "Pyrethroids": 112,
-    "Herbicides": 90,
+# ── Familias de plaguicidas vía PubChem Classification (HNID) ─────────────
+# La API PUG REST usa HNID (node id), no HID (el #hid= de la URL del browser).
+# Valores obtenidos del árbol ChemIDplus / Agrochemical Information.
+FAMILY_HNIDS: dict[str, int] = {
+    "Organophosphates": 4400064,
+    "Carbamates": 4400088,
+    "Triazines": 4400160,
+    "Azole_fungicides": 4400154,
+    "Pyrethroids": 4500164,
+    "Herbicides": 4500088,
 }
+
+# Alias retrocompatible (el parámetro era HID pero el endpoint exige HNID).
+FAMILY_HIDS = FAMILY_HNIDS
+
+# Columnas CSV del corpus panameño (siempre escribir cabecera aunque no haya filas).
+PANAMA_CORPUS_COLUMNS = [
+    "name", "CID", "SMILES", "formula", "source", "family",
+]
 
 # ── Códigos GHS de peligro (para validación externa) ─────────────────────
 GHS_HAZARD_CODES: dict[str, str] = {
@@ -155,9 +181,9 @@ def build_tox21_from_pubchem(
 
 # ── PASO 2: PubChem Classification — CIDs de familias de plaguicidas ─────
 
-def fetch_classification_cids(hid: int) -> list[int]:
-    """Obtiene todos los CIDs bajo un nodo del árbol de clasificación."""
-    url = f"{BASE}/classification/hid/{hid}/cids/JSON"
+def fetch_classification_cids(hnid: int) -> list[int]:
+    """Obtiene todos los CIDs bajo un nodo del árbol de clasificación (HNID)."""
+    url = f"{BASE}/classification/hnid/{hnid}/cids/JSON"
     resp = _get_with_retry(url)
     data = resp.json()
     time.sleep(0.5)
@@ -178,11 +204,13 @@ def fetch_smiles_batch(cids: list[int], batch_size: int = 100) -> dict[int, str]
     for i in range(0, len(cids), batch_size):
         batch = cids[i : i + batch_size]
         cid_str = ",".join(map(str, batch))
-        url = f"{BASE}/compound/cid/{cid_str}/property/CanonicalSMILES/JSON"
+        url = f"{BASE}/compound/cid/{cid_str}/property/SMILES/JSON"
         try:
             resp = _get_with_retry(url)
             for prop in resp.json()["PropertyTable"]["Properties"]:
-                smiles_map[prop["CID"]] = prop["CanonicalSMILES"]
+                smi = _smiles_from_props(prop)
+                if smi:
+                    smiles_map[prop["CID"]] = smi
         except Exception as e:
             print(f"[WARN] fetch_smiles_batch lote {i // batch_size} "
                   f"({len(batch)} CIDs): {e}")
@@ -207,41 +235,49 @@ def build_panama_cid_list(
     for name in MIDA_ACTIVE_INGREDIENTS:
         url = (
             f"{BASE}/compound/name/{quote(name, safe='')}/property/"
-            "CanonicalSMILES,IUPACName,MolecularFormula/JSON"
+            "SMILES,IUPACName,MolecularFormula/JSON"
         )
         try:
-            resp = requests.get(url, timeout=30)
-            if resp.status_code == 200:
-                props = resp.json()["PropertyTable"]["Properties"][0]
-                rows.append({
-                    "name": name,
-                    "CID": props["CID"],
-                    "SMILES": props["CanonicalSMILES"],
-                    "formula": props.get("MolecularFormula", ""),
-                    "source": "MIDA_name_search",
-                    "family": "mixed",
-                })
+            resp = _get_with_retry(url, timeout=30)
+            props = resp.json()["PropertyTable"]["Properties"][0]
+            smiles = _smiles_from_props(props)
+            if not smiles:
+                raise KeyError("SMILES vacío en respuesta PubChem")
+            rows.append({
+                "name": name,
+                "CID": props["CID"],
+                "SMILES": smiles,
+                "formula": props.get("MolecularFormula", ""),
+                "source": "MIDA_name_search",
+                "family": "mixed",
+            })
         except Exception as e:
             print(f"[WARN] PubChem compound/name '{name}': {e}")
         time.sleep(0.35)
 
-    # Fuente 2: familias del árbol de clasificación
-    for family, hid in FAMILY_HIDS.items():
+    # Fuente 2: familias del árbol de clasificación (HNID)
+    for family, hnid in FAMILY_HNIDS.items():
         try:
-            cids = fetch_classification_cids(hid)[:50]
+            cids = fetch_classification_cids(hnid)[:50]
             for cid in cids:
                 rows.append({
                     "name": "",
                     "CID": cid,
                     "SMILES": "",
                     "formula": "",
-                    "source": f"classification_hid_{hid}",
+                    "source": f"classification_hnid_{hnid}",
                     "family": family,
                 })
         except Exception as e:
-            print(f"[WARN] PubChem classification hid={hid}: {e}")
+            print(f"[WARN] PubChem classification hnid={hnid} ({family}): {e}")
 
-    df = pd.DataFrame(rows).drop_duplicates(subset=["CID"])
+    df = (
+        pd.DataFrame(rows, columns=PANAMA_CORPUS_COLUMNS)
+        if rows
+        else pd.DataFrame(columns=PANAMA_CORPUS_COLUMNS)
+    )
+    if not df.empty:
+        df = df.drop_duplicates(subset=["CID"])
     _atomic_save_dataframe(df, output_path)
     print(f"Corpus inicial: {len(df)} compuestos en {output_path}")
     return df
@@ -250,6 +286,9 @@ def build_panama_cid_list(
 def enrich_corpus_with_smiles(corpus_path: str) -> pd.DataFrame:
     """Completa los SMILES vacíos descargándolos desde PubChem Compound."""
     df = pd.read_csv(corpus_path)
+    if df.empty:
+        print("Corpus vacío: no hay CIDs para enriquecer con SMILES.")
+        return df
     missing_mask = df["SMILES"].fillna("") == ""
     missing_cids = df.loc[missing_mask, "CID"].tolist()
 
@@ -273,7 +312,22 @@ def enrich_corpus_with_smiles(corpus_path: str) -> pd.DataFrame:
     return df
 
 
-# ── PASO 5: PubChem Hazard (GHS) — etiquetas para validación ─────────────
+# ── PASO 5: PubChem PUG View (GHS) — etiquetas para validación ───────────
+
+def _collect_ghs_codes_from_section(section: dict[str, Any]) -> list[str]:
+    """Recorre recursivamente Safety and Hazards → … → GHS Classification."""
+    codes: list[str] = []
+    for info in section.get("Information", []):
+        value = info.get("Value", {})
+        for val in value.get("StringWithMarkup", []):
+            text = val.get("String", "")
+            for code in GHS_HAZARD_CODES:
+                if code in text:
+                    codes.append(code)
+    for sub in section.get("Section", []):
+        codes.extend(_collect_ghs_codes_from_section(sub))
+    return codes
+
 
 def fetch_ghs_labels(
     cids: list[int],
@@ -292,26 +346,18 @@ def fetch_ghs_labels(
     """
     rows: list[dict[str, Any]] = []
     for cid in cids:
-        url = f"{BASE}/compound/cid/{cid}/JSON"
+        # PUG View (no PUG Compound): el JSON con secciones GHS está en pug_view.
+        url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{cid}/JSON"
         try:
             resp = _get_with_retry(url, timeout=30)
             data = resp.json()
             ghs_codes: list[str] = []
 
-            # Navegar la estructura JSON anidada de PubChem
             sections = data.get("Record", {}).get("Section", [])
             for sec in sections:
                 if sec.get("TOCHeading") == "Safety and Hazards":
-                    for subsec in sec.get("Section", []):
-                        if "GHS" in subsec.get("TOCHeading", ""):
-                            for info in subsec.get("Information", []):
-                                for val in info.get("Value", {}).get(
-                                    "StringWithMarkup", []
-                                ):
-                                    text = val.get("String", "")
-                                    for code in GHS_HAZARD_CODES:
-                                        if code in text:
-                                            ghs_codes.append(code)
+                    ghs_codes = _collect_ghs_codes_from_section(sec)
+                    break
             rows.append({
                 "CID": cid,
                 "ghs_codes": "|".join(sorted(set(ghs_codes))),

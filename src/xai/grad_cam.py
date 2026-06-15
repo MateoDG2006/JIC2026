@@ -66,7 +66,6 @@ def grad_cam_graph(
 
     # Eval mode: explicamos 1 molécula → batch grafo = 1. En train(),
     # BatchNorm del clasificador falla con tensor (1, hidden_dim).
-    was_training = model.training
     model.eval()
 
     h = layer.register_forward_hook(fwd_hook)
@@ -78,10 +77,7 @@ def grad_cam_graph(
             logits[0, task_index].backward()
     finally:
         h.remove()
-        if was_training:
-            model.train()
-        else:
-            model.eval()
+        model.eval()
 
     # Obtener activaciones y sus gradientes
     act = act_store.get("a")

@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 # Raiz del repo en PYTHONPATH (uvicorn --reload lanza un subproceso sin el cwd)
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 _ROOT = str(PROJECT_ROOT)
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)

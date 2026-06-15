@@ -40,7 +40,7 @@ N_TASKS = len(TASK_NAMES)
 class ToxicityDataset(Dataset):
     """Carga grafos moleculares desde archivos .pt pre-procesados.
 
-    Los archivos se generan con scripts/prepare_tox21_graphs.py y contienen
+    Los archivos se generan con scripts/fase1/prepare_tox21_graphs.py y contienen
     listas de objetos Data de PyG, cada uno con:
       - x: features de nodos (átomos)
       - edge_index: conectividad
@@ -59,7 +59,7 @@ class ToxicityDataset(Dataset):
         path = self.root / f"graphs_{split}.pt"
         if not path.is_file():
             raise FileNotFoundError(
-                f"No existe {path}. Ejecuta: python scripts/prepare_tox21_graphs.py"
+                f"No existe {path}. Ejecuta: python scripts/fase1/prepare_tox21_graphs.py"
             )
         try:
             raw = torch.load(path, map_location="cpu", weights_only=False)

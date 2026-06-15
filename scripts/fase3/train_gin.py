@@ -6,14 +6,14 @@ GINToxicity con early stopping sobre validación, evalúa en test y guarda
 el modelo y métricas.
 
 Requisito previo:
-  python scripts/prepare_tox21_graphs.py
+  python scripts/fase1/prepare_tox21_graphs.py
 
 Uso:
-  python scripts/train_gin.py
-  python scripts/train_gin.py --config config/config.yaml
-  python scripts/train_gin.py -v
-  python scripts/train_gin.py --wandb
-  python scripts/train_gin.py --device cuda --require-gpu
+  python scripts/fase3/train_gin.py
+  python scripts/fase3/train_gin.py --config config/config.yaml
+  python scripts/fase3/train_gin.py -v
+  python scripts/fase3/train_gin.py --wandb
+  python scripts/fase3/train_gin.py --device cuda --require-gpu
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ import torch
 import yaml
 from torch_geometric.loader import DataLoader
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 

@@ -3,8 +3,8 @@
 Genera archivos JSON pre-computados en viz/data/ para el dashboard.
 
 Uso:
-    python scripts/build_viz_corpus.py           # requiere modelo entrenado
-    python scripts/build_viz_corpus.py --demo    # datos demo sin modelo (UI)
+    python scripts/fase4/build_viz_corpus.py           # requiere modelo entrenado
+    python scripts/fase4/build_viz_corpus.py --demo    # datos demo sin modelo (UI)
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ import re
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from viz.config import CORPUS_DIR, TASK_NAMES  # noqa: E402

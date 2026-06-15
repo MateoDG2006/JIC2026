@@ -6,7 +6,7 @@ convierte cada molécula a un grafo PyG con featurizer.py, y guarda
 3 archivos .pt (train, val, test) en data/processed/.
 
 Uso (desde la raíz del repo):
-  python scripts/prepare_tox21_graphs.py
+  python scripts/fase1/prepare_tox21_graphs.py
 
 Requisitos: deepchem, rdkit, torch, torch_geometric
 """
@@ -16,7 +16,7 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 

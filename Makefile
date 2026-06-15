@@ -35,7 +35,7 @@ endif
 # ── Datos (Fase I) ────────────────────────────────────────────────────────
 
 prepare-graphs:
-	"$(VENV_PYTHON)" scripts/prepare_tox21_graphs.py
+	"$(VENV_PYTHON)" scripts/fase1/prepare_tox21_graphs.py
 
 powershell-extract-data-from-tox21: prepare-graphs
 
@@ -50,22 +50,22 @@ baselines:
 	"$(VENV_PYTHON)" -m jupyter nbconvert --execute --to notebook --inplace notebooks/02_baselines_tox21.ipynb
 
 train-baselines:
-	"$(VENV_PYTHON)" scripts/train_baselines.py
+	"$(VENV_PYTHON)" scripts/fase2/train_baselines.py
 
 train-baselines-verbose:
-	"$(VENV_PYTHON)" scripts/train_baselines.py -v
+	"$(VENV_PYTHON)" scripts/fase2/train_baselines.py -v
 
 # ── GNN-GIN (Fase III) ────────────────────────────────────────────────────
 # Requisito: make prepare-graphs (genera data/processed/graphs_*.pt)
 
 train-gin:
-	"$(VENV_PYTHON)" scripts/train_gin.py --config $(CONFIG)
+	"$(VENV_PYTHON)" scripts/fase3/train_gin.py --config $(CONFIG)
 
 train-gin-verbose:
-	"$(VENV_PYTHON)" scripts/train_gin.py --config $(CONFIG) -v
+	"$(VENV_PYTHON)" scripts/fase3/train_gin.py --config $(CONFIG) -v
 
 train-gin-wandb:
-	"$(VENV_PYTHON)" scripts/train_gin.py --config $(CONFIG) -v --wandb
+	"$(VENV_PYTHON)" scripts/fase3/train_gin.py --config $(CONFIG) -v --wandb
 
 # Pipeline completo: grafos + entrenamiento GIN
 train-gin-all: prepare-graphs train-gin
@@ -75,16 +75,34 @@ train-gin-all-verbose: prepare-graphs train-gin-verbose
 check-gin-gpu:
 	"$(VENV_PYTHON)" -c "import torch; print('CUDA:', torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU')"
 
-# ── Visualización XAI (FastAPI) ───────────────────────────────────────────
-# Requisitos: make setup (entorno principal) antes de setup-viz.
-# Sin modelo entrenado: make setup-viz  → corpus demo + servidor.
-# Con modelo: make setup-viz-full tras make train-gin.
-#
-# Uso (no hace falta activar el venv: make usa .venv/Scripts/python.exe):
-#   make setup-viz    → instalar deps + corpus demo
-#   make viz          → http://127.0.0.1:8000
-#   make viz VIZ_PORT=8765
-#   make viz-lan      → accesible en la red local
+train-gin-notebook:
+	"$(VENV_PYTHON)" -m jupyter nbconvert --execute --to notebook --inplace notebooks/04_gnn_training.ipynb
+
+# ── Rutas compartidas (Fases IV–V) ─────────────────────────────────────────
+
+MODEL := outputs/models/best_gin_model.pt
+PANAMA_CORPUS := data/processed/panama_corpus.pt
+PANAMA_PREDICTIONS := outputs/results/panama_predictions.csv
+GHS_LABELS := data/raw/pubchem_ghs_labels.csv
+
+# ── XAI + visor (Fase IV) ─────────────────────────────────────────────────
+# Corpus: predicciones + GNNExplainer + Grad-CAM → viz/data/*.json
+# Requisito corpus real: make train-gin (genera $(MODEL))
+# Sin modelo: make xai-demo  →  make viz
+
+build-viz-corpus:
+	"$(VENV_PYTHON)" scripts/fase4/build_viz_corpus.py
+
+build-viz-corpus-demo:
+	"$(VENV_PYTHON)" scripts/fase4/build_viz_corpus.py --demo
+
+setup-viz: install-viz build-viz-corpus-demo
+
+setup-viz-full: install-viz build-viz-corpus
+
+xai-all: train-gin setup-viz-full
+
+xai-demo: setup-viz
 
 VIZ_HOST := 127.0.0.1
 VIZ_PORT := 8000
@@ -92,32 +110,58 @@ VIZ_PORT := 8000
 install-viz:
 	"$(VENV_PYTHON)" -m pip install -r viz/requirements.txt
 
-build-viz-corpus:
-	"$(VENV_PYTHON)" scripts/build_viz_corpus.py
-
-build-viz-corpus-demo:
-	"$(VENV_PYTHON)" scripts/build_viz_corpus.py --demo
-
-# Instala deps del visor y genera corpus demo (no requiere modelo)
-setup-viz: install-viz build-viz-corpus-demo
-
-# Instala deps y genera corpus con predicciones reales (requiere best_gin_model.pt)
-setup-viz-full: install-viz build-viz-corpus
-
 viz-check:
-	"$(VENV_PYTHON)" scripts/viz_serve.py --check-only
+	"$(VENV_PYTHON)" scripts/fase4/viz_serve.py --check-only
 
 viz: viz-check
-	"$(VENV_PYTHON)" scripts/viz_serve.py --host $(VIZ_HOST) --port $(VIZ_PORT) --reload
+	"$(VENV_PYTHON)" scripts/fase4/viz_serve.py --host $(VIZ_HOST) --port $(VIZ_PORT) --reload
 
 viz-serve: viz
 
 # Acceso desde otros dispositivos en la misma red (puerto 8000 por defecto)
 viz-lan: viz-check
-	"$(VENV_PYTHON)" scripts/viz_serve.py --host 0.0.0.0 --port $(VIZ_PORT) --reload
+	"$(VENV_PYTHON)" scripts/fase4/viz_serve.py --host 0.0.0.0 --port $(VIZ_PORT) --reload
 
 # Servidor sin auto-reload (mas estable en demos/presentaciones)
 viz-prod: viz-check
-	"$(VENV_PYTHON)" scripts/viz_serve.py --host $(VIZ_HOST) --port $(VIZ_PORT)
+	"$(VENV_PYTHON)" scripts/fase4/viz_serve.py --host $(VIZ_HOST) --port $(VIZ_PORT)
 
-.PHONY: setup install-pyg-ext clean prepare-graphs powershell-extract-data-from-tox21 wsl-extract-data-from-tox21 eda baselines train-baselines train-baselines-verbose train-gin train-gin-verbose train-gin-wandb train-gin-all train-gin-all-verbose check-gin-gpu install-viz build-viz-corpus build-viz-corpus-demo setup-viz setup-viz-full viz-check viz viz-serve viz-lan viz-prod
+# ── Panamá (Fase V) ────────────────────────────────────────────────────────
+# Corpus desde PubChem → predicciones → validación GHS → reporte MIDA/MINSA
+# Requisito inferencia: make train-gin + make build-panama-corpus
+
+build-panama-corpus:
+	"$(VENV_PYTHON)" scripts/fase5/build_panama_corpus.py
+
+# Omite descarga GHS (más rápido; útil para iterar sobre grafos)
+build-panama-corpus-fast:
+	"$(VENV_PYTHON)" scripts/fase5/build_panama_corpus.py --skip-ghs
+
+# Reconstruye panama_corpus.pt desde CSV existente (sin llamar a PubChem)
+build-panama-corpus-graphs:
+	"$(VENV_PYTHON)" scripts/fase5/build_panama_corpus.py --skip-pubchem
+
+# Predicciones multitarea + explicaciones XAI sobre el corpus panameño
+explain-panama:
+	"$(VENV_PYTHON)" scripts/fase5/explain_panama.py --model $(MODEL) --corpus $(PANAMA_CORPUS)
+
+# Correlaciona predicciones del modelo con etiquetas GHS de PubChem
+validate-ghs:
+	"$(VENV_PYTHON)" scripts/fase5/validate_ghs.py \
+		--predictions $(PANAMA_PREDICTIONS) \
+		--ghs $(GHS_LABELS) \
+		--output outputs/reports/ghs_validation.csv
+
+# Reporte interpretado para actores institucionales (MIDA/MINSA)
+generate-panama-report:
+	"$(VENV_PYTHON)" scripts/fase5/generate_report.py \
+		--results outputs/xai/ \
+		--output outputs/reports/
+
+# Corpus + predicciones (sin validación GHS ni reporte PDF)
+panama-predict: build-panama-corpus explain-panama
+
+# Pipeline Fase V completo
+panama-all: build-panama-corpus explain-panama validate-ghs generate-panama-report
+
+.PHONY: setup install-pyg-ext clean prepare-graphs powershell-extract-data-from-tox21 wsl-extract-data-from-tox21 eda baselines train-baselines train-baselines-verbose train-gin train-gin-verbose train-gin-wandb train-gin-all train-gin-all-verbose check-gin-gpu train-gin-notebook build-viz-corpus build-viz-corpus-demo setup-viz setup-viz-full xai-all xai-demo install-viz viz-check viz viz-serve viz-lan viz-prod build-panama-corpus build-panama-corpus-fast build-panama-corpus-graphs explain-panama validate-ghs generate-panama-report panama-predict panama-all panama-notebook

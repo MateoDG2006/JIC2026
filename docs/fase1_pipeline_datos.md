@@ -110,17 +110,15 @@ El vector de características de cada nodo codifica propiedades químicas releva
 
 ### El proceso de conversión
 
-```
-SMILES: "c1ccccc1Cl"  (clorobenceno)
-         ↓
-RDKit parsea la cadena SMILES y genera un objeto Mol
-         ↓
-Canonicalización: RDKit reordena los átomos de forma determinística
-         ↓
-Para cada átomo: extraer vector de 45 features → tensor x (7 × 45)
-Para cada enlace: extraer vector de 9 features + duplicar (bidireccional)
-         ↓
-Data(x=[7, 45], edge_index=[2, 14], edge_attr=[14, 9])
+```mermaid
+flowchart TB
+    S["SMILES: c1ccccc1Cl"]
+    RDKIT["RDKit parsea → objeto Mol"]
+    CANON["Canonicalización determinística"]
+    FEAT["Features: 45/nodo · 9/arista<br/>enlaces bidireccionales"]
+    DATA["Data(x, edge_index, edge_attr)"]
+
+    S --> RDKIT --> CANON --> FEAT --> DATA
 ```
 
 Cada enlace se duplica porque el grafo es **no dirigido**: si hay un enlace C-Cl, creamos aristas C→Cl y Cl→C.
@@ -137,10 +135,15 @@ Si divides las moléculas aleatoriamente en train/test, moléculas **muy similar
 
 El **scaffold** es el esqueleto molecular: la estructura de anillos y enlaces sin cadenas laterales. Moléculas con el mismo scaffold van siempre al mismo split.
 
-```
-Aspirina:       CC(=O)Oc1ccccc1C(=O)O    scaffold: c1ccccc1
-Fenol:          Oc1ccccc1                  scaffold: c1ccccc1
-Clorpirifos:    CCOP(=S)...c1cc(Cl)...    scaffold: c1ccccc1 (distinto)
+```mermaid
+flowchart LR
+    A["Aspirina<br/>scaffold: c1ccccc1"]
+    F["Fenol<br/>scaffold: c1ccccc1"]
+    C["Clorpirifos<br/>scaffold distinto"]
+    SPLIT["Mismo split<br/>train/val/test"]
+    A --> SPLIT
+    F --> SPLIT
+    C -.-> OTHER["Otro split"]
 ```
 
 Aspirina y fenol comparten scaffold → van al mismo split. Esto evalúa si el modelo puede predecir toxicidad de **familias moleculares que nunca vio** durante el entrenamiento.
@@ -175,18 +178,88 @@ mask = [True, True, False, False, True, False, False, False, False, False, False
 
 ### Propósito
 
-El corpus panameño es un conjunto **separado** de plaguicidas registrados en Panamá. NO se usa para entrenar el modelo — se usa para **evaluar** el modelo ya entrenado sobre moléculas de interés real.
+El corpus panameño es un conjunto **separado** de plaguicidas registrados en Panamá. NO se usa para entrenar el modelo — se usa para **evaluar** el modelo ya entrenado y para **validación externa** contra etiquetas GHS.
 
-### Fuentes de datos
+La lógica de descarga vive en `src/data/pubchem_api.py`; el orquestador es `scripts/fase5/build_panama_corpus.py` (Fase V).
 
-1. **PubChem Classification (HID 72)**: árbol jerárquico de plaguicidas con CIDs por familia
-2. **PubChem Compound**: SMILES canónicos verificados para cada CID
-3. **PubChem BioAssay**: datos primarios de los 12 ensayos Tox21 (para trazabilidad)
-4. **PubChem Hazard (GHS)**: etiquetas de peligro regulatorias (validación externa)
+```mermaid
+flowchart TB
+    subgraph F1["Fase I — Entrenamiento"]
+        T["Tox21 / DeepChem"]
+        G["graphs_train/val/test.pt"]
+        T --> G
+    end
+
+    subgraph F5["Fase V — Corpus Panamá"]
+        M["MIDA + HNID"]
+        CSV["pubchem_panama_cids.csv"]
+        GHS["pubchem_ghs_labels.csv"]
+        PT["panama_corpus.pt"]
+        M --> CSV --> PT
+        CSV --> GHS
+    end
+
+    G -.->|"modelo entrenado"| PT
+```
+
+### Fuentes de datos y endpoints
+
+| Paso | API PubChem | Archivo generado |
+|---|---|---|
+| CIDs por nombre MIDA | `PUG /compound/name/{nombre}/property/SMILES,...` | `data/raw/pubchem_panama_cids.csv` |
+| CIDs por familia | `PUG /classification/hnid/{hnid}/cids` | (mismo CSV) |
+| SMILES en lote | `PUG /compound/cid/{cids}/property/SMILES` | columna `SMILES_canonical` |
+| Etiquetas GHS | `PUG View /data/compound/{cid}` | `data/raw/pubchem_ghs_labels.csv` |
+| Grafos PyG | RDKit + `featurizer.py` | `data/processed/panama_corpus.pt` |
+
+### HNID vs HID
+
+El árbol de plaguicidas en el navegador usa `hid=72`, pero la API requiere **HNID** (p. ej. Organophosphates → `4400064`). Ver tabla completa en [fase5_panama.md](fase5_panama.md).
 
 ### Ingredientes activos del MIDA
 
-El MIDA (Ministerio de Desarrollo Agropecuario de Panamá) registra los plaguicidas autorizados. Nuestro corpus incluye 20 ingredientes activos prioritarios, como clorpirifos, atrazina, tebuconazol, cipermetrina, glifosato y paraquat.
+20 ingredientes prioritarios buscados por nombre: clorpirifos, malatión, atrazina, tebuconazol, glifosato, paraquat, etc. (`MIDA_ACTIVE_INGREDIENTS` en `pubchem_api.py`).
+
+### Robustez del cliente
+
+- Reintentos HTTP (`MAX_RETRIES=3`) con backoff
+- Guardado atómico de CSV (`.tmp` → rename)
+- Compatibilidad `SMILES` / `ConnectivitySMILES` / `CanonicalSMILES`
+- Rate limiting entre peticiones (0.35–0.5 s)
+
+### EDA
+
+`notebooks/00_pubchem_panama_eda.ipynb` — cobertura MIDA vs familias, calidad SMILES, scaffolds Murcko, grupos funcionales.
+
+---
+
+## 6. Integración con el visor web (`viz/`)
+
+El pipeline de datos de la Fase I es la base que consume el **GNN-Tox Viewer** (`viz/`): la aplicación FastAPI reutiliza el mismo featurizer, las mismas 12 tareas Tox21 y el corpus de plaguicidas panameños, pero orientado a exploración interactiva en lugar de entrenamiento.
+
+### Reutilización del featurizer
+
+Cuando el visor recibe un SMILES (formulario del dashboard o API `/api/predict`), llama a `src.data.featurizer.smiles_to_graph` a través de `viz/services/inference.py`. Esto garantiza que:
+
+- Los **45 features por nodo** y **9 por arista** son idénticos a los del entrenamiento
+- La **canonicalización RDKit** es la misma que en `prepare_tox21_graphs.py`
+- Los índices de átomos en las explicaciones XAI coinciden con los del grafo del modelo
+
+### Estructura 3D para el visor
+
+Además del grafo 2D, `viz/services/molecule.py` genera coordenadas 3D con RDKit (ETKDGv3 + optimización MMFF) y expone SDF/MOL block vía `/api/mol3d`. El frontend ([3Dmol.js](https://3dmol.csb.pitt.edu/)) renderiza la molécula en 3D; los colores XAI se aplican átomo a átomo usando los mismos índices que el featurizer.
+
+### Corpus pre-computado (`viz/data/*.json`)
+
+`scripts/fase4/build_viz_corpus.py` empaqueta 8 plaguicidas prioritarios (clorpirifos, atrazina, tebuconazol, etc.) en archivos JSON con:
+
+| Campo | Origen (Fase I) |
+|---|---|
+| `smiles`, `properties`, `atom_symbols` | RDKit (`molecular_properties`, canonicalización) |
+| `mol_block` | Estructura 3D (ETKDG + MMFF) |
+| `predictions`, `xai` | Generados en Fases III–IV (o simulados con `--demo`) |
+
+Modo **demo** (`make setup-viz`): genera JSON con predicciones simuladas para probar la UI sin modelo entrenado. Modo **completo** (`make setup-viz-full`): ejecuta inferencia real sobre el checkpoint GIN.
 
 ---
 
@@ -197,18 +270,26 @@ El MIDA (Ministerio de Desarrollo Agropecuario de Panamá) registra los plaguici
 | `src/data/featurizer.py` | Convierte SMILES → grafo PyG (45 features/nodo, 9 features/arista) |
 | `src/data/dataset.py` | Carga grafos .pt como Dataset iterable + define TASK_NAMES |
 | `src/data/splitter.py` | Scaffold split de Murcko (train/val/test sin filtración) |
-| `src/data/pubchem_api.py` | Cliente PubChem API para corpus panameño |
-| `scripts/prepare_tox21_graphs.py` | Descarga Tox21 via DeepChem → genera graphs_*.pt |
+| `src/data/pubchem_api.py` | Cliente PubChem (corpus panameño + GHS; ver Fase V) |
+| `scripts/fase1/prepare_tox21_graphs.py` | Descarga Tox21 via DeepChem → genera graphs_*.pt |
+| `scripts/fase5/build_panama_corpus.py` | Corpus panameño: PubChem → CSV + panama_corpus.pt |
+| `viz/services/molecule.py` | SMILES → 3D (SDF/MOL), propiedades fisicoquímicas |
+| `scripts/fase4/build_viz_corpus.py` | Empaqueta plaguicidas en `viz/data/*.json` |
 
 ## Ejecución
 
 ```bash
 # Paso 1: Generar grafos de entrenamiento desde Tox21
-python scripts/prepare_tox21_graphs.py
+python scripts/fase1/prepare_tox21_graphs.py
 
-# Paso 2: Construir corpus panameño desde PubChem
-python -c "from src.data.pubchem_api import build_full_panama_corpus; build_full_panama_corpus()"
+# Paso 2: Construir corpus panameño desde PubChem (Fase V)
+make build-panama-corpus
 
-# Paso 3: Análisis exploratorio (abrir en Jupyter)
+# Paso 3: Análisis exploratorio
 jupyter notebook notebooks/01_eda_tox21.ipynb
+jupyter notebook notebooks/00_pubchem_panama_eda.ipynb   # EDA corpus Panamá
+
+# Paso 4 (opcional): Corpus JSON para el visor web
+make setup-viz          # demo sin modelo
+make setup-viz-full       # con predicciones reales (requiere make train-gin)
 ```

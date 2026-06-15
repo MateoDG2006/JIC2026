@@ -10,9 +10,9 @@ Todos se evalúan sobre el mismo test set (scaffold split) para
 comparación justa con la GNN-GIN.
 
 Uso:
-  python scripts/train_baselines.py
-  python scripts/train_baselines.py -v                # modo verbose
-  python scripts/train_baselines.py --label-stats     # ver distribución
+  python scripts/fase2/train_baselines.py
+  python scripts/fase2/train_baselines.py -v                # modo verbose
+  python scripts/fase2/train_baselines.py --label-stats     # ver distribución
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ import argparse
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
