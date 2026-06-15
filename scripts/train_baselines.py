@@ -67,12 +67,9 @@ def print_multitask_label_stats(
 
 def load_tox21_smiles_labels() -> dict[str, tuple[list[str], np.ndarray, np.ndarray]]:
     """Descarga Tox21 via DeepChem y extrae SMILES, etiquetas y máscara."""
-    import deepchem as dc
+    from src.data.tox21_deepchem import load_tox21_raw_scaffold
 
-    _, splits, _ = dc.molnet.load_tox21(
-        featurizer=dc.feat.RawFeaturizer(),
-        splitter="scaffold",
-    )
+    _, splits, _ = load_tox21_raw_scaffold()
     train_ds, val_ds, test_ds = splits
     smiles_tr, y_tr, mask_tr = _extract_smiles_y_mask(train_ds)
     smiles_va, y_va, mask_va = _extract_smiles_y_mask(val_ds)

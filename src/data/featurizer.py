@@ -203,11 +203,13 @@ def smiles_to_graph(
 
     data = Data(x=x, edge_index=edge_index_t, edge_attr=edge_attr_t)
 
-    # Agregar etiquetas y máscara si se proporcionan
+    # Agregar etiquetas y máscara si se proporcionan.
+    # Forma (1, n_tasks): PyG concatena por grafo → (batch_size, n_tasks).
+    # Con forma (n_tasks,) el batch quedaría (batch_size * n_tasks,) y rompe la loss.
     if labels is not None:
-        y = torch.tensor(labels, dtype=torch.float)
+        y = torch.tensor(labels, dtype=torch.float).view(1, -1)
         y = torch.nan_to_num(y, nan=0.0)
         data.y = y
     if mask is not None:
-        data.mask = torch.tensor(mask, dtype=torch.bool)
+        data.mask = torch.tensor(mask, dtype=torch.bool).view(1, -1)
     return data

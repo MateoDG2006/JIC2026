@@ -64,25 +64,23 @@ def grad_cam_graph(
     # Instalar el hook en la ÚLTIMA capa GIN
     layer = model.gin_layers[-1]
 
-    # Guardar estado original y activar modo train para gradientes
-    # informativos (en eval, BatchNorm usa running stats que reducen
-    # la calidad de los gradientes)
+    # Eval mode: explicamos 1 molécula → batch grafo = 1. En train(),
+    # BatchNorm del clasificador falla con tensor (1, hidden_dim).
     was_training = model.training
-    model.train()
+    model.eval()
 
     h = layer.register_forward_hook(fwd_hook)
     try:
-        # Forward pass: obtener predicción y activaciones (grabadas por el hook)
         edge_attr = data.edge_attr if hasattr(data, "edge_attr") else None
-        logits = model(data.x, data.edge_index, batch, edge_attr=edge_attr)
-
-        # Backward pass: calcular gradientes de la predicción respecto a activaciones
-        model.zero_grad(set_to_none=True)
-        logits[0, task_index].backward()
+        with torch.enable_grad():
+            logits = model(data.x, data.edge_index, batch, edge_attr=edge_attr)
+            model.zero_grad(set_to_none=True)
+            logits[0, task_index].backward()
     finally:
-        # Siempre remover el hook y restaurar estado del modelo
         h.remove()
-        if not was_training:
+        if was_training:
+            model.train()
+        else:
             model.eval()
 
     # Obtener activaciones y sus gradientes

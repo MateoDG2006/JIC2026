@@ -25,6 +25,26 @@ def _get_cmap(name: str = "YlOrRd"):
         return cm.get_cmap(name)
 
 
+def normalize_importance(node_importance: np.ndarray) -> np.ndarray:
+    """Normaliza importancias a [0, 1] (misma lógica que el SVG)."""
+    imp = np.asarray(node_importance, dtype=np.float64)
+    return (imp - imp.min()) / (imp.max() - imp.min() + 1e-8)
+
+
+def importance_to_hex_colors(
+    node_importance: np.ndarray,
+    cmap_name: str = "YlOrRd",
+) -> list[str]:
+    """Convierte importancias a colores hex idénticos al SVG (matplotlib YlOrRd)."""
+    imp = normalize_importance(node_importance)
+    colormap = _get_cmap(cmap_name)
+    colors: list[str] = []
+    for i in range(len(imp)):
+        r, g, b = (float(x) for x in colormap(float(imp[i]))[:3])
+        colors.append(f"#{int(r * 255):02x}{int(g * 255):02x}{int(b * 255):02x}")
+    return colors
+
+
 def draw_molecule_with_importance(
     smiles: str,
     node_importance: np.ndarray,
@@ -65,7 +85,7 @@ def draw_molecule_with_importance(
         )
 
     # Normalizar importancias a [0, 1] para el colormap
-    imp = (imp - imp.min()) / (imp.max() - imp.min() + 1e-8)
+    imp = normalize_importance(imp)
 
     # Asignar color a cada átomo: amarillo (bajo) → rojo (alto)
     colormap = _get_cmap("YlOrRd")

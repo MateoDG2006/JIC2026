@@ -4,22 +4,23 @@
 model:
   node_feat_dim: 45      # dimensión de features por átomo (ver featurizer.py)
   edge_feat_dim: 9       # dimensión de features por enlace (usado por GINEConv)
-  hidden_dim: 128        # dimensión oculta de las capas GIN (probar también 256)
-  n_layers: 3            # número de capas GIN (probar 4 y 5)
+  hidden_dim: 256        # dimensión oculta de las capas GIN
+  n_layers: 5            # número de capas GIN
   n_tasks: 12            # número de tareas Tox21
   dropout: 0.3           # dropout entre capas
 
 training:
-  lr: 0.001                              # learning rate inicial
-  batch_size: 32                         # tamaño de batch
-  max_epochs: 250                        # máximo de épocas
+  lr: 0.0005                             # learning rate inicial
+  batch_size: 64                         # tamaño de batch
+  max_epochs: 300                        # máximo de épocas
   early_stopping_patience: 50            # épocas sin mejora antes de parar
   grad_clip_norm: 1.0                    # norma máxima para gradient clipping
   model_save_path: outputs/models/best_gin_model.pt
+  use_pos_weight: true                   # compensar desbalance de clases con pos_weight
 
 scheduler:
   factor: 0.5            # multiplicar LR por este factor al reducir
-  patience: 20           # épocas sin mejora antes de reducir LR
+  patience: 15           # épocas sin mejora antes de reducir LR
 
 evaluation:
   n_folds: 5             # número de folds para cross-validation

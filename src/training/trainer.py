@@ -22,8 +22,27 @@ import numpy as np
 import torch
 from torch_geometric.loader import DataLoader
 
+from src.data.dataset import N_TASKS
 from src.evaluation.cross_validation import evaluate_multitask_auc
 from src.training.loss import MaskedBCELoss
+
+
+def _batch_labels(
+    batch,
+    n_tasks: int = N_TASKS,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Devuelve y y mask con forma (batch_size, n_tasks).
+
+    Grafos antiguos guardaban y/mask como (n_tasks,); PyG los concatena
+    en (batch_size * n_tasks,) al hacer batch.
+    """
+    y = batch.y
+    m = batch.mask
+    if y.dim() == 1:
+        n = batch.num_graphs
+        y = y.view(n, n_tasks)
+        m = m.view(n, n_tasks)
+    return y, m
 
 
 def train_epoch(
@@ -49,12 +68,14 @@ def train_epoch(
     """
     model.train()
     total = 0.0
+    non_blocking = device.type == "cuda"
     for batch in loader:
-        batch = batch.to(device)
+        batch = batch.to(device, non_blocking=non_blocking)
         # Pasar edge_attr al modelo para que GINEConv use features de enlaces
         edge_attr = batch.edge_attr if hasattr(batch, "edge_attr") else None
         logits = model(batch.x, batch.edge_index, batch.batch, edge_attr=edge_attr)
-        loss = loss_fn(logits, batch.y, batch.mask)
+        y, mask = _batch_labels(batch)
+        loss = loss_fn(logits, y, mask)
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=grad_clip)
@@ -79,13 +100,15 @@ def evaluate(
     all_logits: list[torch.Tensor] = []
     all_y: list[torch.Tensor] = []
     all_m: list[torch.Tensor] = []
+    non_blocking = device.type == "cuda"
     for batch in loader:
-        batch = batch.to(device)
+        batch = batch.to(device, non_blocking=non_blocking)
         edge_attr = batch.edge_attr if hasattr(batch, "edge_attr") else None
         logits = model(batch.x, batch.edge_index, batch.batch, edge_attr=edge_attr)
+        y, mask = _batch_labels(batch)
         all_logits.append(logits.cpu())
-        all_y.append(batch.y.cpu())
-        all_m.append(batch.mask.cpu())
+        all_y.append(y.cpu())
+        all_m.append(mask.cpu())
     preds = torch.sigmoid(torch.cat(all_logits, dim=0)).numpy()
     labels = torch.cat(all_y, dim=0).numpy()
     masks = torch.cat(all_m, dim=0).numpy()
@@ -100,6 +123,7 @@ def train(
     device: torch.device,
     task_names: list[str] | None = None,
     use_wandb: bool = False,
+    pos_weight: torch.Tensor | None = None,
 ) -> float:
     """Loop completo de entrenamiento con early stopping.
 
@@ -111,6 +135,7 @@ def train(
         device: dispositivo (cuda/cpu)
         task_names: nombres de las 12 tareas para el reporte
         use_wandb: si True, loguea métricas a Weights & Biases
+        pos_weight: pesos por tarea para compensar desbalance de clases
 
     Returns:
         Mejor AUC-ROC de validación alcanzado
@@ -122,7 +147,8 @@ def train(
         factor=float(config["scheduler"]["factor"]),
         patience=int(config["scheduler"]["patience"]),
     )
-    loss_fn = MaskedBCELoss()
+    pw = pos_weight.to(device) if pos_weight is not None else None
+    loss_fn = MaskedBCELoss(pos_weight=pw)
     save_path = Path(config["training"]["model_save_path"])
     save_path.parent.mkdir(parents=True, exist_ok=True)
 

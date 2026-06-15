@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if compound %}{{ compound.name }} — {% endif %}GNN-Tox Viewer
+{% endblock %}
+
+{% block content %}
+<div id="molecule-app"
+     data-from-corpus="{{ 'true' if from_corpus else 'false' }}"
+     data-compound-id="{{ compound_id or '' }}"
+     data-smiles="{{ (compound.smiles if compound else smiles_input) or '' }}"
+     data-tasks='{{ task_names | tojson }}'
+     data-task-descriptions='{{ task_descriptions | tojson }}'>
+
+    <nav class="breadcrumb">
+        <a href="/">Corpus</a>
+        <span>/</span>
+        <span id="breadcrumb-name">{{ compound.name if compound else 'Análisis' }}</span>
+    </nav>
+
+    <header class="molecule-header">
+        <div>
+            <h1 id="compound-name">{{ compound.name if compound else 'Análisis de molécula' }}</h1>
+            {% if compound and compound.family %}
+            <span class="family-tag">{{ compound.family }}</span>
+            {% endif %}
+        </div>
+        <div id="risk-badge" class="risk-badge" hidden></div>
+    </header>
+
+    <p class="smiles-full" id="smiles-display">{{ (compound.smiles if compound else smiles_input) or '' }}</p>
+
+    <div id="loading" class="loading-overlay" hidden>
+        <div class="spinner"></div>
+        <p id="loading-msg">Cargando análisis…</p>
+    </div>
+
+    <div id="error-banner" class="error-banner" hidden></div>
+
+    <div
+        id="demo-banner"
+        class="demo-banner"
+        role="note"
+        {% if not (compound and compound.demo) %}hidden{% endif %}
+    >
+        <strong>Ejemplo de prueba.</strong>
+        Las predicciones Tox21 y las explicaciones XAI mostradas aquí son datos simulados
+        para demostrar la interfaz. No provienen del modelo GNN entrenado ni constituyen
+        predicciones verdaderas de toxicidad.
+    </div>
+
+    <div class="molecule-layout">
+        <!-- Panel izquierdo: visualización 3D + 2D -->
+        <div class="viz-panel card">
+            <div class="viz-toolbar">
+                <button type="button" class="btn btn-sm" id="btn-reset-view" title="Resetear vista">⟳ Vista</button>
+                <button type="button" class="btn btn-sm" id="btn-toggle-style" title="Alternar estilo">Estilo</button>
+                <span class="toolbar-label">Coloración XAI</span>
+            </div>
+            <div class="viewer-3d-wrap">
+                <div id="viewer-3d" class="viewer-3d"></div>
+                <div id="viewer-3d-status" class="viewer-3d-status" hidden></div>
+            </div>
+            <div id="viewer-2d" class="viewer-2d"></div>
+            <div class="color-legend">
+                <span>Baja importancia</span>
+                <div class="legend-gradient"></div>
+                <span>Alta importancia</span>
+            </div>
+        </div>
+
+        <!-- Panel derecho: predicciones + controles XAI -->
+        <div class="data-panel">
+            <section class="card" id="props-section" hidden>
+                <h2>Propiedades</h2>
+                <dl class="props-grid" id="props-grid"></dl>
+            </section>
+
+            <section class="card">
+                <h2>Predicciones Tox21</h2>
+                <p id="demo-predictions-note" class="demo-inline-note" hidden>
+                    Valores de demostración — no son predicciones reales del modelo.
+                </p>
+                <div id="predictions-chart" class="predictions-chart"></div>
+            </section>
+
+            <section class="card xai-controls">
+                <h2>Explicación XAI</h2>
+                <div class="control-row">
+                    <label for="task-select">Diana biológica</label>
+                    <select id="task-select">
+                        {% for t in task_names %}
+                        <option value="{{ t }}">{{ t }} — {{ task_descriptions.get(t, '') }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="control-row method-toggle">
+                    <span>Método</span>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm active" data-method="gradcam">Grad-CAM</button>
+                        <button type="button" class="btn btn-sm" data-method="gnnexplainer">GNNExplainer</button>
+                        <button type="button" class="btn btn-sm" data-method="compare">Comparar</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary" id="btn-run-xai">
+                    Generar explicación
+                </button>
+                <p class="hint" id="xai-hint">
+                    Grad-CAM: rápido (~1 s). GNNExplainer: preciso (~30 s).
+                </p>
+            </section>
+
+            <section class="card" id="atoms-section" hidden>
+                <h2>Importancia por átomo</h2>
+                <div class="atoms-table-wrap">
+                    <table class="atoms-table" id="atoms-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Átomo</th>
+                                <th id="col-gradcam">Grad-CAM</th>
+                                <th id="col-gnnexp" hidden>GNNExpl.</th>
+                                <th>Barra</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+{# Datos pre-computados del corpus (si existen) #}
+{% if compound %}
+<script id="corpus-data" type="application/json">{{ compound | tojson }}</script>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/3Dmol-cdn.js"></script>
+<script src="/static/js/viewer3d.js"></script>
+<script src="/static/js/molecule.js"></script>
+{% endblock %}

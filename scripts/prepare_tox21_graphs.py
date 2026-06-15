@@ -151,15 +151,11 @@ def _build_list(
 
 
 def main() -> None:
-    import deepchem as dc
-
     from src.data.splitter import save_split_indices
+    from src.data.tox21_deepchem import load_tox21_raw_scaffold
 
     print("Descargando Tox21 desde DeepChem...")
-    _tasks, splits, _ = dc.molnet.load_tox21(
-        featurizer=dc.feat.RawFeaturizer(),
-        splitter="scaffold",
-    )
+    _tasks, splits, _ = load_tox21_raw_scaffold()
     train_ds, val_ds, test_ds = splits
 
     proc = ROOT / "data" / "processed"

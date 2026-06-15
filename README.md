@@ -52,10 +52,9 @@ JIC2026/
 │   ├── prepare_tox21_graphs.py  # Descarga Tox21 → genera graphs_*.pt
 │   └── train_baselines.py       # Entrena RF + MLP + SMILES2vec
 │
-├── analytics/
-│   └── generate_eda.py          # Genera gráficos de análisis exploratorio
-│
-├── notebooks/                   # Jupyter notebooks (EDA, entrenamiento, XAI)
+├── notebooks/
+│   ├── 01_eda_tox21.ipynb       # EDA completo del dataset Tox21 (16 gráficos)
+│   └── 02_baselines_tox21.ipynb # Entrenamiento y evaluación de 3 baselines (10 gráficos)
 │
 ├── docs/
 │   ├── fase1_pipeline_datos.md  # Documentación del pipeline de datos
@@ -78,14 +77,43 @@ JIC2026/
 ### 1. Instalar dependencias
 
 ```bash
-# Crear entorno (Python 3.10 recomendado)
+# Crear entorno (Python 3.10–3.12; deepchem no soporta 3.13+)
 conda create -n toxgnn python=3.10
 conda activate toxgnn
 conda install -c conda-forge rdkit
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-pip install torch_geometric torch_scatter torch_sparse
-pip install deepchem wandb captum pandas scikit-learn matplotlib seaborn pytest
+
+# PyTorch con soporte GPU (CUDA 12.4)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+
+# PyTorch Geometric (ajusta la URL de torch si usas otra versión CUDA)
+pip install torch_geometric torch_scatter torch_sparse torch_cluster \
+  -f https://data.pyg.org/whl/torch-2.6.0+cu124.html
+
+pip install -r requirements.txt
 ```
+
+Alternativa con Makefile (venv local en `.venv/`):
+
+```bash
+make setup
+# PyTorch con GPU + extensiones PyG (torch-scatter acelera max_pool)
+.venv\Scripts\pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+make install-pyg-ext
+```
+
+Si ves el warning `torch-scatter package, but it was not found`, instala las extensiones:
+
+```bash
+make install-pyg-ext
+```
+
+Verificar que la GPU está disponible:
+
+```bash
+python -c "import torch; print('CUDA:', torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU')"
+```
+
+Si `CUDA: False`, PyTorch se instaló sin soporte GPU. Reinstala con el comando `cu124` de arriba (ajusta `cu124` a la versión de CUDA de tu driver NVIDIA; ver [pytorch.org/get-started/locally](https://pytorch.org/get-started/locally/)).
 
 ### 2. Preparar datos de entrenamiento
 
@@ -102,12 +130,11 @@ python scripts/train_baselines.py -v            # modo verbose
 python scripts/train_baselines.py --label-stats # ver distribución de clases
 ```
 
-### 4. Análisis exploratorio (opcional)
+### 4. Análisis exploratorio
 
-```bash
-python analytics/generate_eda.py
-```
-Genera gráficos en `outputs/eda/`: distribución de clases, NaN, tamaños, correlaciones.
+Abrir el notebook `notebooks/01_eda_tox21.ipynb` en Jupyter. Genera 16 gráficos en `outputs/eda/`:
+distribución de clases, patrones de NaN, co-ocurrencia de toxicidad, propiedades moleculares,
+scaffolds, calidad del split, Lipinski, etc.
 
 ### 5. Tests
 

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}GNN-Tox Viewer — Corpus{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Visor de Toxicidad Molecular</h1>
+    <p class="lead">Predicciones GNN-GIN + explicaciones XAI para plaguicidas agrícolas</p>
+</section>
+
+<section class="search-panel card">
+    <h2>Analizar SMILES</h2>
+    <form id="search-form" action="/analyze" method="get" class="search-form">
+        <input
+            type="text"
+            name="smiles"
+            id="smiles-input"
+            placeholder="Ej: CCOP(=S)(OCC)Oc1nc(Cl)c(Cl)cc1Cl (Clorpirifos)"
+            required
+            autocomplete="off"
+        />
+        <button type="submit" class="btn btn-primary">Analizar</button>
+    </form>
+    <p class="hint">Ingresa un SMILES canónico o busca en el corpus pre-computado abajo.</p>
+    <div id="model-status" class="status-banner" hidden></div>
+</section>
+
+{% if has_demo %}
+<div class="demo-banner" role="note">
+    <strong>Corpus de demostración.</strong>
+    Los compuestos marcados como <span class="demo-badge">Ejemplo de prueba</span> muestran
+    predicciones y explicaciones XAI simuladas. No son resultados del modelo entrenado ni
+    predicciones verdaderas.
+</div>
+{% endif %}
+
+<section class="filters card">
+    <div class="filter-row">
+        <label for="filter-risk">Riesgo</label>
+        <select id="filter-risk">
+            <option value="">Todos</option>
+            <option value="ALTO">Alto</option>
+            <option value="MODERADO">Moderado</option>
+            <option value="BAJO">Bajo</option>
+        </select>
+        <label for="filter-family">Familia</label>
+        <select id="filter-family">
+            <option value="">Todas</option>
+        </select>
+        <input type="search" id="filter-text" placeholder="Buscar por nombre..." />
+    </div>
+</section>
+
+<section class="corpus-section">
+    <h2>Corpus Panamá <span id="corpus-count" class="badge">{{ compounds|length }}</span></h2>
+    {% if compounds %}
+    <div class="corpus-grid" id="corpus-grid">
+        {% for c in compounds %}
+        <a
+            href="/molecule/{{ c.id }}"
+            class="corpus-card"
+            data-risk="{{ c.risk }}"
+            data-family="{{ c.family }}"
+            data-name="{{ c.name|lower }}"
+        >
+            <div class="card-header">
+                <h3>{{ c.name }}</h3>
+                <div class="card-badges">
+                    {% if c.demo %}
+                    <span class="demo-badge" title="Datos simulados para pruebas de la interfaz">Ejemplo de prueba</span>
+                    {% endif %}
+                    <span class="risk-badge risk-{{ c.risk|lower }}">{{ c.risk }}</span>
+                </div>
+            </div>
+            {% if c.family %}
+            <span class="family-tag">{{ c.family }}</span>
+            {% endif %}
+            <p class="smiles-preview" title="{{ c.smiles }}">{{ c.smiles[:50] }}{% if c.smiles|length > 50 %}…{% endif %}</p>
+            <div class="card-footer">
+                <span class="task-label">{{ c.top_task }}</span>
+                <span class="prob-value">{{ "%.0f"|format(c.top_prob * 100) }}%</span>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state card">
+        <p>No hay compuestos pre-computados en <code>viz/data/</code>.</p>
+        <p>Ejecuta: <code>python scripts/build_viz_corpus.py</code></p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

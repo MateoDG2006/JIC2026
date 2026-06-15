@@ -209,6 +209,6 @@ python scripts/prepare_tox21_graphs.py
 # Paso 2: Construir corpus panameño desde PubChem
 python -c "from src.data.pubchem_api import build_full_panama_corpus; build_full_panama_corpus()"
 
-# Paso 3: Análisis exploratorio
-python analytics/generate_eda.py
+# Paso 3: Análisis exploratorio (abrir en Jupyter)
+jupyter notebook notebooks/01_eda_tox21.ipynb
 ```
