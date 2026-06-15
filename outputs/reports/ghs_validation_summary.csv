@@ -1,0 +1,5 @@
+comparison,pred_column,ghs_column,spearman_rho,n_compounds,note
+Endocrino (NR-AR/ER) vs H360/H361,pred_endocrine,endocrine_risk,,235,sin variación en GHS
+Genotóxico (SR-p53/AtAD5) vs H340/H350,pred_genotox,genotoxic,,235,sin variación en GHS
+SR-ARE vs H300-H302,pred_oxidative,toxic_oral,,235,sin variación en GHS
+Toxicidad acuática vs H400-H412,pred_aquatic,aquatic_tox,,235,sin variación en GHS

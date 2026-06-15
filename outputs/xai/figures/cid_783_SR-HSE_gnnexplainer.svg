@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<svg version='1.1' baseProfile='full'
+              xmlns='http://www.w3.org/2000/svg'
+                      xmlns:rdkit='http://www.rdkit.org/xml'
+                      xmlns:xlink='http://www.w3.org/1999/xlink'
+                  xml:space='preserve'
+width='500px' height='400px' viewBox='0 0 500 400'>
+<!-- END OF HEADER -->
+<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='500.0' height='400.0' x='0.0' y='0.0'> </rect>
+<ellipse cx='250.0' cy='200.0' rx='127.4' ry='127.4' class='atom-0'  style='fill:#FFFFCC;fill-rule:evenodd;stroke:#FFFFCC;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='atom-0' d='M 225.0 185.8
+L 228.9 185.8
+L 228.9 197.9
+L 243.4 197.9
+L 243.4 185.8
+L 247.2 185.8
+L 247.2 214.2
+L 243.4 214.2
+L 243.4 201.1
+L 228.9 201.1
+L 228.9 214.2
+L 225.0 214.2
+L 225.0 185.8
+' fill='#000000'/>
+<path class='atom-0' d='M 252.8 185.8
+L 256.6 185.8
+L 256.6 197.9
+L 271.1 197.9
+L 271.1 185.8
+L 275.0 185.8
+L 275.0 214.2
+L 271.1 214.2
+L 271.1 201.1
+L 256.6 201.1
+L 256.6 214.2
+L 252.8 214.2
+L 252.8 185.8
+' fill='#000000'/>
+</svg>

@@ -1,0 +1,45 @@
+{
+  "compuesto": "CID_527",
+  "cid": 527,
+  "smiles": "CCC=O",
+  "predictions": {
+    "NR-AR": 0.0093,
+    "NR-AR-LBD": 0.0188,
+    "NR-AhR": 0.0314,
+    "NR-Aromatase": 0.3062,
+    "NR-ER": 0.2431,
+    "NR-ER-LBD": 0.023,
+    "NR-PPAR-gamma": 0.0232,
+    "SR-ARE": 0.1257,
+    "SR-AtAD5": 0.006,
+    "SR-HSE": 0.0363,
+    "SR-MMP": 0.0969,
+    "SR-p53": 0.0089
+  },
+  "tasks": {
+    "NR-Aromatase": {
+      "gnnexplainer_nodes": [
+        0.162,
+        0.112,
+        1.0,
+        0.0
+      ],
+      "gradcam_nodes": [
+        0.0,
+        0.422,
+        1.0,
+        0.4147
+      ],
+      "gnnexplainer_edges": [
+        0.0,
+        0.0397,
+        0.9992,
+        1.0,
+        0.0544,
+        0.0571
+      ],
+      "precision_at_3_gnn": 0,
+      "precision_at_3_gradcam": 0
+    }
+  }
+}

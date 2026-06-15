@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<svg version='1.1' baseProfile='full'
+              xmlns='http://www.w3.org/2000/svg'
+                      xmlns:rdkit='http://www.rdkit.org/xml'
+                      xmlns:xlink='http://www.w3.org/1999/xlink'
+                  xml:space='preserve'
+width='500px' height='400px' viewBox='0 0 500 400'>
+<!-- END OF HEADER -->
+<rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='500.0' height='400.0' x='0.0' y='0.0'> </rect>
+<ellipse cx='68.0' cy='246.6' rx='43.0' ry='43.0' class='atom-0'  style='fill:#FEBB56;fill-rule:evenodd;stroke:#FEBB56;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='254.0' cy='139.2' rx='43.0' ry='43.0' class='atom-1'  style='fill:#800026;fill-rule:evenodd;stroke:#800026;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='432.0' cy='260.8' rx='43.0' ry='43.0' class='atom-2'  style='fill:#FFFFCC;fill-rule:evenodd;stroke:#FFFFCC;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-0 atom-0 atom-1' d='M 68.0,246.6 L 254.0,139.2' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-1 atom-1 atom-2' d='M 254.0,139.2 L 420.0,235.0' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path class='bond-1 atom-1 atom-2' d='M 254.0,176.4 L 403.9,262.9' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<path d='M 244.7,144.6 L 254.0,139.2 L 262.3,144.0' style='fill:none;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-opacity:1;' />
+<path class='atom-2' d='M 419.0 260.7
+Q 419.0 253.9, 422.4 250.1
+Q 425.8 246.3, 432.0 246.3
+Q 438.3 246.3, 441.7 250.1
+Q 445.0 253.9, 445.0 260.7
+Q 445.0 267.5, 441.6 271.5
+Q 438.2 275.3, 432.0 275.3
+Q 425.8 275.3, 422.4 271.5
+Q 419.0 267.6, 419.0 260.7
+M 432.0 272.1
+Q 436.4 272.1, 438.7 269.3
+Q 441.0 266.3, 441.0 260.7
+Q 441.0 255.1, 438.7 252.3
+Q 436.4 249.5, 432.0 249.5
+Q 427.7 249.5, 425.4 252.3
+Q 423.0 255.1, 423.0 260.7
+Q 423.0 266.4, 425.4 269.3
+Q 427.7 272.1, 432.0 272.1
+' fill='#000000'/>
+</svg>

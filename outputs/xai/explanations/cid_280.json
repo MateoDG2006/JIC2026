@@ -1,0 +1,41 @@
+{
+  "compuesto": "CID_280",
+  "cid": 280,
+  "smiles": "O=C=O",
+  "predictions": {
+    "NR-AR": 0.0008,
+    "NR-AR-LBD": 0.0076,
+    "NR-AhR": 0.0246,
+    "NR-Aromatase": 0.109,
+    "NR-ER": 0.1314,
+    "NR-ER-LBD": 0.007,
+    "NR-PPAR-gamma": 0.0021,
+    "SR-ARE": 0.3142,
+    "SR-AtAD5": 0.0066,
+    "SR-HSE": 0.0592,
+    "SR-MMP": 0.094,
+    "SR-p53": 0.0398
+  },
+  "tasks": {
+    "SR-ARE": {
+      "gnnexplainer_nodes": [
+        1.0,
+        0.0,
+        0.6513
+      ],
+      "gradcam_nodes": [
+        1.0,
+        0.3834,
+        0.0
+      ],
+      "gnnexplainer_edges": [
+        0.9942,
+        1.0,
+        0.0,
+        0.9935
+      ],
+      "precision_at_3_gnn": 0,
+      "precision_at_3_gradcam": 0
+    }
+  }
+}

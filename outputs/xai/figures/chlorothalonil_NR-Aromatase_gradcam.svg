@@ -8,18 +8,18 @@ width='500px' height='400px' viewBox='0 0 500 400'>
 <!-- END OF HEADER -->
 <rect style='opacity:1.0;fill:#FFFFFF;stroke:none' width='500.0' height='400.0' x='0.0' y='0.0'> </rect>
 <ellipse cx='41.1' cy='320.5' rx='16.1' ry='16.1' class='atom-0'  style='fill:#800026;fill-rule:evenodd;stroke:#800026;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
-<ellipse cx='110.7' cy='280.3' rx='16.1' ry='16.1' class='atom-1'  style='fill:#FDAA48;fill-rule:evenodd;stroke:#FDAA48;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
-<ellipse cx='180.4' cy='240.1' rx='16.1' ry='16.1' class='atom-2'  style='fill:#FEDA79;fill-rule:evenodd;stroke:#FEDA79;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='110.7' cy='280.3' rx='16.1' ry='16.1' class='atom-1'  style='fill:#FDA948;fill-rule:evenodd;stroke:#FDA948;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='180.4' cy='240.1' rx='16.1' ry='16.1' class='atom-2'  style='fill:#FEC35F;fill-rule:evenodd;stroke:#FEC35F;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='180.4' cy='159.6' rx='16.1' ry='16.1' class='atom-3'  style='fill:#FFFFCC;fill-rule:evenodd;stroke:#FFFFCC;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='100.8' cy='119.6' rx='16.1' ry='17.5' class='atom-4'  style='fill:#FFFFCC;fill-rule:evenodd;stroke:#FFFFCC;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='250.0' cy='119.4' rx='16.1' ry='16.1' class='atom-5'  style='fill:#FFFFCC;fill-rule:evenodd;stroke:#FFFFCC;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
-<ellipse cx='252.6' cy='39.2' rx='16.1' ry='17.5' class='atom-6'  style='fill:#FFF3AF;fill-rule:evenodd;stroke:#FFF3AF;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='252.6' cy='39.2' rx='16.1' ry='17.5' class='atom-6'  style='fill:#FFF0A9;fill-rule:evenodd;stroke:#FFF0A9;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='319.6' cy='159.6' rx='16.1' ry='16.1' class='atom-7'  style='fill:#FFFFCC;fill-rule:evenodd;stroke:#FFFFCC;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='391.9' cy='119.6' rx='16.1' ry='17.5' class='atom-8'  style='fill:#FFFFCC;fill-rule:evenodd;stroke:#FFFFCC;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
-<ellipse cx='319.6' cy='240.1' rx='16.1' ry='16.1' class='atom-9'  style='fill:#F33C25;fill-rule:evenodd;stroke:#F33C25;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='319.6' cy='240.1' rx='16.1' ry='16.1' class='atom-9'  style='fill:#F64126;fill-rule:evenodd;stroke:#F64126;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='389.3' cy='280.3' rx='16.1' ry='16.1' class='atom-10'  style='fill:#FFFFCC;fill-rule:evenodd;stroke:#FFFFCC;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='458.9' cy='320.5' rx='16.1' ry='16.1' class='atom-11'  style='fill:#FFFFCC;fill-rule:evenodd;stroke:#FFFFCC;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
-<ellipse cx='250.0' cy='280.3' rx='16.1' ry='16.1' class='atom-12'  style='fill:#FC7A36;fill-rule:evenodd;stroke:#FC7A36;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
+<ellipse cx='250.0' cy='280.3' rx='16.1' ry='16.1' class='atom-12'  style='fill:#FC6630;fill-rule:evenodd;stroke:#FC6630;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <ellipse cx='252.6' cy='360.8' rx='16.1' ry='17.5' class='atom-13'  style='fill:#FFFFCC;fill-rule:evenodd;stroke:#FFFFCC;stroke-width:1.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <path class='bond-0 atom-0 atom-1' d='M 52.4,314.0 L 110.7,280.3' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />
 <path class='bond-0 atom-0 atom-1' d='M 46.3,303.5 L 104.7,269.8' style='fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1' />

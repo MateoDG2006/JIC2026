@@ -1,0 +1,49 @@
+{
+  "compuesto": "CID_263",
+  "cid": 263,
+  "smiles": "CCCCO",
+  "predictions": {
+    "NR-AR": 0.0262,
+    "NR-AR-LBD": 0.0147,
+    "NR-AhR": 0.0052,
+    "NR-Aromatase": 0.0064,
+    "NR-ER": 0.2178,
+    "NR-ER-LBD": 0.0089,
+    "NR-PPAR-gamma": 0.0013,
+    "SR-ARE": 0.0735,
+    "SR-AtAD5": 0.0002,
+    "SR-HSE": 0.0177,
+    "SR-MMP": 0.0186,
+    "SR-p53": 0.0007
+  },
+  "tasks": {
+    "NR-ER": {
+      "gnnexplainer_nodes": [
+        0.0,
+        0.2049,
+        0.1536,
+        1.0,
+        0.4209
+      ],
+      "gradcam_nodes": [
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.9934
+      ],
+      "gnnexplainer_edges": [
+        0.0451,
+        1.0,
+        0.0,
+        0.0284,
+        0.9626,
+        0.971,
+        0.022,
+        0.9743
+      ],
+      "precision_at_3_gnn": 0,
+      "precision_at_3_gradcam": 0
+    }
+  }
+}
