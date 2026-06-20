@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Toxicidad GNN — Panamá{% endblock %}
+
+{% block head %}
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Perfil de toxicidad GNN-GIN</h1>
+    <p class="lead">12 vías Tox21 para plaguicidas del corpus panameño + explicaciones XAI</p>
+</section>
+
+<section class="card analytics-controls">
+    <div class="filter-row">
+        <label for="tx-family">Familia</label>
+        <select id="tx-family">
+            <option value="ALL">Todas</option>
+            {% for f in families %}<option value="{{ f }}">{{ f }}</option>{% endfor %}
+        </select>
+        <label for="tx-alerta">Alerta</label>
+        <select id="tx-alerta">
+            <option value="ALL">Todas</option>
+            {% for a in alerts %}<option value="{{ a }}">{{ a }}</option>{% endfor %}
+        </select>
+        <label for="tx-compound">Compuesto (XAI)</label>
+        <select id="tx-compound"></select>
+        <label for="tx-method">Método XAI</label>
+        <select id="tx-method">
+            <option value="gnnexplainer">GNNExplainer</option>
+            <option value="gradcam">Grad-CAM</option>
+        </select>
+    </div>
+</section>
+
+<div id="loading-overlay" class="loading-overlay" hidden>
+    <div class="spinner"></div>
+    <p>Cargando perfil de toxicidad…</p>
+</div>
+
+<div class="analytics-split">
+    <section class="card chart-panel-wide">
+        <div id="chart-heatmap"></div>
+    </section>
+    <section class="card">
+        <h2>Explicación XAI</h2>
+        <div id="xai-meta" class="hint"></div>
+        <div id="xai-image" class="xai-viewer"></div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/analytics_toxicity.js"></script>
+{% endblock %}

@@ -1,27 +1,37 @@
-"""Configuracion central del servidor de visualizacion."""
+"""Configuracion central del visor GNN + analytics (FastAPI)."""
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
+from typing import Any
 
-# Raiz del proyecto (un nivel arriba de viz/)
+import yaml
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
-# Agregar src/ al path para importar modulos del modelo
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# Rutas de datos y modelos
+CONFIG_PATH = PROJECT_ROOT / "config" / "config.yaml"
 DATA_DIR = PROJECT_ROOT / "data" / "processed"
 MODEL_PATH = PROJECT_ROOT / "outputs" / "models" / "best_gin_model.pt"
-CONFIG_PATH = PROJECT_ROOT / "config" / "config.yaml"
 CORPUS_DIR = Path(__file__).resolve().parent / "data"
-
-# Templates y estaticos
 TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 
+# Analytics — artefactos derivados y fuentes canonicas
+ARTIFACTS_DIR = PROJECT_ROOT / "outputs" / "dashboard"
+BUNDLE_DIR = ARTIFACTS_DIR / "bundle"
+CHEMBL_CSV = DATA_DIR / "chembl_clean.csv"
+CHEMBL_MODELS_DIR = PROJECT_ROOT / "outputs" / "chembl" / "models"
+CHEMBL_METRICS = PROJECT_ROOT / "outputs" / "chembl" / "results" / "metrics_summary.csv"
+TOXICITY_PROFILE_CSV = PROJECT_ROOT / "outputs" / "reports" / "panama_pesticides_profile.csv"
+GEOJSON_PATH = DATA_DIR / "panama_distritos_merged.geojson"
+XAI_FIGURES_DIR = PROJECT_ROOT / "outputs" / "xai" / "figures"
+
+# Orden canonico Tox21 — sin importar torch_geometric (AUDIT P5)
 TASK_NAMES: list[str] = [
     "NR-AR", "NR-AR-LBD", "NR-AhR", "NR-Aromatase",
     "NR-ER", "NR-ER-LBD", "NR-PPAR-gamma",
@@ -42,3 +52,75 @@ TASK_DESCRIPTIONS: dict[str, str] = {
     "SR-MMP": "Membrana mitocondrial",
     "SR-p53": "Vía p53 (genotoxicidad)",
 }
+
+MAP_VARIABLES: dict[str, str] = {
+    "poblacion": "Población estimada",
+    "superficie_agricola_ha": "Superficie agrícola (ha)",
+    "indice_pobreza": "Índice de pobreza",
+    "area_km2": "Área (km²)",
+}
+
+NUMERIC_COLS = [
+    "pchembl_value", "mw_freebase", "alogp", "psa", "hba", "hbd",
+    "aromatic_rings", "rtb", "num_ro5_violations", "standard_value",
+]
+
+FEATURE_LABELS: dict[str, str] = {
+    "mw_freebase": "Peso molecular (MW)",
+    "alogp": "LogP",
+    "psa": "PSA",
+    "hba": "HBA",
+    "hbd": "HBD",
+    "aromatic_rings": "Anillos aromáticos",
+    "rtb": "Enlaces rotables",
+    "num_ro5_violations": "Violaciones Lipinski",
+}
+
+PREDICTOR_NOTE = (
+    "Solo se editan descriptores moleculares (8 features). "
+    "Las features de ensayo/diana se completan con valores por defecto del perfil más frecuente."
+)
+
+
+def _load_yaml() -> dict[str, Any]:
+    if not CONFIG_PATH.is_file():
+        return {}
+    with CONFIG_PATH.open(encoding="utf-8") as f:
+        return yaml.safe_load(f) or {}
+
+
+def _viz_cfg() -> dict[str, Any]:
+    return _load_yaml().get("viz", {})
+
+
+def use_bundle() -> bool:
+    env = os.environ.get("DASHBOARD_BUNDLE", "").lower()
+    if env in ("1", "true", "yes"):
+        return True
+    if env in ("0", "false", "no"):
+        return False
+    return not CHEMBL_CSV.is_file() and (BUNDLE_DIR / "chembl_clean.csv").is_file()
+
+
+def resolve_path(canonical: Path, bundle_name: str) -> Path:
+    if use_bundle():
+        bundle_path = BUNDLE_DIR / bundle_name
+        if bundle_path.is_file():
+            return bundle_path
+    return canonical
+
+
+def resolve_dir(canonical: Path, bundle_subdir: str) -> Path:
+    if use_bundle():
+        bundle_path = BUNDLE_DIR / bundle_subdir
+        if bundle_path.is_dir():
+            return bundle_path
+    return canonical
+
+
+def viz_host() -> str:
+    return os.environ.get("VIZ_HOST") or _viz_cfg().get("host", "127.0.0.1")
+
+
+def viz_port() -> int:
+    return int(os.environ.get("VIZ_PORT") or _viz_cfg().get("port", 8000))

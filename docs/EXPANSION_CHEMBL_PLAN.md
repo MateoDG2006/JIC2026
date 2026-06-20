@@ -12,7 +12,23 @@ El repositorio JIC2026 tiene un pipeline completo de GNN + XAI para predicción 
 - **Dashboard FastAPI** con visualización 3D de moléculas
 - **179 explicaciones XAI** generadas (GNNExplainer + Grad-CAM)
 
-### Requisitos del curso no cubiertos
+### Requisitos del curso — estado de implementación (Jun 2026)
+
+| Requisito | Estado |
+|-----------|--------|
+| Medidas de tendencia central, distribuciones, Missingno, UpSetPlot | ✅ Flujo B |
+| Imputación (>250 NaN → eliminar) | ✅ Flujo B |
+| Correlación Pearson + Spearman | ✅ Flujo B |
+| Clasificación RF + SVM, Accuracy, Confusion Matrix | ✅ Flujo B |
+| Regresión SVR + RF, R² train/test | ✅ Flujo B |
+| Dashboard Dash-Plotly (≥4 gráficas, ≥2 controladores) | ✅ Flujo C — `dashboard/` |
+| Predictor de regresión interactivo | ✅ Flujo C — Tab Modelos |
+| Mapa interactivo Panamá (GeoPandas + INEC) | ✅ Flujo D — integrado en Flujo C Tab Mapa |
+| Despliegue web (Render) | ✅ Config lista — `dashboard/render.yaml` |
+| Artículo IEEE (max 7 páginas) | ⏳ Flujo E pendiente |
+| Video explicativo (max 7 min) | ⏳ Pendiente |
+
+### Requisitos del curso no cubiertos (detalle histórico)
 
 El proyecto final de "Análisis de Datos y Toma de Decisiones" requiere un enfoque de **ciencia de datos clásica** que el repo actual no cumple:
 
@@ -79,7 +95,7 @@ Unificar en DataFrame tabular
 data/raw/chembl_panama_bioactivity.csv
 ```
 
-**Script:** `scripts/analisis_datos/01_download_chembl.py`
+**Script:** `scripts/analisis_proyecto/01_download_chembl.py`
 
 ```python
 # Pseudocódigo del flujo
@@ -410,7 +426,7 @@ pip install missingno upsetplot
 
 ```
 JIC2026/
-├── scripts/analisis_datos/
+├── scripts/analisis_proyecto/
 │   ├── 01_download_chembl.py          # Descarga datos ChEMBL
 │   ├── 02_download_geodata.py         # Descarga geodatos Panamá
 │   └── 03_prepare_dashboard_data.py   # Prepara datos para dashboard

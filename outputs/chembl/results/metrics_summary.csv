@@ -1,0 +1,11 @@
+modelo,tarea,split,feature_set,accuracy_test,auc_test,r2_test
+RandomForest,clasificacion,filas,descriptores,0.7562277580071174,,
+RandomForest,clasificacion,compuesto,descriptores,0.4473684210526316,,
+RandomForest,regresion,filas,descriptores,,,0.3990048029313873
+SVR_RBF,regresion,filas,descriptores,,,0.3550746704454141
+RandomForest,regresion,compuesto,descriptores,,,-0.4830411197789801
+SVR_RBF,regresion,compuesto,descriptores,,,-0.7757048767731054
+RandomForest,regresion,filas,descriptores+ensayo,,,0.5681685798097003
+SVR_RBF,regresion,filas,descriptores+ensayo,,,0.4645175600263618
+RandomForest,regresion,compuesto,descriptores+ensayo,,,0.040958267611215016
+SVR_RBF,regresion,compuesto,descriptores+ensayo,,,-0.23943762169567107

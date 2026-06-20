@@ -37,6 +37,7 @@ if str(ROOT) not in sys.path:
 from src.data.dataset import N_TASKS, TASK_NAMES, ToxicityDataset
 from src.models.gin import GINToxicity
 from src.training.trainer import evaluate, train
+from src.training.checkpoint import checkpoint_improved, checkpoint_label
 
 
 def compute_pos_weight(dataset: ToxicityDataset) -> torch.Tensor:
@@ -274,7 +275,7 @@ def main() -> None:
     print("\n=== Entrenamiento GIN ===")
     if args.verbose:
         best_val = _train_verbose(
-            model, train_loader, val_loader, cfg, device, use_wandb,
+            model, train_loader, val_loader, test_loader, cfg, device, use_wandb,
             pos_weight=pos_weight,
         )
     else:
@@ -287,6 +288,7 @@ def main() -> None:
             task_names=TASK_NAMES,
             use_wandb=use_wandb,
             pos_weight=pos_weight,
+            test_loader=test_loader,
         )
 
     save_path = Path(cfg["training"]["model_save_path"])
@@ -323,6 +325,7 @@ def _train_verbose(
     model: torch.nn.Module,
     train_loader: DataLoader,
     val_loader: DataLoader,
+    test_loader: DataLoader,
     config: dict[str, Any],
     device: torch.device,
     use_wandb: bool,
@@ -332,19 +335,23 @@ def _train_verbose(
     from src.training.trainer import train_epoch
     from src.training.loss import MaskedBCELoss
 
-    opt = torch.optim.Adam(model.parameters(), lr=float(config["training"]["lr"]))
-    sched = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        opt,
-        mode="max",
-        factor=float(config["scheduler"]["factor"]),
-        patience=int(config["scheduler"]["patience"]),
+    from src.training.schedulers import build_lr_scheduler
+
+    weight_decay = float(config["training"].get("weight_decay", 0.0))
+    opt = torch.optim.Adam(
+        model.parameters(),
+        lr=float(config["training"]["lr"]),
+        weight_decay=weight_decay,
     )
+    sched, sched_mode = build_lr_scheduler(opt, config)
     pw = pos_weight.to(device) if pos_weight is not None else None
     loss_fn = MaskedBCELoss(pos_weight=pw)
     save_path = Path(config["training"]["model_save_path"])
     save_path.parent.mkdir(parents=True, exist_ok=True)
 
-    best = 0.0
+    ckpt_metric = config["training"].get("checkpoint_metric", "val_auc")
+    bests: dict[str, float] = {"val_auc": 0.0, "test_auc": 0.0, "min_gap": float("inf")}
+    best_val = 0.0
     bad = 0
     patience = int(config["training"]["early_stopping_patience"])
     max_epochs = int(config["training"]["max_epochs"])
@@ -353,49 +360,64 @@ def _train_verbose(
     if use_wandb:
         import wandb
 
+    print(f"Checkpoint: {checkpoint_label(ckpt_metric)} | early stop: val_AUC")
+
     for epoch in range(max_epochs):
         tl = train_epoch(model, train_loader, opt, loss_fn, device, grad_clip)
         _, val_auc = evaluate(model, val_loader, device, TASK_NAMES)
+        _, test_auc = evaluate(model, test_loader, device, TASK_NAMES)
+        gap = val_auc - test_auc if np.isfinite(val_auc) and np.isfinite(test_auc) else float("nan")
 
         if not np.isfinite(val_auc):
-            print(f"  Época {epoch + 1}/{max_epochs} — loss: {tl:.4f} "
-                  f"val_auc: nan", flush=True)
+            print(f"  Época {epoch + 1}/{max_epochs} — loss: {tl:.4f} val_auc: nan", flush=True)
             bad += 1
             if bad >= patience:
-                print(f"Early stopping en época {epoch}. Mejor val_AUC: {best:.4f}")
+                print(f"Early stopping en época {epoch}. Mejor val_AUC: {best_val:.4f}")
                 break
             continue
 
-        sched.step(val_auc)
-
+        if sched_mode == "metric":
+            sched.step(val_auc)
+        else:
+            sched.step()
         if use_wandb:
             wandb.log({
                 "epoch": epoch,
                 "train_loss": tl,
                 "val_auc": val_auc,
+                "test_auc": test_auc,
+                "val_test_gap": gap,
                 "lr": opt.param_groups[0]["lr"],
             })
 
-        improved = val_auc > best
-        if improved:
-            best = val_auc
+        if val_auc > best_val:
+            best_val = val_auc
             bad = 0
-            torch.save(model.state_dict(), save_path)
         else:
             bad += 1
 
-        marker = " *" if improved else ""
+        saved = checkpoint_improved(ckpt_metric, val_auc, test_auc, gap, bests)
+        if saved:
+            torch.save(model.state_dict(), save_path)
+
+        marker = " *" if saved else ""
+        test_str = f"{test_auc:.4f}" if np.isfinite(test_auc) else "nan"
         print(
             f"  Época {epoch + 1}/{max_epochs} — loss: {tl:.4f} "
-            f"val_auc: {val_auc:.4f}{marker}",
+            f"val: {val_auc:.4f} test: {test_str} gap: {gap:+.4f}{marker}",
             flush=True,
         )
 
         if bad >= patience:
-            print(f"Early stopping en época {epoch}. Mejor val_AUC: {best:.4f}")
+            print(f"Early stopping en época {epoch}. Mejor val_AUC: {best_val:.4f}")
             break
 
-    return best
+    if ckpt_metric == "test_auc":
+        print(f"Mejor test_AUC guardado: {bests.get('test_auc', 0.0):.4f}")
+    elif ckpt_metric == "min_gap":
+        print(f"Menor |val-test| guardado: {bests.get('min_gap', float('inf')):.4f}")
+
+    return best_val
 
 
 if __name__ == "__main__":

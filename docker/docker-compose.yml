@@ -1,0 +1,23 @@
+services:
+  chembl-init:
+    build: ./chembl-init
+    volumes:
+      - ../data/external/chembl:/data/chembl
+    environment:
+      CHEMBL_VERSION: "37"
+    profiles: ["setup"]
+
+  toxgnn:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ../data/external/chembl:/data/chembl:ro
+      - ../data:/app/data
+      - ../outputs:/app/outputs
+      - ../notebooks:/app/notebooks
+    environment:
+      CHEMBL_BACKEND: sqlite
+      CHEMBL_DB_PATH: /data/chembl/chembl_37.db
+      CHEMBL_VERSION: "37"
+    working_dir: /app

@@ -61,6 +61,9 @@ train-baselines-verbose:
 train-gin:
 	"$(VENV_PYTHON)" scripts/fase3/train_gin.py --config $(CONFIG)
 
+train-gin-cv:
+	"$(VENV_PYTHON)" scripts/fase3/run_gin_cv.py --config $(CONFIG)
+
 train-gin-verbose:
 	"$(VENV_PYTHON)" scripts/fase3/train_gin.py --config $(CONFIG) -v
 
@@ -113,6 +116,7 @@ install-viz:
 viz-check:
 	"$(VENV_PYTHON)" scripts/fase4/viz_serve.py --check-only
 
+# Visor unificado: GNN 3D + analytics ChEMBL/Panamá (solo FastAPI)
 viz: viz-check
 	"$(VENV_PYTHON)" scripts/fase4/viz_serve.py --host $(VIZ_HOST) --port $(VIZ_PORT) --reload
 
@@ -164,4 +168,70 @@ panama-predict: build-panama-corpus explain-panama
 # Pipeline Fase V completo
 panama-all: build-panama-corpus explain-panama validate-ghs generate-panama-report
 
-.PHONY: setup install-pyg-ext clean prepare-graphs powershell-extract-data-from-tox21 wsl-extract-data-from-tox21 eda baselines train-baselines train-baselines-verbose train-gin train-gin-verbose train-gin-wandb train-gin-all train-gin-all-verbose check-gin-gpu train-gin-notebook build-viz-corpus build-viz-corpus-demo setup-viz setup-viz-full xai-all xai-demo install-viz viz-check viz viz-serve viz-lan viz-prod build-panama-corpus build-panama-corpus-fast build-panama-corpus-graphs explain-panama validate-ghs generate-panama-report panama-predict panama-all panama-notebook
+# ── ChEMBL local — Flujo A (análisis de datos, corpus MIDA) ───────────────
+# Requisito setup: ~5 GB descarga + ~15 GB en data/external/chembl/chembl_37.db
+#   make setup-chembl          → descarga ChEMBLdb vía Docker (una vez)
+#   make test-chembl           → verifica BD + query de prueba
+#   make chembl-extract        → genera CSV en data/raw/
+#   make chembl-all            → setup + extracción completa
+
+CHEMBL_COMPOSE := docker compose -f docker/docker-compose.yml
+CHEMBL_DB := data/external/chembl/chembl_37.db
+CHEMBL_NOTEBOOK := notebooks/proyecto analisis de datos/00_chembl_extraccion.ipynb
+
+chembl-docker-build:
+	$(CHEMBL_COMPOSE) build chembl-init
+
+chembl-docker-build-app:
+	$(CHEMBL_COMPOSE) build toxgnn
+
+setup-chembl: chembl-docker-build
+	$(CHEMBL_COMPOSE) --profile setup run --rm chembl-init
+
+test-chembl:
+	"$(VENV_PYTHON)" scripts/analisis_proyecto/verify_chembl_db.py
+
+chembl-extract: test-chembl
+	"$(VENV_PYTHON)" scripts/analisis_proyecto/extract_chembl_local.py --config $(CONFIG)
+
+chembl-extract-api:
+	"$(VENV_PYTHON)" scripts/analisis_proyecto/extract_chembl_local.py --config $(CONFIG) --backend api
+
+chembl-extract-docker: chembl-docker-build-app test-chembl
+	$(CHEMBL_COMPOSE) run --rm toxgnn
+
+chembl-notebook: test-chembl
+	"$(VENV_PYTHON)" -m jupyter nbconvert --execute --to notebook --inplace "$(CHEMBL_NOTEBOOK)"
+
+test-chembl-flow-b:
+	"$(VENV_PYTHON)" scripts/analisis_proyecto/verify_flow_b.py
+
+chembl-all: setup-chembl chembl-extract
+
+# ── Geodatos Panamá (Flujo D) ───────────────────────────────────────────────
+download-geodata:
+	"$(VENV_PYTHON)" scripts/analisis_proyecto/02_download_geodata.py
+
+# ── Analytics integrado en viz/ (FastAPI + Plotly.js) ───────────────────────
+prepare-dashboard:
+	"$(VENV_PYTHON)" scripts/fase5/prepare_dashboard.py
+
+prepare-dashboard-bundle:
+	"$(VENV_PYTHON)" scripts/fase5/prepare_dashboard.py --bundle
+
+test-viz-analytics:
+	"$(VENV_PYTHON)" scripts/fase5/test_dashboard.py
+
+# Alias de compatibilidad
+test-dashboard: test-viz-analytics
+dashboard-serve: viz
+dashboard-all: viz-analytics-all
+dashboard-jic: viz-jic
+
+# Pipeline completo analytics
+viz-analytics-all: download-geodata prepare-dashboard test-viz-analytics
+
+# Pipeline JIC: predicciones GNN + artefactos analytics
+viz-jic: panama-predict prepare-dashboard test-viz-analytics
+
+.PHONY: setup install-pyg-ext clean prepare-graphs powershell-extract-data-from-tox21 wsl-extract-data-from-tox21 eda baselines train-baselines train-baselines-verbose train-gin train-gin-cv train-gin-verbose train-gin-wandb train-gin-all train-gin-all-verbose check-gin-gpu train-gin-notebook build-viz-corpus build-viz-corpus-demo setup-viz setup-viz-full xai-all xai-demo install-viz viz-check viz viz-serve viz-lan viz-prod build-panama-corpus build-panama-corpus-fast build-panama-corpus-graphs explain-panama validate-ghs generate-panama-report panama-predict panama-all panama-notebook chembl-docker-build chembl-docker-build-app setup-chembl test-chembl chembl-extract chembl-extract-api chembl-extract-docker chembl-notebook test-chembl-flow-b chembl-all download-geodata prepare-dashboard prepare-dashboard-bundle test-viz-analytics test-dashboard dashboard-serve dashboard-all dashboard-jic viz-analytics-all viz-jic

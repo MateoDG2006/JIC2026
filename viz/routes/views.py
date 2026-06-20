@@ -22,6 +22,7 @@ def index(request: Request):
         request,
         "index.html",
         {
+            "active_nav": "viewer",
             "compounds": compounds,
             "has_demo": has_demo,
             "task_names": TASK_NAMES,
@@ -40,6 +41,7 @@ def molecule_detail(request: Request, compound_id: str):
         {
             "compound": data,
             "compound_id": compound_id,
+            "active_nav": "viewer",
             "task_names": TASK_NAMES,
             "task_descriptions": TASK_DESCRIPTIONS,
             "from_corpus": data is not None,
@@ -57,6 +59,7 @@ def analyze_page(request: Request, smiles: str = ""):
             "compound": None,
             "compound_id": None,
             "smiles_input": smiles,
+            "active_nav": "viewer",
             "task_names": TASK_NAMES,
             "task_descriptions": TASK_DESCRIPTIONS,
             "from_corpus": False,

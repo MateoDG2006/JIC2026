@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Mapa Panamá — GNN-Tox{% endblock %}
+
+{% block head %}
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Mapa sociodemográfico — Panamá</h1>
+    <p class="lead">Distribución por distrito (geoBoundaries + estimaciones INEC/MAPI)</p>
+</section>
+
+<div class="demo-banner" role="note">
+    <strong>Aviso sobre los datos:</strong> población, superficie agrícola e índice de pobreza son
+    <em>estimaciones geográficas reproducibles</em> (no datos oficiales descargados del INEC).
+    Fuente: <code>estimacion_geografica_inec_mapi</code>.
+</div>
+
+<section class="card analytics-controls">
+    <label for="map-variable">Variable</label>
+    <select id="map-variable">
+        {% for key, label in map_variables.items() %}
+        <option value="{{ key }}"{% if key == 'superficie_agricola_ha' %} selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+</section>
+
+<div id="loading-overlay" class="loading-overlay" hidden>
+    <div class="spinner"></div>
+    <p>Cargando mapa…</p>
+</div>
+
+<div class="analytics-split">
+    <section class="card chart-panel-wide">
+        <div id="chart-map"></div>
+    </section>
+    <section class="card">
+        <div id="chart-bars"></div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/analytics_map.js"></script>
+{% endblock %}

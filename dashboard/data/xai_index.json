@@ -1,0 +1,532 @@
+{
+  "2_4_d": [
+    {
+      "task": "NR-ER",
+      "method": "gnnexplainer",
+      "file": "2_4_d_NR-ER_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gradcam",
+      "file": "2_4_d_NR-ER_gradcam.svg"
+    }
+  ],
+  "aldicarb": [
+    {
+      "task": "NR-ER",
+      "method": "gnnexplainer",
+      "file": "aldicarb_NR-ER_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gradcam",
+      "file": "aldicarb_NR-ER_gradcam.svg"
+    }
+  ],
+  "atrazine": [
+    {
+      "task": "SR-HSE",
+      "method": "gnnexplainer",
+      "file": "atrazine_SR-HSE_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-HSE",
+      "method": "gradcam",
+      "file": "atrazine_SR-HSE_gradcam.svg"
+    }
+  ],
+  "carbaryl": [
+    {
+      "task": "NR-AhR",
+      "method": "gnnexplainer",
+      "file": "carbaryl_NR-AhR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AhR",
+      "method": "gradcam",
+      "file": "carbaryl_NR-AhR_gradcam.svg"
+    }
+  ],
+  "chlorothalonil": [
+    {
+      "task": "NR-AhR",
+      "method": "gnnexplainer",
+      "file": "chlorothalonil_NR-AhR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AhR",
+      "method": "gradcam",
+      "file": "chlorothalonil_NR-AhR_gradcam.svg"
+    },
+    {
+      "task": "NR-AR-LBD",
+      "method": "gnnexplainer",
+      "file": "chlorothalonil_NR-AR-LBD_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AR-LBD",
+      "method": "gradcam",
+      "file": "chlorothalonil_NR-AR-LBD_gradcam.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gnnexplainer",
+      "file": "chlorothalonil_NR-Aromatase_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gradcam",
+      "file": "chlorothalonil_NR-Aromatase_gradcam.svg"
+    },
+    {
+      "task": "NR-ER-LBD",
+      "method": "gnnexplainer",
+      "file": "chlorothalonil_NR-ER-LBD_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-ER-LBD",
+      "method": "gradcam",
+      "file": "chlorothalonil_NR-ER-LBD_gradcam.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gnnexplainer",
+      "file": "chlorothalonil_NR-ER_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gradcam",
+      "file": "chlorothalonil_NR-ER_gradcam.svg"
+    },
+    {
+      "task": "NR-PPAR-gamma",
+      "method": "gnnexplainer",
+      "file": "chlorothalonil_NR-PPAR-gamma_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-PPAR-gamma",
+      "method": "gradcam",
+      "file": "chlorothalonil_NR-PPAR-gamma_gradcam.svg"
+    },
+    {
+      "task": "SR-ARE",
+      "method": "gnnexplainer",
+      "file": "chlorothalonil_SR-ARE_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-ARE",
+      "method": "gradcam",
+      "file": "chlorothalonil_SR-ARE_gradcam.svg"
+    },
+    {
+      "task": "SR-AtAD5",
+      "method": "gnnexplainer",
+      "file": "chlorothalonil_SR-AtAD5_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-AtAD5",
+      "method": "gradcam",
+      "file": "chlorothalonil_SR-AtAD5_gradcam.svg"
+    },
+    {
+      "task": "SR-HSE",
+      "method": "gnnexplainer",
+      "file": "chlorothalonil_SR-HSE_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-HSE",
+      "method": "gradcam",
+      "file": "chlorothalonil_SR-HSE_gradcam.svg"
+    },
+    {
+      "task": "SR-MMP",
+      "method": "gnnexplainer",
+      "file": "chlorothalonil_SR-MMP_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-MMP",
+      "method": "gradcam",
+      "file": "chlorothalonil_SR-MMP_gradcam.svg"
+    },
+    {
+      "task": "SR-p53",
+      "method": "gnnexplainer",
+      "file": "chlorothalonil_SR-p53_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-p53",
+      "method": "gradcam",
+      "file": "chlorothalonil_SR-p53_gradcam.svg"
+    }
+  ],
+  "chlorpyrifos": [
+    {
+      "task": "NR-AhR",
+      "method": "gnnexplainer",
+      "file": "chlorpyrifos_NR-AhR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AhR",
+      "method": "gradcam",
+      "file": "chlorpyrifos_NR-AhR_gradcam.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gnnexplainer",
+      "file": "chlorpyrifos_NR-Aromatase_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gradcam",
+      "file": "chlorpyrifos_NR-Aromatase_gradcam.svg"
+    },
+    {
+      "task": "NR-ER-LBD",
+      "method": "gnnexplainer",
+      "file": "chlorpyrifos_NR-ER-LBD_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-ER-LBD",
+      "method": "gradcam",
+      "file": "chlorpyrifos_NR-ER-LBD_gradcam.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gnnexplainer",
+      "file": "chlorpyrifos_NR-ER_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gradcam",
+      "file": "chlorpyrifos_NR-ER_gradcam.svg"
+    },
+    {
+      "task": "SR-ARE",
+      "method": "gnnexplainer",
+      "file": "chlorpyrifos_SR-ARE_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-ARE",
+      "method": "gradcam",
+      "file": "chlorpyrifos_SR-ARE_gradcam.svg"
+    },
+    {
+      "task": "SR-MMP",
+      "method": "gnnexplainer",
+      "file": "chlorpyrifos_SR-MMP_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-MMP",
+      "method": "gradcam",
+      "file": "chlorpyrifos_SR-MMP_gradcam.svg"
+    }
+  ],
+  "cypermethrin": [
+    {
+      "task": "NR-Aromatase",
+      "method": "gnnexplainer",
+      "file": "cypermethrin_NR-Aromatase_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gradcam",
+      "file": "cypermethrin_NR-Aromatase_gradcam.svg"
+    }
+  ],
+  "deltamethrin": [
+    {
+      "task": "NR-Aromatase",
+      "method": "gnnexplainer",
+      "file": "deltamethrin_NR-Aromatase_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gradcam",
+      "file": "deltamethrin_NR-Aromatase_gradcam.svg"
+    }
+  ],
+  "difenoconazole": [
+    {
+      "task": "NR-AhR",
+      "method": "gnnexplainer",
+      "file": "difenoconazole_NR-AhR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AhR",
+      "method": "gradcam",
+      "file": "difenoconazole_NR-AhR_gradcam.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gnnexplainer",
+      "file": "difenoconazole_NR-Aromatase_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gradcam",
+      "file": "difenoconazole_NR-Aromatase_gradcam.svg"
+    },
+    {
+      "task": "SR-ARE",
+      "method": "gnnexplainer",
+      "file": "difenoconazole_SR-ARE_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-ARE",
+      "method": "gradcam",
+      "file": "difenoconazole_SR-ARE_gradcam.svg"
+    }
+  ],
+  "dimethoate": [
+    {
+      "task": "NR-AhR",
+      "method": "gnnexplainer",
+      "file": "dimethoate_NR-AhR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AhR",
+      "method": "gradcam",
+      "file": "dimethoate_NR-AhR_gradcam.svg"
+    }
+  ],
+  "glyphosate": [
+    {
+      "task": "NR-ER",
+      "method": "gnnexplainer",
+      "file": "glyphosate_NR-ER_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gradcam",
+      "file": "glyphosate_NR-ER_gradcam.svg"
+    }
+  ],
+  "lambda_cyhalothrin": [
+    {
+      "task": "NR-Aromatase",
+      "method": "gnnexplainer",
+      "file": "lambda_cyhalothrin_NR-Aromatase_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gradcam",
+      "file": "lambda_cyhalothrin_NR-Aromatase_gradcam.svg"
+    }
+  ],
+  "malathion": [
+    {
+      "task": "NR-AhR",
+      "method": "gnnexplainer",
+      "file": "malathion_NR-AhR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AhR",
+      "method": "gradcam",
+      "file": "malathion_NR-AhR_gradcam.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gnnexplainer",
+      "file": "malathion_NR-Aromatase_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gradcam",
+      "file": "malathion_NR-Aromatase_gradcam.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gnnexplainer",
+      "file": "malathion_NR-ER_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gradcam",
+      "file": "malathion_NR-ER_gradcam.svg"
+    }
+  ],
+  "mancozeb": [
+    {
+      "task": "SR-ARE",
+      "method": "gnnexplainer",
+      "file": "mancozeb_SR-ARE_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-ARE",
+      "method": "gradcam",
+      "file": "mancozeb_SR-ARE_gradcam.svg"
+    },
+    {
+      "task": "SR-HSE",
+      "method": "gnnexplainer",
+      "file": "mancozeb_SR-HSE_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-HSE",
+      "method": "gradcam",
+      "file": "mancozeb_SR-HSE_gradcam.svg"
+    }
+  ],
+  "methomyl": [
+    {
+      "task": "NR-ER",
+      "method": "gnnexplainer",
+      "file": "methomyl_NR-ER_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gradcam",
+      "file": "methomyl_NR-ER_gradcam.svg"
+    }
+  ],
+  "methyl_parathion": [
+    {
+      "task": "NR-AhR",
+      "method": "gnnexplainer",
+      "file": "methyl_parathion_NR-AhR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AhR",
+      "method": "gradcam",
+      "file": "methyl_parathion_NR-AhR_gradcam.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gnnexplainer",
+      "file": "methyl_parathion_NR-Aromatase_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gradcam",
+      "file": "methyl_parathion_NR-Aromatase_gradcam.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gnnexplainer",
+      "file": "methyl_parathion_NR-ER_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gradcam",
+      "file": "methyl_parathion_NR-ER_gradcam.svg"
+    }
+  ],
+  "paraquat": [
+    {
+      "task": "NR-AhR",
+      "method": "gnnexplainer",
+      "file": "paraquat_NR-AhR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AhR",
+      "method": "gradcam",
+      "file": "paraquat_NR-AhR_gradcam.svg"
+    },
+    {
+      "task": "NR-AR-LBD",
+      "method": "gnnexplainer",
+      "file": "paraquat_NR-AR-LBD_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AR-LBD",
+      "method": "gradcam",
+      "file": "paraquat_NR-AR-LBD_gradcam.svg"
+    },
+    {
+      "task": "NR-AR",
+      "method": "gnnexplainer",
+      "file": "paraquat_NR-AR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AR",
+      "method": "gradcam",
+      "file": "paraquat_NR-AR_gradcam.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gnnexplainer",
+      "file": "paraquat_NR-ER_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-ER",
+      "method": "gradcam",
+      "file": "paraquat_NR-ER_gradcam.svg"
+    },
+    {
+      "task": "SR-ARE",
+      "method": "gnnexplainer",
+      "file": "paraquat_SR-ARE_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-ARE",
+      "method": "gradcam",
+      "file": "paraquat_SR-ARE_gradcam.svg"
+    },
+    {
+      "task": "SR-MMP",
+      "method": "gnnexplainer",
+      "file": "paraquat_SR-MMP_gnnexplainer.svg"
+    },
+    {
+      "task": "SR-MMP",
+      "method": "gradcam",
+      "file": "paraquat_SR-MMP_gradcam.svg"
+    }
+  ],
+  "propiconazole": [
+    {
+      "task": "NR-AhR",
+      "method": "gnnexplainer",
+      "file": "propiconazole_NR-AhR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AhR",
+      "method": "gradcam",
+      "file": "propiconazole_NR-AhR_gradcam.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gnnexplainer",
+      "file": "propiconazole_NR-Aromatase_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gradcam",
+      "file": "propiconazole_NR-Aromatase_gradcam.svg"
+    }
+  ],
+  "simazine": [
+    {
+      "task": "NR-AhR",
+      "method": "gnnexplainer",
+      "file": "simazine_NR-AhR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AhR",
+      "method": "gradcam",
+      "file": "simazine_NR-AhR_gradcam.svg"
+    }
+  ],
+  "tebuconazole": [
+    {
+      "task": "NR-AhR",
+      "method": "gnnexplainer",
+      "file": "tebuconazole_NR-AhR_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-AhR",
+      "method": "gradcam",
+      "file": "tebuconazole_NR-AhR_gradcam.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gnnexplainer",
+      "file": "tebuconazole_NR-Aromatase_gnnexplainer.svg"
+    },
+    {
+      "task": "NR-Aromatase",
+      "method": "gradcam",
+      "file": "tebuconazole_NR-Aromatase_gradcam.svg"
+    }
+  ]
+}

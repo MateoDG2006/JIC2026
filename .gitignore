@@ -9,3 +9,7 @@ __pycache__/
 wandb/
 .venv/
 venv/
+
+# ChEMBLdb local (descarga ~5 GB + ~15 GB descomprimido)
+data/external/chembl/*.db
+data/external/chembl/*.tar.gz

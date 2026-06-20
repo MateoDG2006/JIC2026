@@ -1,0 +1,27 @@
+{
+  "models": [
+    {
+      "name": "Random Forest",
+      "mean_auc": 0.7433148889332415,
+      "source": "baseline"
+    },
+    {
+      "name": "MLP",
+      "mean_auc": 0.7071019503138577,
+      "source": "baseline"
+    },
+    {
+      "name": "SMILES2vec",
+      "mean_auc": 0.7268157134428787,
+      "source": "baseline"
+    },
+    {
+      "name": "GIN",
+      "mean_auc": 0.7497862956990543,
+      "source": "gin_single_fold"
+    }
+  ],
+  "cv_summary": null,
+  "objective_auc": 0.82,
+  "note": "Ejecute make train-gin-cv para intervalos de confianza."
+}

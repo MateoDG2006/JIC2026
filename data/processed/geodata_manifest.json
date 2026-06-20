@@ -1,0 +1,8 @@
+{
+  "n_distritos": 76,
+  "n_provincias": 13,
+  "distritos_sin_match_inec": 0,
+  "raw_geojson": "C:\\Users\\mateo\\Desktop\\JIC2026\\data\\raw\\panama_distritos.geojson",
+  "inec_csv": "C:\\Users\\mateo\\Desktop\\JIC2026\\data\\raw\\inec_sociodemografico.csv",
+  "merged_geojson": "C:\\Users\\mateo\\Desktop\\JIC2026\\data\\processed\\panama_distritos_merged.geojson"
+}

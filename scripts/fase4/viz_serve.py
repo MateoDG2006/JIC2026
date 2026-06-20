@@ -43,7 +43,7 @@ def main() -> None:
     if args.check_only:
         from viz.app import app  # noqa: F401
 
-        print("OK - FastAPI app cargada")
+        print("OK - FastAPI app cargada (visor GNN + analytics)")
         return
 
     ok, err = port_available(args.host, args.port)

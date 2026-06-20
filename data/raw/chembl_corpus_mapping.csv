@@ -1,0 +1,236 @@
+compound_name,pubchem_cid,smiles,family,chembl_id,match_method,match_status,n_candidates,chembl_pref_name
+Chlorpyrifos,2730,CCOP(=S)(OCC)Oc1nc(Cl)c(Cl)cc1Cl,mixed,CHEMBL463210,known_registry,ok,1,CHLORPYRIFOS
+Malathion,4004,CCOC(=O)CC(SP(=S)(OC)OC)C(=O)OCC,mixed,CHEMBL1200468,known_registry,ok,1,MALATHION
+Dimethoate,3082,CNC(=O)CSP(=S)(OC)OC,mixed,CHEMBL1569524,known_registry,ok,1,DIMETHOATE
+Methyl parathion,4130,COP(=S)(OC)Oc1ccc([N+](=O)[O-])cc1,mixed,CHEMBL346516,known_registry,ok,1,METHYL PARATHIONE
+Carbaryl,6129,CNC(=O)Oc1cccc2ccccc12,mixed,CHEMBL46917,known_registry,ok,1,CARBARIL
+Methomyl,4109,CNC(=O)ON=C(C)SC,mixed,CHEMBL552761,known_registry,ok,1,
+Aldicarb,9570071,CNC(=O)O/N=C/C(C)(C)SC,mixed,CHEMBL91732,known_registry,ok,1,ALDICARB
+Atrazine,2256,CCNc1nc(Cl)nc(NC(C)C)n1,mixed,CHEMBL15063,known_registry,ok,1,ATRAZINE
+Simazine,5216,CCNc1nc(Cl)nc(NCC)n1,mixed,CHEMBL5775,known_registry,ok,1,
+Tebuconazole,86102,CC(C)(C)C(O)(CCc1ccc(Cl)cc1)Cn1cncn1,mixed,CHEMBL8937,known_registry,ok,1,
+Propiconazole,43234,CCCC1COC(Cn2cncn2)(c2ccc(Cl)cc2Cl)O1,mixed,CHEMBL174240,known_registry,ok,1,
+Difenoconazole,86173,CC1COC(Cn2cncn2)(c2ccc(Oc3ccc(Cl)cc3)cc2Cl)O1,mixed,CHEMBL91495,known_registry,ok,1,
+Cypermethrin,2912,CC1(C)C(C=C(Cl)Cl)C1C(=O)OC(C#N)c1cccc(Oc2ccccc2)c1,mixed,CHEMBL3033792,known_registry,ok,1,
+Deltamethrin,40585,CC1(C)[C@H](C(=O)O[C@H](C#N)c2cccc(Oc3ccccc3)c2)[C@@H]1C=C(Br)Br,mixed,CHEMBL416,known_registry,ok,1,METHOXSALEN
+Lambda-cyhalothrin,6440557,CC1(C)[C@H](/C=C(\Cl)C(F)(F)F)[C@@H]1C(=O)O[C@@H](C#N)c1cccc(Oc2ccccc2)c1,mixed,CHEMBL64147,known_registry,ok,1,
+Glyphosate,3496,O=C(O)CNCP(=O)(O)O,mixed,CHEMBL9571438,known_registry,ok,1,
+Paraquat,15939,C[n+]1ccc(-c2cc[n+](C)cc2)cc1,mixed,CHEMBL13958,known_registry,ok,1,
+"2,4-D",1486,O=C(O)COc1ccc(Cl)cc1Cl,mixed,CHEMBL7715,known_registry,ok,1,
+Mancozeb,3034368,S=C([S-])NCCNC(=S)[S-].S=C([S-])NCCNC(=S)[S-].[Mn+2].[Zn+2],mixed,CHEMBL1200543,known_registry,ok,1,ANILERIDINE PHOSPHATE
+Chlorothalonil,15910,N#Cc1c(Cl)c(Cl)c(Cl)c(C#N)c1Cl,mixed,CHEMBL468167,known_registry,ok,1,CHLOROTHALONIL
+CID_119,119,NCCCC(=O)O,Organophosphates,CHEMBL96,sqlite_smiles,ok,1,GAMMA-AMINOBUTYRIC ACID
+CID_152,152,NCC(=O)NC1OC(COP(=O)(O)O)C(O)C1O,Organophosphates,,,not_found,0,
+CID_205,205,CC(O)C(N)C(=O)O,Organophosphates,CHEMBL30037,sqlite_smiles,ok,1,
+CID_222,222,N,Organophosphates,CHEMBL1160819,sqlite_smiles,ok,1,"AMMONIA SOLUTION, STRONG"
+CID_224,224,Nc1ncnc2c1ncn2C1OC(COP(=O)(O)O)C(O)C1O,Organophosphates,CHEMBL16720,sqlite_smiles,ok,1,
+CID_227,227,Nc1ccccc1C(=O)O,Organophosphates,CHEMBL14173,sqlite_smiles,ok,1,ANTHRANILIC ACID
+CID_229,229,OC1COC(O)C(O)C1O,Organophosphates,CHEMBL14343,sqlite_smiles,ok,1,
+CID_232,232,NC(N)=NCCCC(N)C(=O)O,Organophosphates,,,not_found,0,
+CID_236,236,NC(=O)CC(N)C(=O)O,Organophosphates,,,not_found,0,
+CID_239,239,NCCC(=O)O,Organophosphates,CHEMBL297569,sqlite_smiles,ok,1,BETA-ALANINE
+CID_255,255,O=[N+]([O-])c1ccc(OP(=O)(O)Oc2ccc([N+](=O)[O-])cc2)cc1,Organophosphates,CHEMBL1231178,sqlite_smiles,ok,1,
+CID_277,277,NC(=O)O,Organophosphates,CHEMBL125278,sqlite_smiles,ok,1,CARBAMIC ACID
+CID_280,280,O=C=O,Organophosphates,CHEMBL1231871,sqlite_smiles,ok,1,CARBON DIOXIDE
+CID_297,297,C,Organophosphates,CHEMBL17564,sqlite_smiles,ok,1,METHANE
+CID_313,313,Cl,Organophosphates,CHEMBL1231821,sqlite_smiles,ok,1,HYDROCHLORIC ACID
+CID_335,335,Cc1ccccc1O,Organophosphates,CHEMBL46931,sqlite_smiles,ok,1,ORTHOCRESOL
+CID_364,364,NCC(N)C(=O)O,Organophosphates,CHEMBL596011,sqlite_smiles,ok,1,
+CID_378,378,O=[N+]([O-])c1ccc(OP(=O)(O)O)cc1,Organophosphates,CHEMBL24231,sqlite_smiles,ok,1,p-NITROPHENYLPHOSPHATE
+CID_392,392,NCCCC(N)CC(=O)O,Organophosphates,CHEMBL5222185,sqlite_smiles,ok,1,
+CID_424,424,NC(CC(=O)O)C(=O)O,Organophosphates,,,not_found,0,
+CID_470,470,NCCC(N)C(=O)O,Organophosphates,CHEMBL307931,sqlite_smiles,ok,1,
+CID_499,499,O=C1CCC(C(=O)O)N1,Organophosphates,,,not_found,0,
+CID_504,504,O=C1CN=CN1,Organophosphates,CHEMBL2447922,sqlite_smiles,ok,1,IMIDAZOLINONE
+CID_529,529,O=C(O)COP(=O)(O)O,Organophosphates,CHEMBL47181,sqlite_smiles,ok,1,PHOSPHOGLYCOLIC ACID
+CID_564,564,NCCCCCC(=O)O,Organophosphates,CHEMBL1046,sqlite_smiles,ok,1,AMINOCAPROIC ACID
+CID_594,594,NC(CS)C(=O)O,Organophosphates,CHEMBL54943,sqlite_smiles,ok,1,
+CID_602,602,CC(N)C(=O)O,Organophosphates,,,not_found,0,
+CID_611,611,NC(CCC(=O)O)C(=O)O,Organophosphates,,,not_found,0,
+CID_614,614,O=C(O)C1CCCN1,Organophosphates,,,not_found,0,
+CID_617,617,NC(CO)C(=O)O,Organophosphates,,,not_found,0,
+CID_637,637,Nc1ccn(C2CC(O)C(CO)O2)c(=O)n1,Organophosphates,CHEMBL280428,sqlite_smiles,ok,1,
+CID_640,640,O=c1ccn(C2CC(O)C(CO)O2)c(=O)[nH]1,Organophosphates,,,not_found,0,
+CID_655,655,CCOP(O)(=S)OCC,Organophosphates,CHEMBL1232328,sqlite_smiles,ok,1,"O,O-DIETHYL S-HYDROGEN PHOSPHOROTHIOATE"
+CID_660,660,O=C1CCc2ccccc2O1,Organophosphates,CHEMBL89306,sqlite_smiles,ok,1,DIHYDROCOUMARIN
+CID_668,668,O=C(CO)COP(=O)(O)O,Organophosphates,CHEMBL1161998,sqlite_smiles,ok,1,
+CID_673,673,CN(C)CC(=O)O,Organophosphates,CHEMBL1232274,sqlite_smiles,ok,1,
+CID_713,713,NC=O,Organophosphates,CHEMBL266160,sqlite_smiles,ok,1,FORMAMIDE
+CID_724,724,O=C(O)C(O)COP(=O)(O)O,Organophosphates,CHEMBL87788,sqlite_smiles,ok,1,
+CID_729,729,O=CC(O)COP(=O)(O)O,Organophosphates,,,not_found,0,
+CID_738,738,NC(=O)CCC(N)C(=O)O,Organophosphates,,,not_found,0,
+CID_745,745,NC(CCC(=O)NC(CS)C(=O)NCC(=O)O)C(=O)O,Organophosphates,CHEMBL100476,sqlite_smiles,ok,1,
+CID_750,750,NCC(=O)O,Organophosphates,CHEMBL773,sqlite_smiles,ok,1,GLYCINE
+CID_773,773,NC(Cc1cnc[nH]1)C(=O)O,Organophosphates,,,not_found,0,
+CID_778,778,NC(CCS)C(=O)O,Organophosphates,CHEMBL310604,sqlite_smiles,ok,1,HOMOCYSTEINE
+CID_779,779,NC(CCO)C(=O)O,Organophosphates,,,not_found,0,
+CID_824,824,CCCC(N)C(=O)O,Organophosphates,,,not_found,0,
+CID_825,825,O=C(O)C1CC(O)CN1,Organophosphates,CHEMBL1213475,sqlite_smiles,ok,1,
+CID_833,833,NC(=O)NCCCC(N)C(=O)O,Organophosphates,,,not_found,0,
+CID_849,849,O=C(O)C1CCCCN1,Organophosphates,CHEMBL308408,sqlite_smiles,ok,1,PIPECOLIC ACID
+CID_854,854,O=CC(O)C(O)C(O)CO,Organophosphates,,,not_found,0,
+CID_9,9,O=P(O)(O)OC1C(O)C(O)C(O)C(O)C1O,Carbamates,CHEMBL281435,sqlite_smiles,ok,1,
+CID_59,59,O=C(O)C(CO)OP(=O)(O)O,Carbamates,,,not_found,0,
+CID_96,96,CC(=O)CC(=O)O,Carbamates,CHEMBL1230762,sqlite_smiles,ok,1,ACETOACETIC ACID
+CID_106,106,NC(COP(=O)(O)O)C(=O)O,Carbamates,CHEMBL180002,sqlite_smiles,ok,1,
+CID_107,107,O=C(O)CCc1ccccc1,Carbamates,CHEMBL851,sqlite_smiles,ok,1,PHENYL PROPIONIC ACID
+CID_137,137,NCC(=O)CCC(=O)O,Carbamates,CHEMBL601,sqlite_smiles,ok,1,AMINOLEVULINIC ACID
+CID_174,174,OCCO,Carbamates,CHEMBL457299,sqlite_smiles,ok,1,ETHYLENE GLYCOL
+CID_175,175,CC(=O)[O-],Carbamates,,,not_found,0,
+CID_176,176,CC(=O)O,Carbamates,CHEMBL539,sqlite_smiles,ok,1,ACETIC ACID
+CID_177,177,CC=O,Carbamates,CHEMBL170365,sqlite_smiles,ok,1,ACETALDEHYDE
+CID_190,190,Nc1ncnc2nc[nH]c12,Carbamates,,,not_found,0,
+CID_238,238,Nc1ncnc2c1ncn2C1OC(COP(=O)(O)OP(=O)(O)OP(=O)(O)O)C(O)C1O,Carbamates,,,not_found,0,
+CID_264,264,CCCC(=O)O,Carbamates,CHEMBL14227,sqlite_smiles,ok,1,BUTYRIC ACID
+CID_275,275,NC(N)=NOCCC(N)C(=O)O,Carbamates,,,not_found,0,
+CID_284,284,O=CO,Carbamates,CHEMBL116736,sqlite_smiles,ok,1,FORMIC ACID
+CID_307,307,O=CC=Cc1ccccc1,Carbamates,CHEMBL3187944,sqlite_smiles,ok,1,
+CID_308,308,OCC=Cc1ccccc1,Carbamates,CHEMBL3183153,sqlite_smiles,ok,1,
+CID_314,314,Nc1ccn(C2OC(COP(=O)(O)O)C(O)C2O)c(=O)n1,Carbamates,CHEMBL296272,sqlite_smiles,ok,1,
+CID_317,317,CC(C)(COP(=O)(O)OP(=O)(O)OCC1OC(n2cnc3c(N)ncnc32)C(O)C1OP(=O)(O)O)C(O)C(=O)NCCC(=O)NCCS,Carbamates,,,not_found,0,
+CID_322,322,O=C(O)C=Cc1ccc(O)cc1,Carbamates,,,not_found,0,
+CID_346,346,OCC1OC(Oc2ccc(O)cc2)C(O)C(O)C1O,Carbamates,CHEMBL79041,sqlite_smiles,ok,1,
+CID_363,363,NCC=O,Carbamates,CHEMBL296723,sqlite_smiles,ok,1,
+CID_402,402,S,Carbamates,CHEMBL1200739,sqlite_smiles,ok,1,HYDROGEN SULFIDE
+CID_421,421,O=C(O)CCCCC(S)CCS,Carbamates,,,not_found,0,
+CID_423,423,CC(=O)CC(N)C(=O)O,Carbamates,,,not_found,0,
+CID_449,449,CC(O)(CCO)CC(=O)O,Carbamates,,,not_found,0,
+CID_460,460,COc1ccccc1O,Carbamates,CHEMBL13766,sqlite_smiles,ok,1,GUAIACOL
+CID_464,464,O=C(O)CNC(=O)c1ccccc1,Carbamates,CHEMBL461,sqlite_smiles,ok,1,HIPPURIC ACID
+CID_527,527,CCC=O,Carbamates,CHEMBL275626,sqlite_smiles,ok,1,PROPIONALDEHYDE
+CID_546,546,O=C(O)CP(=O)(O)O,Carbamates,CHEMBL50300,sqlite_smiles,ok,1,FOSFONET
+CID_586,586,CN(CC(=O)O)C(=N)N,Carbamates,CHEMBL283800,sqlite_smiles,ok,1,CREATINE
+CID_588,588,CN1CC(=O)N=C1N,Carbamates,,,not_found,0,
+CID_595,595,NC(CSSCC(N)C(=O)O)C(=O)O,Carbamates,CHEMBL366563,sqlite_smiles,ok,1,
+CID_596,596,Nc1ccn(C2OC(CO)C(O)C2O)c(=O)n1,Carbamates,CHEMBL78,sqlite_smiles,ok,1,
+CID_3,3,O=C(O)C1=CC=CC(O)C1O,Triazines,,,not_found,0,
+CID_16,16,O=C1CCCCCNC(=O)CCCCCN1,Triazines,,,not_found,0,
+CID_17,17,O=C(O)C1=NC(C(=O)O)CC=C1,Triazines,,,not_found,0,
+CID_19,19,O=C(O)c1cccc(O)c1O,Triazines,CHEMBL1432,sqlite_smiles,ok,1,"2,3-DIHYDROXYBENZOIC ACID"
+CID_20,20,O=C(O)CCc1cccc(O)c1O,Triazines,,,not_found,0,
+CID_22,22,CC(=O)C(C)(O)C(=O)O,Triazines,,,not_found,0,
+CID_30,30,NC(=CC=CC=O)C(=O)O,Triazines,,,not_found,0,
+CID_32,32,O=C(O)C=CC=C(C(=O)O)C(=O)O,Triazines,,,not_found,0,
+CID_36,36,CC(C)C(C(=O)O)C(O)C(=O)O,Triazines,,,not_found,0,
+CID_38,38,CC(C)(CO)C(=O)C(=O)O,Triazines,,,not_found,0,
+CID_39,39,CC1(C)COC(=O)C1=O,Triazines,,,not_found,0,
+CID_40,40,OCC1OC(O)CC(O)C1O,Triazines,CHEMBL1880349,sqlite_smiles,ok,1,2-DEOXY-D-GLUCOSE
+CID_43,43,O=C(O)CCC(O)C(=O)O,Triazines,CHEMBL4870693,sqlite_smiles,ok,1,
+CID_45,45,O=C(O)C(O)C(=O)O,Triazines,CHEMBL1794676,sqlite_smiles,ok,1,
+CID_49,49,CC(C)C(=O)C(=O)O,Triazines,CHEMBL146554,sqlite_smiles,ok,1,2-Oxoisovalerate
+CID_51,51,O=C(O)CCC(=O)C(=O)O,Triazines,CHEMBL1686,sqlite_smiles,ok,1,ALPHA-KETOGLUTARIC ACID
+CID_58,58,CCC(=O)C(=O)O,Triazines,CHEMBL171246,sqlite_smiles,ok,1,
+CID_61,61,O=C(O)C(COP(=O)(O)O)OP(=O)(O)O,Triazines,CHEMBL144103,sqlite_smiles,ok,1,
+CID_63,63,CC(N)CC(N)C(=O)O,Triazines,,,not_found,0,
+CID_67,67,O=C(O)C(=O)C(O)C(O)C(=O)CO,Triazines,,,not_found,0,
+CID_71,71,O=C(O)CCCC(=O)C(=O)O,Triazines,,,not_found,0,
+CID_72,72,O=C(O)c1ccc(O)c(O)c1,Triazines,CHEMBL37537,sqlite_smiles,ok,1,PROTOCATECHUIC ACID
+CID_85,85,C[N+](C)(C)CC(O)CC(=O)O,Triazines,CHEMBL1620698,sqlite_smiles,ok,1,
+CID_86,86,Nc1c(O)cccc1C(=O)O,Triazines,CHEMBL445304,sqlite_smiles,ok,1,
+CID_87,87,CC(CO)C(=O)O,Triazines,,,not_found,0,
+CID_102,102,OCc1cccc(O)c1,Triazines,CHEMBL3337531,sqlite_smiles,ok,1,
+CID_111,111,NC(=O)NCCC(=O)O,Triazines,CHEMBL20962,sqlite_smiles,ok,1,
+CID_118,118,NCCCC=O,Triazines,CHEMBL2261442,sqlite_smiles,ok,1,4-AMINOBUTANAL
+CID_126,126,O=Cc1ccc(O)cc1,Triazines,CHEMBL14193,sqlite_smiles,ok,1,4-HYDROXYBENZALDEHYDE
+CID_127,127,O=C(O)Cc1ccc(O)cc1,Triazines,CHEMBL1772,sqlite_smiles,ok,1,
+CID_133,133,C[N+](C)(C)CCCC=O,Triazines,,,not_found,0,
+CID_135,135,O=C(O)c1ccc(O)cc1,Triazines,CHEMBL441343,sqlite_smiles,ok,1,PARABEN
+CID_138,138,NCCCCC(=O)O,Triazines,CHEMBL284116,sqlite_smiles,ok,1,5-AMINOVALERIC ACID
+CID_167,167,c1ncc2c(n1)=NCCN=2,Triazines,,,not_found,0,
+CID_179,179,CC(=O)C(C)O,Triazines,CHEMBL3561873,sqlite_smiles,ok,1,
+CID_180,180,CC(C)=O,Triazines,CHEMBL14253,sqlite_smiles,ok,1,ACETONE
+CID_191,191,Nc1ncnc2c1ncn2C1OC(CO)C(O)C1O,Triazines,CHEMBL11909,sqlite_smiles,ok,1,
+CID_199,199,NCCCCN=C(N)N,Triazines,CHEMBL58343,sqlite_smiles,ok,1,AGMATINE
+CID_206,206,OCC1OC(O)C(O)C(O)C1O,Triazines,,,not_found,0,
+CID_207,207,NC(CCCC=O)C(=O)O,Triazines,,,not_found,0,
+CID_208,208,O=P(O)(O)OCC1OC(O)C(O)C(O)C1O,Triazines,,,not_found,0,
+CID_66,66,Oc1cc(Cl)ccc1Cl,Azole_fungicides,CHEMBL1565192,sqlite_smiles,ok,1,
+CID_144,144,NC(Cc1c[nH]c2ccc(O)cc12)C(=O)O,Azole_fungicides,CHEMBL162789,sqlite_smiles,ok,1,
+CID_178,178,CC(N)=O,Azole_fungicides,CHEMBL16081,sqlite_smiles,ok,1,ACETAMIDE
+CID_196,196,O=C(O)CCCCC(=O)O,Azole_fungicides,CHEMBL1157,sqlite_smiles,ok,1,ADIPIC ACID
+CID_198,198,Nc1ncnc2c1ncn2C1OC(COP(=O)(O)OP(=O)(O)OC2OC(CO)C(O)C(O)C2O)C(O)C1O,Azole_fungicides,,,not_found,0,
+CID_241,241,c1ccccc1,Azole_fungicides,CHEMBL277500,sqlite_smiles,ok,1,BENZENE
+CID_253,253,O=C(O)CCCCC1SCC2NC(=O)NC21,Azole_fungicides,CHEMBL1527083,sqlite_smiles,ok,1,
+CID_262,262,CC(O)C(C)O,Azole_fungicides,CHEMBL2312529,sqlite_smiles,ok,1,
+CID_263,263,CCCCO,Azole_fungicides,CHEMBL14245,sqlite_smiles,ok,1,BUTYL ALCOHOL
+CID_281,281,[C-]#[O+],Azole_fungicides,CHEMBL1231840,sqlite_smiles,ok,1,CARBON MONOXIDE
+CID_288,288,C[N+](C)(C)CC(O)CC(=O)[O-],Azole_fungicides,CHEMBL172513,sqlite_smiles,ok,1,CARNITINE
+CID_294,294,OCC1OC(OC2C(CO)OC(O)C(O)C2O)C(O)C(O)C1O,Azole_fungicides,,,not_found,0,
+CID_300,300,O=C(O)CCl,Azole_fungicides,CHEMBL14090,sqlite_smiles,ok,1,CHLOROACETIC ACID
+CID_303,303,CC(CCC(=O)O)C1CCC2C3C(O)CC4CC(O)CCC4(C)C3CC(O)C12C,Azole_fungicides,,,not_found,0,
+CID_305,305,C[N+](C)(C)CCO,Azole_fungicides,CHEMBL920,sqlite_smiles,ok,1,CHOLINE
+CID_311,311,O=C(O)CC(O)(CC(=O)O)C(=O)O,Azole_fungicides,CHEMBL1261,sqlite_smiles,ok,1,CITRIC ACID
+CID_312,312,[Cl-],Azole_fungicides,,,not_found,0,
+CID_356,356,CCCCCCCC,Azole_fungicides,CHEMBL134886,sqlite_smiles,ok,1,OCTANE
+CID_359,359,Oc1cc(O)cc(O)c1,Azole_fungicides,CHEMBL473159,sqlite_smiles,ok,1,PHLOROGLUCINOL
+CID_370,370,O=C(O)c1cc(O)c(O)c(O)c1,Azole_fungicides,CHEMBL288114,sqlite_smiles,ok,1,GALLIC ACID
+CID_260,260,Br,Pyrethroids,CHEMBL1231461,sqlite_smiles,ok,1,BROMIDE
+CID_338,338,O=C(O)c1ccccc1O,Pyrethroids,CHEMBL424,sqlite_smiles,ok,1,SALICYLIC ACID
+CID_453,453,OCC(O)C(O)C(O)C(O)CO,Pyrethroids,,,not_found,0,
+CID_700,700,NCCO,Pyrethroids,CHEMBL104943,sqlite_smiles,ok,1,MONOETHANOLAMINE
+CID_702,702,CCO,Pyrethroids,CHEMBL545,sqlite_smiles,ok,1,ALCOHOL
+CID_712,712,C=O,Pyrethroids,CHEMBL1255,sqlite_smiles,ok,1,FORMALDEHYDE
+CID_727,727,ClC1C(Cl)C(Cl)C(Cl)C(Cl)C1Cl,Pyrethroids,CHEMBL1200921,sqlite_smiles,ok,1,
+CID_753,753,OCC(O)CO,Pyrethroids,CHEMBL692,sqlite_smiles,ok,1,GLYCERIN
+CID_756,756,O=CCO,Pyrethroids,CHEMBL3884509,sqlite_smiles,ok,1,
+CID_767,767,O=C(O)O,Pyrethroids,CHEMBL1161632,sqlite_smiles,ok,1,BICARBONATE
+CID_783,783,[HH],Pyrethroids,,,not_found,0,
+CID_784,784,OO,Pyrethroids,CHEMBL71595,sqlite_smiles,ok,1,HYDROGEN PEROXIDE
+CID_787,787,NO,Pyrethroids,CHEMBL1191361,sqlite_smiles,ok,1,HYDROXYAMINE
+CID_887,887,CO,Pyrethroids,CHEMBL14688,sqlite_smiles,ok,1,METHYL ALCOHOL
+CID_892,892,OC1C(O)C(O)C(O)C(O)C1O,Pyrethroids,,,not_found,0,
+CID_935,935,[Ni],Pyrethroids,,,not_found,0,
+CID_945,945,N=O,Pyrethroids,CHEMBL1234765,sqlite_smiles,ok,1,HNO
+CID_947,947,N#N,Pyrethroids,CHEMBL142438,sqlite_smiles,ok,1,NITROGEN
+CID_962,962,O,Pyrethroids,CHEMBL1098659,sqlite_smiles,ok,1,WATER
+CID_977,977,O=O,Pyrethroids,CHEMBL1234886,sqlite_smiles,ok,1,OXYGEN
+CID_992,992,Oc1c(Cl)c(Cl)c(Cl)c(Cl)c1Cl,Pyrethroids,CHEMBL75967,sqlite_smiles,ok,1,PENTACHLOROPHENOL
+CID_996,996,Oc1ccccc1,Pyrethroids,CHEMBL14060,sqlite_smiles,ok,1,PHENOL
+CID_1004,1004,O=P(O)(O)O,Pyrethroids,CHEMBL1187,sqlite_smiles,ok,1,PHOSPHORIC ACID
+CID_1023,1023,O=P(O)(O)OP(=O)(O)O,Pyrethroids,CHEMBL1160571,sqlite_smiles,ok,1,PYROPHOSPHORIC ACID
+CID_1030,1030,CC(O)CO,Pyrethroids,CHEMBL286398,sqlite_smiles,ok,1,PROPYLENE GLYCOL
+CID_1031,1031,CCCO,Pyrethroids,CHEMBL14687,sqlite_smiles,ok,1,PROPANOL
+CID_1065,1065,C=CC1CN2CCC1CC2C(O)c1ccnc2ccc(OC)cc12,Pyrethroids,CHEMBL15088,sqlite_smiles,ok,1,
+CID_1070,1070,CC(C=CC=C(C)C=CC1=C(C)CCCC1(C)C)=CC=O,Pyrethroids,,,not_found,0,
+CID_1084,1084,O=S([O-])([O-])=S,Pyrethroids,,,not_found,0,
+CID_1110,1110,O=C(O)CCC(=O)O,Pyrethroids,CHEMBL576,sqlite_smiles,ok,1,SUCCINIC ACID
+CID_1118,1118,O=S(=O)(O)O,Pyrethroids,CHEMBL572964,sqlite_smiles,ok,1,SULFURIC ACID
+CID_1130,1130,Cc1ncc(C[n+]2csc(CCO)c2C)c(N)n1,Pyrethroids,CHEMBL1547,sqlite_smiles,ok,1,THIAMINE ION
+CID_1140,1140,Cc1ccccc1,Pyrethroids,CHEMBL9113,sqlite_smiles,ok,1,TOLUENE
+CID_1143,1143,OCC1OC(OC2OC(CO)C(O)C(O)C2O)C(O)C(O)C1O,Pyrethroids,,,not_found,0,
+CID_1176,1176,NC(N)=O,Pyrethroids,CHEMBL985,sqlite_smiles,ok,1,UREA
+CID_1326,1326,Cn1c(=O)c2ncn(C)c2n(C)c1=O,Pyrethroids,CHEMBL74063,sqlite_smiles,ok,1,ISOCAFFIENE
+CID_1474,1474,c1ccc(-c2ccccn2)nc1,Pyrethroids,CHEMBL39879,sqlite_smiles,ok,1,DIPYRIDYL
+CID_1982,1982,COP(=O)(NC(C)=O)SC,Pyrethroids,CHEMBL2133249,sqlite_smiles,ok,1,ACEPHATE
+CID_34,34,OCCCl,Herbicides,CHEMBL191244,sqlite_smiles,ok,1,2-CHLOROETHANOL
+CID_240,240,O=Cc1ccccc1,Herbicides,CHEMBL15972,sqlite_smiles,ok,1,BENZALDEHYDE
+CID_259,259,[Br-],Herbicides,,,not_found,0,
+CID_456,456,NC(=O)NC(=O)C(=O)O,Herbicides,,,not_found,0,
+CID_807,807,II,Herbicides,CHEMBL1201225,sqlite_smiles,ok,1,IODINE
+CID_949,949,CN(C)c1ccccc1,Herbicides,CHEMBL371654,sqlite_smiles,ok,1,
+CID_1003,1003,O=P([O-])(O)O,Herbicides,,,not_found,0,
+CID_1049,1049,c1ccncc1,Herbicides,CHEMBL266158,sqlite_smiles,ok,1,PYRIDINE
+CID_1133,1133,O=C(O)CS,Herbicides,CHEMBL116455,sqlite_smiles,ok,1,THIOGLYCOLIC ACID
+CID_1567,1567,OCCS,Herbicides,CHEMBL254951,sqlite_smiles,ok,1,2-MERCAPTOETHANOL
+CID_1639,1639,Nc1ncn[nH]1,Herbicides,,,not_found,0,
+CID_1988,1988,CCOCN(C(=O)CCl)c1c(C)cccc1CC,Herbicides,CHEMBL1517425,sqlite_smiles,ok,1,ACETOCHLOR
+CID_2140,2140,CC(=O)Nc1c(I)c(NC(C)=O)c(I)c(C(=O)O)c1I,Herbicides,CHEMBL1201220,sqlite_smiles,ok,1,DIATRIZOIC ACID
+CID_2265,2265,Cn1cnc([N+](=O)[O-])c1Sc1ncnc2nc[nH]c12,Herbicides,,,not_found,0,
+CID_2519,2519,Cn1c(=O)c2c(ncn2C)n(C)c1=O,Herbicides,CHEMBL113,sqlite_smiles,ok,1,CAFFEINE
+CID_2537,2537,CC12CCC(CC1=O)C2(C)C,Herbicides,CHEMBL15768,sqlite_smiles,ok,1,CAMPHOR
+CID_2576,2576,CCCC(C)(COC(N)=O)COC(=O)NC(C)C,Herbicides,CHEMBL1233,sqlite_smiles,ok,1,CARISOPRODOL
+CID_2680,2680,NCC1CCC(C(=O)Oc2ccc(CCC(=O)O)cc2)CC1,Herbicides,CHEMBL2448182,sqlite_smiles,ok,1,
+CID_2780,2780,COc1cc(N)c(Cl)cc1C(=O)NC1CCN(Cc2ccccc2)CC1,Herbicides,CHEMBL325109,sqlite_smiles,ok,1,CLEBOPRIDE
+CID_3016,3016,CN1C(=O)CN=C(c2ccccc2)c2cc(Cl)ccc21,Herbicides,CHEMBL12,sqlite_smiles,ok,1,DIAZEPAM
+CID_3289,3289,CCCSP(=O)(OCC)SCCC,Herbicides,CHEMBL1894994,sqlite_smiles,ok,1,ETHOPROPHOS
+CID_3440,3440,NS(=O)(=O)c1cc(C(=O)O)c(NCc2ccco2)cc1Cl,Herbicides,CHEMBL35,sqlite_smiles,ok,1,FUROSEMIDE
+CID_3559,3559,O=C(CCCN1CCC(O)(c2ccc(Cl)cc2)CC1)c1ccc(F)cc1,Herbicides,CHEMBL54,sqlite_smiles,ok,1,HALOPERIDOL
+CID_3715,3715,COc1ccc2c(c1)c(CC(=O)O)c(C)n2C(=O)c1ccc(Cl)cc1,Herbicides,CHEMBL6,sqlite_smiles,ok,1,INDOMETHACIN
+CID_4064,4064,CCCC(C)(COC(N)=O)COC(N)=O,Herbicides,CHEMBL979,sqlite_smiles,ok,1,MEPROBAMATE
+CID_4510,4510,O=[N+]([O-])OCC(CO[N+](=O)[O-])O[N+](=O)[O-],Herbicides,CHEMBL730,sqlite_smiles,ok,1,NITROGLYCERIN
+CID_4581,4581,NCC(O)c1ccc(O)cc1,Herbicides,CHEMBL53929,sqlite_smiles,ok,1,OCTOPAMINE
+CID_4610,4610,NC1CCCCC1N,Herbicides,CHEMBL1356279,sqlite_smiles,ok,1,
+CID_4756,4756,Nc1ccc(N=Nc2ccccc2)c(N)n1,Herbicides,CHEMBL1625467,sqlite_smiles,ok,1,
+CID_4781,4781,CCCCC1C(=O)N(c2ccccc2)N(c2ccccc2)C1=O,Herbicides,CHEMBL101,sqlite_smiles,ok,1,PHENYLBUTAZONE
+CID_4933,4933,CCC(=O)Nc1ccc(Cl)c(Cl)c1,Herbicides,CHEMBL1222498,sqlite_smiles,ok,1,PROPANIL
+CID_4965,4965,COc1ccc(C(=O)CBr)cc1,Herbicides,CHEMBL103009,sqlite_smiles,ok,1,

@@ -1,0 +1,48 @@
+{
+  "created_at": "2026-06-15T17:26:33.394570+00:00",
+  "source": "deepchem_tox21_scaffold",
+  "task_names": [
+    "NR-AR",
+    "NR-AR-LBD",
+    "NR-AhR",
+    "NR-Aromatase",
+    "NR-ER",
+    "NR-ER-LBD",
+    "NR-PPAR-gamma",
+    "SR-ARE",
+    "SR-AtAD5",
+    "SR-HSE",
+    "SR-MMP",
+    "SR-p53"
+  ],
+  "node_feat_dim": 45,
+  "edge_feat_dim": 9,
+  "n_tasks": 12,
+  "splits": {
+    "train": {
+      "path": "data\\processed\\graphs_train.pt",
+      "n_graphs": 6258,
+      "input_smiles": 6258,
+      "graphs_ok": 6258,
+      "failed": 0,
+      "seconds": 6.0
+    },
+    "val": {
+      "path": "data\\processed\\graphs_val.pt",
+      "n_graphs": 782,
+      "input_smiles": 782,
+      "graphs_ok": 782,
+      "failed": 0,
+      "seconds": 1.48
+    },
+    "test": {
+      "path": "data\\processed\\graphs_test.pt",
+      "n_graphs": 783,
+      "input_smiles": 783,
+      "graphs_ok": 783,
+      "failed": 0,
+      "seconds": 1.76
+    }
+  },
+  "split_indices": "data\\splits\\scaffold_split_indices.json"
+}

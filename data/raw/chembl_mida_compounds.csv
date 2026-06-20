@@ -1,0 +1,21 @@
+compound_name,pubchem_cid,smiles,family,source
+Chlorpyrifos,2730,CCOP(=S)(OCC)Oc1nc(Cl)c(Cl)cc1Cl,Organophosphates,MIDA_name_search
+Malathion,4004,CCOC(=O)CC(SP(=S)(OC)OC)C(=O)OCC,Organophosphates,MIDA_name_search
+Dimethoate,3082,CNC(=O)CSP(=S)(OC)OC,Organophosphates,MIDA_name_search
+Methyl parathion,4130,COP(=S)(OC)Oc1ccc([N+](=O)[O-])cc1,Organophosphates,MIDA_name_search
+Carbaryl,6129,CNC(=O)Oc1cccc2ccccc12,Carbamates,MIDA_name_search
+Methomyl,4109,CNC(=O)ON=C(C)SC,Carbamates,MIDA_name_search
+Aldicarb,9570071,CNC(=O)O/N=C/C(C)(C)SC,Carbamates,MIDA_name_search
+Atrazine,2256,CCNc1nc(Cl)nc(NC(C)C)n1,Triazines,MIDA_name_search
+Simazine,5216,CCNc1nc(Cl)nc(NCC)n1,Triazines,MIDA_name_search
+Tebuconazole,86102,CC(C)(C)C(O)(CCc1ccc(Cl)cc1)Cn1cncn1,Azole_fungicides,MIDA_name_search
+Propiconazole,43234,CCCC1COC(Cn2cncn2)(c2ccc(Cl)cc2Cl)O1,Azole_fungicides,MIDA_name_search
+Difenoconazole,86173,CC1COC(Cn2cncn2)(c2ccc(Oc3ccc(Cl)cc3)cc2Cl)O1,Azole_fungicides,MIDA_name_search
+Cypermethrin,2912,CC1(C)C(C=C(Cl)Cl)C1C(=O)OC(C#N)c1cccc(Oc2ccccc2)c1,Pyrethroids,MIDA_name_search
+Deltamethrin,40585,CC1(C)[C@H](C(=O)O[C@H](C#N)c2cccc(Oc3ccccc3)c2)[C@@H]1C=C(Br)Br,Pyrethroids,MIDA_name_search
+Lambda-cyhalothrin,6440557,CC1(C)[C@H](/C=C(\Cl)C(F)(F)F)[C@@H]1C(=O)O[C@@H](C#N)c1cccc(Oc2ccccc2)c1,Pyrethroids,MIDA_name_search
+Glyphosate,3496,O=C(O)CNCP(=O)(O)O,Herbicides,MIDA_name_search
+Paraquat,15939,C[n+]1ccc(-c2cc[n+](C)cc2)cc1,Herbicides,MIDA_name_search
+"2,4-D",1486,O=C(O)COc1ccc(Cl)cc1Cl,Herbicides,MIDA_name_search
+Mancozeb,3034368,S=C([S-])NCCNC(=S)[S-].S=C([S-])NCCNC(=S)[S-].[Mn+2].[Zn+2],Fungicides,MIDA_name_search
+Chlorothalonil,15910,N#Cc1c(Cl)c(Cl)c(Cl)c(C#N)c1Cl,Fungicides,MIDA_name_search

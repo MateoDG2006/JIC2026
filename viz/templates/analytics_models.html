@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Modelos ChEMBL — GNN-Tox{% endblock %}
+
+{% block head %}
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Modelos predictivos ChEMBL</h1>
+    <p class="lead">Clasificación Active/Inactive y regresión pChEMBL (Random Forest / SVM)</p>
+</section>
+
+<div class="analytics-split">
+    <section class="card analytics-predictor">
+        <h2>Predictor pChEMBL</h2>
+        <p class="hint">R² test referencia: {{ "%.3f"|format(r2_test) }}</p>
+        <p class="hint">{{ predictor_note }}</p>
+        <form id="predict-form" class="predict-grid">
+            {% for col in feature_cols %}
+            <label for="pred-{{ col }}">{{ feature_labels.get(col, col) }}</label>
+            <input type="number" id="pred-{{ col }}" name="{{ col }}" step="0.1" value="0" />
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Predecir</button>
+        </form>
+        <div id="predict-result" class="prediction-box" hidden></div>
+    </section>
+
+    <section class="card">
+        <h2>Clasificación</h2>
+        <label for="clf-model">Modelo</label>
+        <select id="clf-model">
+            <option value="RandomForest">Random Forest</option>
+            <option value="SVM_RBF">SVM (RBF)</option>
+        </select>
+        <div id="chart-confusion" class="chart-panel"></div>
+        <div id="chart-roc" class="chart-panel"></div>
+    </section>
+</div>
+
+<section class="card">
+    <h2>Regresión pChEMBL</h2>
+    <label for="reg-model">Modelo</label>
+    <select id="reg-model">
+        <option value="RandomForest">Random Forest</option>
+        <option value="SVR_RBF">SVR (RBF)</option>
+    </select>
+    <div id="chart-regression" class="chart-panel"></div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/analytics_models.js"></script>
+{% endblock %}

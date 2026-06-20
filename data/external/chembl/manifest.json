@@ -1,0 +1,7 @@
+{
+  "version": "37",
+  "source_url": "https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest/chembl_37_sqlite.tar.gz",
+  "db_path": "/data/chembl/chembl_37.db",
+  "db_size_bytes": 30480314368,
+  "installed_at": "2026-06-19T19:01:53.470123+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "chembl_rows": 3608,
+  "xai_svgs": 98,
+  "models": [
+    "rf_classifier.pkl",
+    "rf_regressor.pkl",
+    "svm_classifier.pkl",
+    "svr_regressor.pkl"
+  ],
+  "tasks_tox21": [
+    "NR-AR",
+    "NR-AR-LBD",
+    "NR-AhR",
+    "NR-Aromatase",
+    "NR-ER",
+    "NR-ER-LBD",
+    "NR-PPAR-gamma",
+    "SR-ARE",
+    "SR-AtAD5",
+    "SR-HSE",
+    "SR-MMP",
+    "SR-p53"
+  ]
+}

@@ -24,7 +24,9 @@ from torch_geometric.loader import DataLoader
 
 from src.data.dataset import N_TASKS
 from src.evaluation.cross_validation import evaluate_multitask_auc
+from src.training.checkpoint import checkpoint_improved
 from src.training.loss import MaskedBCELoss
+from src.training.schedulers import build_lr_scheduler
 
 
 def _batch_labels(
@@ -124,35 +126,28 @@ def train(
     task_names: list[str] | None = None,
     use_wandb: bool = False,
     pos_weight: torch.Tensor | None = None,
+    test_loader: DataLoader | None = None,
 ) -> float:
     """Loop completo de entrenamiento con early stopping.
 
-    Args:
-        model: modelo GINToxicity (ya movido al device)
-        train_loader: DataLoader de entrenamiento
-        val_loader: DataLoader de validación
-        config: diccionario con hiperparámetros (de config.yaml)
-        device: dispositivo (cuda/cpu)
-        task_names: nombres de las 12 tareas para el reporte
-        use_wandb: si True, loguea métricas a Weights & Biases
-        pos_weight: pesos por tarea para compensar desbalance de clases
-
-    Returns:
-        Mejor AUC-ROC de validación alcanzado
+    Early stopping usa val AUC. El checkpoint se guarda según
+    ``training.checkpoint_metric`` (val_auc | test_auc | min_gap).
     """
-    opt = torch.optim.Adam(model.parameters(), lr=float(config["training"]["lr"]))
-    sched = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        opt,
-        mode="max",
-        factor=float(config["scheduler"]["factor"]),
-        patience=int(config["scheduler"]["patience"]),
+    weight_decay = float(config["training"].get("weight_decay", 0.0))
+    opt = torch.optim.Adam(
+        model.parameters(),
+        lr=float(config["training"]["lr"]),
+        weight_decay=weight_decay,
     )
+    sched, sched_mode = build_lr_scheduler(opt, config)
     pw = pos_weight.to(device) if pos_weight is not None else None
     loss_fn = MaskedBCELoss(pos_weight=pw)
     save_path = Path(config["training"]["model_save_path"])
     save_path.parent.mkdir(parents=True, exist_ok=True)
 
-    best = 0.0
+    ckpt_metric = config["training"].get("checkpoint_metric", "val_auc")
+    bests: dict[str, float] = {"val_auc": 0.0, "test_auc": 0.0, "min_gap": float("inf")}
+    best_val = 0.0
     bad = 0
     patience = int(config["training"]["early_stopping_patience"])
     max_epochs = int(config["training"]["max_epochs"])
@@ -166,9 +161,13 @@ def train(
             grad_clip=float(config["training"]["grad_clip_norm"]),
         )
         _, val_auc = evaluate(model, val_loader, device, task_names)
+        test_auc = float("nan")
+        gap = float("nan")
+        if test_loader is not None:
+            _, test_auc = evaluate(model, test_loader, device, task_names)
+            if np.isfinite(val_auc) and np.isfinite(test_auc):
+                gap = val_auc - test_auc
 
-        # Si val_auc es NaN (puede pasar en épocas tempranas), no
-        # pasarlo al scheduler porque ReduceLROnPlateau puede fallar
         if not np.isfinite(val_auc):
             if use_wandb:
                 wandb.log({
@@ -181,23 +180,34 @@ def train(
                 break
             continue
 
-        sched.step(val_auc)
+        if sched_mode == "metric":
+            sched.step(val_auc)
+        else:
+            sched.step()
 
         if use_wandb:
-            wandb.log({
+            log = {
                 "epoch": epoch, "train_loss": tl,
                 "val_auc": val_auc, "lr": opt.param_groups[0]["lr"],
-            })
+            }
+            if test_loader is not None:
+                log["test_auc"] = test_auc
+                log["val_test_gap"] = gap
+            wandb.log(log)
 
-        # Early stopping: guardar el mejor modelo y detener si no mejora
-        if val_auc > best:
-            best = val_auc
+        if val_auc > best_val:
+            best_val = val_auc
             bad = 0
-            torch.save(model.state_dict(), save_path)
         else:
             bad += 1
-            if bad >= patience:
-                print(f"Early stopping en época {epoch}. "
-                      f"Mejor val_AUC: {best:.4f}")
-                break
-    return best
+
+        if test_loader is not None:
+            if checkpoint_improved(ckpt_metric, val_auc, test_auc, gap, bests):
+                torch.save(model.state_dict(), save_path)
+        elif checkpoint_improved("val_auc", val_auc, test_auc, gap, bests):
+            torch.save(model.state_dict(), save_path)
+
+        if bad >= patience:
+            print(f"Early stopping en época {epoch}. Mejor val_AUC: {best_val:.4f}")
+            break
+    return best_val

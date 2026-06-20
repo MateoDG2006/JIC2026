@@ -1,0 +1,25 @@
+{
+  "chembl_rows": 2807,
+  "xai_svgs": 98,
+  "models_dir": "outputs\\chembl\\models",
+  "tasks_tox21": [
+    "NR-AR",
+    "NR-AR-LBD",
+    "NR-AhR",
+    "NR-Aromatase",
+    "NR-ER",
+    "NR-ER-LBD",
+    "NR-PPAR-gamma",
+    "SR-ARE",
+    "SR-AtAD5",
+    "SR-HSE",
+    "SR-MMP",
+    "SR-p53"
+  ],
+  "sources": {
+    "chembl": "data\\processed\\chembl_clean.csv",
+    "toxicity": "outputs/reports/panama_pesticides_profile.csv",
+    "xai": "outputs/xai/figures/",
+    "geojson": "data/processed/panama_distritos_merged.geojson"
+  }
+}

@@ -1,0 +1,77 @@
+codigo_distrito,nombre_distrito,nombre_norm,provincia,area_km2,poblacion,superficie_agricola_ha,indice_pobreza,fuente
+PAN-000,Changuinola,changuinola,Provincia de Bocas del Toro,4000.11,126764,76320.6,34.5,estimacion_geografica_inec_mapi
+PAN-001,Bocas del Toro,bocas del toro,Sin asignar,421.67,18564,7916.0,25.7,estimacion_geografica_inec_mapi
+PAN-002,Chiriquí Grande,chiriqui grande,Provincia de Bocas del Toro,212.61,7520,4625.5,34.1,estimacion_geografica_inec_mapi
+PAN-003,Renacimiento,renacimiento,Provincia de Chiriquí,527.49,41209,22562.2,14.8,estimacion_geografica_inec_mapi
+PAN-004,San Félix,san felix,Provincia de Chiriquí,220.17,14724,9950.8,15.2,estimacion_geografica_inec_mapi
+PAN-005,Barú,baru,Provincia de Chiriquí,597.01,44114,25647.4,15.7,estimacion_geografica_inec_mapi
+PAN-006,Alanje,alanje,Provincia de Chiriquí,440.17,32698,18499.8,15.4,estimacion_geografica_inec_mapi
+PAN-007,Boquerón,boqueron,Provincia de Chiriquí,297.48,19414,12096.5,15.8,estimacion_geografica_inec_mapi
+PAN-008,Boquete,boquete,Provincia de Chiriquí,489.36,34773,21398.2,16.0,estimacion_geografica_inec_mapi
+PAN-009,Bugaba,bugaba,Provincia de Chiriquí,884.56,68504,37478.6,15.4,estimacion_geografica_inec_mapi
+PAN-010,Gualaca,gualaca,Provincia de Chiriquí,626.62,40475,25901.7,15.1,estimacion_geografica_inec_mapi
+PAN-011,Tolé,tole,Provincia de Chiriquí,481.31,34407,21372.3,15.3,estimacion_geografica_inec_mapi
+PAN-012,San Lorenzo,san lorenzo,Provincia de Chiriquí,664.85,54961,30440.8,15.0,estimacion_geografica_inec_mapi
+PAN-013,Remedios,remedios,Provincia de Chiriquí,165.03,11470,6289.5,15.6,estimacion_geografica_inec_mapi
+PAN-014,Dolega,dolega,Provincia de Chiriquí,250.72,20024,10334.2,15.5,estimacion_geografica_inec_mapi
+PAN-015,Aguadulce,aguadulce,Provincia de Coclé,469.8,31553,18393.7,18.8,estimacion_geografica_inec_mapi
+PAN-016,Antón,anton,Provincia de Coclé,742.04,45577,27324.9,17.4,estimacion_geografica_inec_mapi
+PAN-017,La Pintada,la pintada,Provincia de Coclé,1030.48,63302,37410.9,18.0,estimacion_geografica_inec_mapi
+PAN-018,Natá,nata,Provincia de Coclé,610.39,41356,21463.8,19.4,estimacion_geografica_inec_mapi
+PAN-019,Olá,ola,Provincia de Coclé,377.23,27064,15031.1,18.2,estimacion_geografica_inec_mapi
+PAN-020,Penonomé,penonome,Provincia de Coclé,1707.88,100229,59049.9,18.7,estimacion_geografica_inec_mapi
+PAN-021,Mironó,mirono,Comarca Ngäbe-Buglé,342.88,8298,8618.4,47.4,estimacion_geografica_inec_mapi
+PAN-022,Kankintú,kankintu,Comarca Ngäbe-Buglé,2417.82,66782,64442.7,47.6,estimacion_geografica_inec_mapi
+PAN-023,Kusapín,kusapin,Comarca Ngäbe-Buglé,1748.9,44652,43329.7,45.2,estimacion_geografica_inec_mapi
+PAN-024,Ñürüm,nurum,Provincia de Veraguas,575.24,25304,20364.9,25.0,estimacion_geografica_inec_mapi
+PAN-025,Müna,muna,Comarca Ngäbe-Buglé,816.41,21375,20144.2,42.2,estimacion_geografica_inec_mapi
+PAN-026,Nole Duima,nole duima,Comarca Ngäbe-Buglé,164.76,4405,3978.8,44.6,estimacion_geografica_inec_mapi
+PAN-027,Besiko,besiko,Comarca Ngäbe-Buglé,752.6,20007,17343.0,46.0,estimacion_geografica_inec_mapi
+PAN-028,Santa Fé,santa fe,Provincia de Veraguas,1922.84,90444,63758.5,22.8,estimacion_geografica_inec_mapi
+PAN-029,San Francisco,san francisco,Provincia de Veraguas,434.23,22201,15412.0,24.5,estimacion_geografica_inec_mapi
+PAN-030,La Mesa,la mesa,Provincia de Veraguas,511.6,25843,19258.4,25.9,estimacion_geografica_inec_mapi
+PAN-031,Santiago,santiago,Provincia de Veraguas,969.28,46276,32039.1,22.7,estimacion_geografica_inec_mapi
+PAN-032,Atalaya,atalaya,Provincia de Veraguas,155.93,6719,5944.1,25.0,estimacion_geografica_inec_mapi
+PAN-033,Calobre,calobre,Provincia de Veraguas,806.06,35740,30896.6,24.4,estimacion_geografica_inec_mapi
+PAN-034,Soná,sona,Provincia de Veraguas,1498.21,60053,52077.6,22.8,estimacion_geografica_inec_mapi
+PAN-035,Río de Jesús,rio de jesus,Provincia de Veraguas,303.63,14814,11610.7,23.2,estimacion_geografica_inec_mapi
+PAN-036,Las Palmas,las palmas,Provincia de Veraguas,1018.21,47073,33163.3,24.7,estimacion_geografica_inec_mapi
+PAN-037,Cañazas,canazas,Provincia de Veraguas,786.72,35467,28424.2,22.4,estimacion_geografica_inec_mapi
+PAN-038,Chitré,chitre,Provincia de Herrera,87.51,5159,3838.9,21.8,estimacion_geografica_inec_mapi
+PAN-039,Parita,parita,Provincia de Herrera,352.78,20513,14848.7,22.6,estimacion_geografica_inec_mapi
+PAN-040,Pesé,pese,Provincia de Herrera,288.47,17704,11829.5,21.9,estimacion_geografica_inec_mapi
+PAN-041,Los Pozos,los pozos,Provincia de Herrera,385.58,20317,14866.5,21.5,estimacion_geografica_inec_mapi
+PAN-042,Ocú,ocu,Provincia de Herrera,619.87,41683,22474.0,22.3,estimacion_geografica_inec_mapi
+PAN-043,Las Minas,las minas,Provincia de Herrera,441.02,24458,17086.2,22.0,estimacion_geografica_inec_mapi
+PAN-044,Santa María,santa maria,Provincia de Herrera,159.78,9792,5759.4,22.4,estimacion_geografica_inec_mapi
+PAN-045,Pedasí,pedasi,Provincia de Los Santos,378.87,21373,15354.7,19.6,estimacion_geografica_inec_mapi
+PAN-046,Pocrí,pocri,Provincia de Los Santos,279.85,17316,11851.1,19.7,estimacion_geografica_inec_mapi
+PAN-047,Tonosí,tonosi,Provincia de Los Santos,1282.62,65923,61970.9,18.6,estimacion_geografica_inec_mapi
+PAN-048,Las Tablas,las tablas,Provincia de Los Santos,714.37,44549,31875.5,19.9,estimacion_geografica_inec_mapi
+PAN-049,Guararé,guarare,Provincia de Los Santos,212.7,12666,9848.0,19.1,estimacion_geografica_inec_mapi
+PAN-050,Macaracas,macaracas,Provincia de Los Santos,504.21,28412,22008.0,21.1,estimacion_geografica_inec_mapi
+PAN-051,Los Santos,los santos,Provincia de Los Santos,432.73,26673,17730.8,19.5,estimacion_geografica_inec_mapi
+PAN-052,Sambú,sambu,Comarca Emberá-Wounaan,1300.4,20730,14724.5,41.3,estimacion_geografica_inec_mapi
+PAN-053,Cémaco,cemaco,Comarca Emberá-Wounaan,3035.97,57692,39194.7,39.6,estimacion_geografica_inec_mapi
+PAN-054,Chepigana,chepigana,Provincia de Darién,7072.93,74718,115481.2,40.1,estimacion_geografica_inec_mapi
+PAN-055,Pinogana,pinogana,Provincia de Darién,4942.42,57563,80342.3,35.8,estimacion_geografica_inec_mapi
+PAN-056,Donoso,donoso,Colón Province,1826.36,169464,20313.5,27.3,estimacion_geografica_inec_mapi
+PAN-057,Santa Isabel,santa isabel,Colón Province,738.53,80180,8070.8,26.9,estimacion_geografica_inec_mapi
+PAN-058,Portobelo,portobelo,Colón Province,395.86,34256,5127.5,29.5,estimacion_geografica_inec_mapi
+PAN-059,Chagres,chagres,Colón Province,446.67,41244,5487.8,30.1,estimacion_geografica_inec_mapi
+PAN-060,Colón,colon,Colón Province,1177.91,126881,13817.7,28.6,estimacion_geografica_inec_mapi
+PAN-061,Balboa,balboa,Provincia de Panamá,330.4,104012,2578.7,11.6,estimacion_geografica_inec_mapi
+PAN-062,Panamá,panama,Provincia de Panamá,2047.66,602390,14840.3,11.6,estimacion_geografica_inec_mapi
+PAN-063,San Miguelito,san miguelito,Provincia de Panamá,50.27,15530,434.9,12.8,estimacion_geografica_inec_mapi
+PAN-064,Chepo,chepo,Provincia de Panamá,4923.21,1492677,37619.9,12.5,estimacion_geografica_inec_mapi
+PAN-065,Chimán,chiman,Provincia de Panamá,1010.44,306115,7944.0,11.2,estimacion_geografica_inec_mapi
+PAN-066,Capira,capira,Provincia de Panamá Oeste,968.39,237578,13780.2,13.3,estimacion_geografica_inec_mapi
+PAN-067,Chame,chame,Provincia de Panamá Oeste,372.64,76065,5528.9,14.1,estimacion_geografica_inec_mapi
+PAN-068,San Carlos,san carlos,Provincia de Panamá Oeste,336.81,68824,5511.7,12.9,estimacion_geografica_inec_mapi
+PAN-069,Taboga,taboga,Sin asignar,11.74,452,212.8,25.2,estimacion_geografica_inec_mapi
+PAN-070,Arraiján,arraijan,Provincia de Panamá Oeste,415.4,79022,5801.0,13.4,estimacion_geografica_inec_mapi
+PAN-071,La Chorrera,la chorrera,Provincia de Panamá Oeste,784.24,180032,11989.6,13.3,estimacion_geografica_inec_mapi
+PAN-072,Comarca Kuna Yala,comarca kuna yala,Provincia de Panamá,2413.31,766128,20938.5,12.7,estimacion_geografica_inec_mapi
+PAN-073,David,david,Provincia de Chiriquí,872.21,60992,33730.3,15.0,estimacion_geografica_inec_mapi
+PAN-074,Mariato,mariato,Provincia de Veraguas,1403.36,72297,51647.5,23.3,estimacion_geografica_inec_mapi
+PAN-075,Montijo,montijo,Sin asignar,776.05,27567,15489.2,24.1,estimacion_geografica_inec_mapi
