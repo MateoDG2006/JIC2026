@@ -1,10 +1,24 @@
 #!/usr/bin/env python3
-"""
-Genera archivos JSON pre-computados en viz/data/ para el dashboard.
+"""Genera archivos JSON precomputados en ``viz/data/`` para el visor 3D.
+
+Toma una lista curada de plaguicidas panameños (los 8 más relevantes para
+la demostración), ejecuta predicción GIN + XAI completo sobre cada uno y
+escribe un JSON por compuesto en ``viz/data/{id}.json``.
+
+El visor carga estos JSON al arrancar (``viz/services/corpus.py``) y muestra
+las moléculas en el grid de la página principal sin necesidad de re-correr
+el modelo en cada petición HTTP.
+
+Modos:
+    --demo : escribe valores ficticios sin invocar el modelo (útil para
+             probar el front-end antes de entrenar el GIN).
+    (default): requiere ``outputs/models/best_gin_model.pt`` y ejecuta
+               ``viz.services.inference.full_analysis()`` que produce
+               predicciones reales + GNNExplainer + Grad-CAM.
 
 Uso:
     python scripts/fase4/build_viz_corpus.py           # requiere modelo entrenado
-    python scripts/fase4/build_viz_corpus.py --demo    # datos demo sin modelo (UI)
+    python scripts/fase4/build_viz_corpus.py --demo    # solo datos de UI
 """
 
 from __future__ import annotations

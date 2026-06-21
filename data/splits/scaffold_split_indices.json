@@ -7830,6 +7830,6 @@
   ],
   "meta": {
     "source": "deepchem_scaffold",
-    "description": "\u00cdndices del DiskDataset DeepChem. No coinciden 1:1 con graphs_*.pt si algunos SMILES fallaron."
+    "description": "\u00cdndices del DiskDataset DeepChem (train|val|test). No coinciden 1:1 con los .pt si algunos SMILES fallaron."
   }
 }

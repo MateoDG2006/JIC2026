@@ -1,5 +1,29 @@
 #!/usr/bin/env python
-"""Verificación del pipeline Flujo B (preprocesamiento + modelos)."""
+"""Verificación end-to-end del pipeline Flujo B (ChEMBL clásico).
+
+Pertenece a la **Fase 4 — Modelado predictivo** del proyecto de analítica de
+datos (tarea de ML Engineer "Verificar reproducibilidad" en
+``docs/analisis_proyecto/fases/fase4_modelado.md``).
+
+Reproduce el pipeline de "analítica de datos" del curso de principio a fin
+(integra Fases 2, 3 y 4 sobre el dataset ChEMBL):
+
+    1. ``load_bioactivity`` del CSV raw de ChEMBL.
+    2. Filtrado de potential_duplicates (AUDIT P10).
+    3. ``drop_columns_high_nan`` (umbral 250 NaN) + reporte missingness.
+    4. ``impute_median_by_family`` para descriptores numéricos.
+    5. ``build_supervised_matrix`` para clasificación y regresión.
+    6. ``train_test_split_by_group`` (compuesto) — split honesto sin leakage.
+    7. Entrena RF (clasificación), SVM (clasificación), RF-Reg y SVR.
+    8. Evalúa con ``evaluate_classification`` / ``evaluate_regression``.
+    9. Guarda modelos en ``outputs/chembl/models/`` y métricas en CSV.
+
+Sirve como test de integración + script de generación de artefactos para
+el visor (``viz/services/dashboard/chembl.py`` carga ``rf_regressor.pkl``).
+
+Uso:
+    python scripts/analisis_proyecto/fase4/verify_flow_b.py
+"""
 
 from __future__ import annotations
 
@@ -15,7 +39,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC, SVR
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 
 from src.analisis_proyecto.chembl_preprocessing import (  # noqa: E402

@@ -1,4 +1,16 @@
-"""Resolucion de figuras XAI precomputadas."""
+"""Resolución de figuras XAI precomputadas.
+
+Permite que el front-end pida ``/api/analytics/toxicity/xai?compound=...&method=...``
+sin conocer el esquema de nombres exacto de los SVG en disco.
+
+Estrategia de búsqueda (por orden de prioridad):
+    1. ``xai_index.json`` (generado por ``prepare_dashboard.py``)
+    2. Nombres canónicos: ``{slug}_{task}_{method}.svg``
+    3. Variante con alias histórico (``NR-PPAR-gamma`` ↔ ``NR-PPAR-g``)
+    4. Cualquier SVG con prefijo ``{slug}_`` y sufijo ``_{method}.svg``
+
+``slugify("2,4-D")`` → ``"2_4_d"`` para normalizar nombres con comas/espacios.
+"""
 
 from __future__ import annotations
 

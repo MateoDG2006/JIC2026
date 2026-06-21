@@ -1,12 +1,29 @@
 #!/usr/bin/env python
-"""Verifica que ChEMBLdb SQLite esté instalada y el esquema sea compatible."""
+"""Verifica que ChEMBLdb SQLite esté instalada y el esquema sea compatible.
+
+Pertenece a la **Fase 1 — Adquisición y extracción de datos**. Es el
+diagnóstico previo que ejecuta ``make test-chembl`` antes de cualquier
+``chembl-extract``.
+
+Lee la ruta de la BD desde ``config.yaml`` (sección ``chembl.db_path``)
+o ``CHEMBL_DB_PATH``, abre la conexión SQLite, lista las tablas presentes
+y hace una consulta de prueba con CHEMBL463210 (Chlorpyrifos).
+
+Útil tras descomprimir el dump oficial ``chembl_37_sqlite.tar.gz``
+para detectar:
+    - Archivo corrupto / incompleto (size sospechosamente bajo).
+    - Esquema cambiado entre versiones ChEMBL.
+    - Permisos de lectura insuficientes.
+
+Devuelve exit code 0 si todo está OK; lanza excepción legible si no.
+"""
 
 from __future__ import annotations
 
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
 
 from src.analisis_proyecto.chembl_extract import load_chembl_config

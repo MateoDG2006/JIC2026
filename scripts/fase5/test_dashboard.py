@@ -1,5 +1,15 @@
 #!/usr/bin/env python
-"""Smoke test del visor FastAPI unificado (GNN + analytics)."""
+"""Smoke test del visor FastAPI unificado (GNN + analytics).
+
+Verifica que:
+    1. Los 5 artefactos críticos existen en disco (CSV/GeoJSON/JSON/pkl).
+    2. La app FastAPI importa sin errores (esto carga toda la lógica del visor).
+    3. Los loaders básicos devuelven datos no vacíos (ChEMBL, GeoJSON, perfil tox).
+    4. El predictor pChEMBL funciona con un input sintético plausible.
+
+Si algún artefacto falta, imprime el comando ``make`` que lo genera y devuelve
+exit code 1 — útil para ``make viz-check`` y CI.
+"""
 
 from __future__ import annotations
 

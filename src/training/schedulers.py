@@ -1,4 +1,13 @@
-"""LR schedulers para entrenamiento GIN."""
+"""LR schedulers para entrenamiento GIN.
+
+Dos modos soportados:
+  - ``cosine``: warmup lineal (10 épocas) → cosine annealing hasta eta_min
+                Recomendado tras la auditoría (P1) — converge más suave.
+  - ``plateau``: ReduceLROnPlateau que reduce el LR si val_auc no mejora
+                  durante ``patience`` épocas.
+
+La elección se hace en ``config.yaml`` → ``scheduler.type``.
+"""
 
 from __future__ import annotations
 
@@ -11,11 +20,16 @@ def build_lr_scheduler(
     optimizer: torch.optim.Optimizer,
     config: dict[str, Any],
 ) -> tuple[Any, str]:
-    """Construye scheduler y devuelve (scheduler, mode).
+    """Construye el scheduler de LR a partir del ``config.yaml``.
 
-    mode:
-      - ``metric``: llamar ``scheduler.step(val_auc)``
-      - ``epoch``: llamar ``scheduler.step()`` cada época
+    Args:
+        optimizer: optimizador Adam del modelo GIN.
+        config: dict de config (necesita ``scheduler`` y ``training.max_epochs``).
+
+    Returns:
+        Tupla ``(scheduler, mode)`` donde mode es:
+          - ``"metric"`` → llamar ``scheduler.step(val_auc)`` cada época
+          - ``"epoch"``  → llamar ``scheduler.step()`` cada época (sin métrica)
     """
     sched_cfg = config.get("scheduler", {})
     sched_type = sched_cfg.get("type", "plateau")

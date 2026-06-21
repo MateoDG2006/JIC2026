@@ -1,11 +1,26 @@
 """
-Descarga y merge de geodatos de Panamá (Flujo D) para el dashboard Dash.
+Geodatos de Panamá: descarga de límites administrativos y construcción
+de la tabla sociodemográfica del dashboard (Flujo D).
+
+Fuentes:
+    - Límites distritales (ADM2) y provinciales (ADM1): geoBoundaries v6
+    - Densidad de población, % superficie agrícola e índice de pobreza:
+      ESTIMACIONES reproducibles a partir del área del distrito y de los
+      promedios provinciales referenciados al INEC. Marcadas como
+      ``fuente: estimacion_geografica_inec_mapi``.
+      Reemplazar por MAPI cuando esté disponible.
+
+Funciones principales:
+    download_district_boundaries  — descarga GeoJSON ADM2 desde geoBoundaries
+    _assign_provinces             — sjoin con ADM1 para asignar provincia
+    build_inec_sociodemographic_table — calcula área, población, ag, pobreza
+    merge_districts_with_inec     — une límites con tabla sociodemográfica
+    build_panama_geodata          — pipeline completo (descarga + merge + export)
 """
 
 from __future__ import annotations
 
 import hashlib
-import json
 import re
 import unicodedata
 from pathlib import Path

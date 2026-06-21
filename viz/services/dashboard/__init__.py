@@ -1,4 +1,15 @@
-"""Servicios de analytics integrados en el visor FastAPI."""
+"""Servicios de analytics integrados en el visor FastAPI.
+
+Re-exporta funciones de carga (lectura con caché por checksum) e inferencia
+para que las rutas ``viz.routes.analytics`` no tengan que conocer los caminos
+internos de cada submódulo.
+
+Submódulos:
+    artifacts — load_* para ChEMBL CSV, JSON de correlación/eval, GeoJSON, etc.
+    cache     — caché por checksum MD5 (P3) + invalidate_all()
+    chembl    — predict_pchembl() con RF entrenado en outputs/chembl/models/
+    xai       — resolve_xai_filename(): busca SVG GNNExplainer/Grad-CAM por compuesto
+"""
 
 from viz.services.dashboard.artifacts import (
     geojson_to_dataframe,

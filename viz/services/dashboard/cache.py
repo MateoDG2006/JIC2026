@@ -1,4 +1,22 @@
-"""Cache con invalidación por checksum de archivos (AUDIT P3)."""
+"""Caché por checksum MD5 para CSVs y JSONs (AUDIT P3).
+
+Resuelve el problema de la arquitectura estática anterior: si los artefactos
+de ``outputs/dashboard/`` se regeneran (p. ej. tras ``make prepare-dashboard``)
+el visor servía los datos viejos hasta reiniciar.
+
+Estrategia:
+    - Cada llamada calcula el MD5 del archivo (rápido: lectura completa pero
+      sin parseo). Si coincide con el del valor cacheado, devuelve copia.
+    - Si difiere o no hay caché, recarga, parsea y guarda nueva entrada.
+    - ``invalidate_all()`` se llama desde ``POST /api/analytics/refresh`` para
+      forzar recarga sin esperar a la siguiente petición.
+
+Funciones:
+    load_csv_cached(path)   → pd.DataFrame (copia, segura para modificar)
+    load_json_cached(path)  → dict o list (copia, soporta ambos por compat con
+                              feature_cols.json que es una lista plana)
+    invalidate_all()        → limpia los 3 diccionarios internos
+"""
 
 from __future__ import annotations
 

@@ -1,4 +1,16 @@
-"""Pipeline de análisis de datos clásico — ChEMBL / corpus MIDA (Flujos A–B)."""
+"""Pipeline de análisis ChEMBL para la parte de "analítica de datos" del curso (Flujo B).
+
+Este módulo es paralelo al pipeline GIN: usa el corpus PubChem panameño
+extendido con datos de bioactividad ChEMBL (pChEMBL, descriptores RDKit)
+para entrenar modelos clásicos (RF, SVM, SVR) en lugar de la GNN.
+
+Submódulos:
+    chembl_preprocessing — EDA, missingno, imputación, splits, evaluación
+    chembl_extract       — orquestador de extracción ChEMBL (SQLite o API)
+    chembl_local         — backend SQLite con descarga del dump oficial
+    chembl_api           — backend REST (fallback si no hay dump local)
+    geodata_panama       — geoBoundaries + estimaciones MAPI por distrito
+"""
 
 from src.analisis_proyecto.chembl_preprocessing import (
     FEATURE_COLS,

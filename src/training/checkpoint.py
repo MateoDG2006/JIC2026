@@ -1,4 +1,14 @@
-"""Criterios de guardado de checkpoint durante el entrenamiento GIN."""
+"""Criterios de guardado de checkpoint durante el entrenamiento GIN.
+
+El parámetro ``training.checkpoint_metric`` en ``config.yaml`` decide qué
+métrica observa el guardado del mejor modelo:
+
+  - ``val_auc``  (default): guarda cuando AUC de validación supera el mejor previo.
+  - ``test_auc``:           guarda cuando AUC de test supera el mejor previo
+                             (útil cuando hay test set fijo y se quiere maximizarlo).
+  - ``min_gap``:            guarda cuando |val_auc - test_auc| es mínimo
+                             (busca el modelo más generalizable, no el de mayor AUC).
+"""
 
 from __future__ import annotations
 

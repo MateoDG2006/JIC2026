@@ -1,4 +1,15 @@
-"""Carga de datos, featurización PubChem/ChEMBL y datasets Tox21."""
+"""Carga de datos, featurización y datasets Tox21 / corpus Panamá.
+
+Submódulos:
+    featurizer       — SMILES → grafo PyG (45 features de átomo, 9 de enlace)
+    dataset          — ToxicityDataset y constantes TASK_NAMES (12 dianas Tox21)
+    splitter         — scaffold split de Murcko para evaluación honesta
+    tox21_deepchem   — carga Tox21 vía DeepChem con caché local
+    pubchem_api      — clientes REST de PubChem (Compound, BioAssay, GHS)
+
+Los exports se cargan de forma perezosa (lazy) para evitar importar torch
+cuando solo se necesita el cliente PubChem, etc.
+"""
 
 # Imports perezosos: evita cargar torch al importar submódulos ligeros.
 

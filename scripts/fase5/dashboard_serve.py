@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Redirige a scripts/fase4/viz_serve.py — el dashboard vive en viz/."""
+"""Compatibilidad: redirige a ``scripts/fase4/viz_serve.py``.
+
+El dashboard antiguo (Dash) vivía en ``dashboard/`` y se arrancaba con
+``scripts/fase5/dashboard_serve.py``. Tras la refactorización (AUDIT P3/P12)
+se unificó con el visor FastAPI bajo ``viz/`` — este shim mantiene los
+``make`` antiguos funcionando sin romper.
+"""
 
 from __future__ import annotations
 

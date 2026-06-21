@@ -1,4 +1,23 @@
-"""Carga de artefactos desde rutas canonicas del pipeline GIN/ChEMBL."""
+"""Carga de artefactos desde rutas canónicas del pipeline GIN/ChEMBL.
+
+Todos los loaders pasan por ``viz.services.dashboard.cache`` que comprueba
+el checksum MD5 del archivo en cada llamada (AUDIT P3). Si el archivo
+cambió en disco (p. ej. tras re-ejecutar ``make prepare-dashboard``), la
+caché se invalida automáticamente — no hace falta reiniciar el servidor.
+
+Loaders disponibles:
+    load_chembl()              → DataFrame con bioactividad limpia
+    load_toxicity_profile()    → perfil Tox21 de plaguicidas panameños
+    load_correlation()         → matriz Pearson para heatmap EDA
+    load_model_eval()          → métricas RF/SVM/RF-Reg/SVR (filas + compuesto)
+    load_metrics_summary()     → CSV con métricas crudas del flujo ChEMBL
+    load_predictor_defaults()  → valores por defecto para el predictor interactivo
+    load_model_comparison()    → comparativa baselines vs GIN (P9)
+    load_feature_cols()        → lista de columnas usadas por el RF
+    load_geojson()             → distritos de Panamá con propiedades INEC
+    load_xai_index()           → índice de SVGs disponibles por compuesto
+    geojson_to_dataframe()     → properties del GeoJSON como DataFrame
+"""
 
 from __future__ import annotations
 
@@ -18,7 +37,7 @@ from viz.config import (
     resolve_path,
     use_bundle,
 )
-from viz.services.dashboard.cache import invalidate_all, load_csv_cached, load_json_cached
+from viz.services.dashboard.cache import load_csv_cached, load_json_cached
 
 
 def _artifact_json(name: str) -> Path:

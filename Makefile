@@ -177,7 +177,7 @@ panama-all: build-panama-corpus explain-panama validate-ghs generate-panama-repo
 
 CHEMBL_COMPOSE := docker compose -f docker/docker-compose.yml
 CHEMBL_DB := data/external/chembl/chembl_37.db
-CHEMBL_NOTEBOOK := notebooks/proyecto analisis de datos/00_chembl_extraccion.ipynb
+CHEMBL_NOTEBOOK := notebooks/proyecto analisis de datos/fase1_adquisicion.ipynb
 
 chembl-docker-build:
 	$(CHEMBL_COMPOSE) build chembl-init
@@ -189,13 +189,13 @@ setup-chembl: chembl-docker-build
 	$(CHEMBL_COMPOSE) --profile setup run --rm chembl-init
 
 test-chembl:
-	"$(VENV_PYTHON)" scripts/analisis_proyecto/verify_chembl_db.py
+	"$(VENV_PYTHON)" scripts/analisis_proyecto/fase1/verify_chembl_db.py
 
 chembl-extract: test-chembl
-	"$(VENV_PYTHON)" scripts/analisis_proyecto/extract_chembl_local.py --config $(CONFIG)
+	"$(VENV_PYTHON)" scripts/analisis_proyecto/fase1/extract_chembl_local.py --config $(CONFIG)
 
 chembl-extract-api:
-	"$(VENV_PYTHON)" scripts/analisis_proyecto/extract_chembl_local.py --config $(CONFIG) --backend api
+	"$(VENV_PYTHON)" scripts/analisis_proyecto/fase1/extract_chembl_local.py --config $(CONFIG) --backend api
 
 chembl-extract-docker: chembl-docker-build-app test-chembl
 	$(CHEMBL_COMPOSE) run --rm toxgnn
@@ -204,13 +204,13 @@ chembl-notebook: test-chembl
 	"$(VENV_PYTHON)" -m jupyter nbconvert --execute --to notebook --inplace "$(CHEMBL_NOTEBOOK)"
 
 test-chembl-flow-b:
-	"$(VENV_PYTHON)" scripts/analisis_proyecto/verify_flow_b.py
+	"$(VENV_PYTHON)" scripts/analisis_proyecto/fase4/verify_flow_b.py
 
 chembl-all: setup-chembl chembl-extract
 
 # ── Geodatos Panamá (Flujo D) ───────────────────────────────────────────────
 download-geodata:
-	"$(VENV_PYTHON)" scripts/analisis_proyecto/02_download_geodata.py
+	"$(VENV_PYTHON)" scripts/analisis_proyecto/fase6/02_download_geodata.py
 
 # ── Analytics integrado en viz/ (FastAPI + Plotly.js) ───────────────────────
 prepare-dashboard:

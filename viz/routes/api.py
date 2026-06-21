@@ -1,4 +1,26 @@
-"""Endpoints REST para prediccion, XAI y datos moleculares."""
+"""Endpoints REST para predicción GIN, XAI y utilidades moleculares.
+
+Cliente esperado: el JavaScript del visor (``viz/static/js/molecule.js``)
+y cualquier integración externa. Todos los endpoints aceptan/devuelven JSON
+y arrojan ``HTTPException`` 4xx/5xx con mensaje legible si algo falla.
+
+Endpoints (montados bajo ``/api``):
+
+    GET  /status              → estado del modelo y corpus
+    GET  /corpus              → lista de compuestos precomputados
+    GET  /corpus/{id}         → detalles de un compuesto del corpus
+    POST /corpus/reload       → recarga corpus desde disco
+
+    POST /predict   {smiles}                           → 12 probabilidades Tox21
+    POST /explain   {smiles, task, method}             → importancia por átomo + colores
+    POST /analyze   {smiles}                           → predict + XAI + propiedades
+    POST /svg       {smiles, importance, title}        → SVG 2D coloreado
+    POST /xai-colors {importance}                      → colores hex YlOrRd
+
+    GET  /mol3d?smiles=...    → SDF / MOL block para 3Dmol.js
+    GET  /properties?smiles=  → MW, LogP, PSA, etc. (RDKit Descriptors)
+    GET  /tasks               → lista de 12 tareas Tox21 con descripción
+"""
 
 from __future__ import annotations
 

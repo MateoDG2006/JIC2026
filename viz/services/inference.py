@@ -1,4 +1,17 @@
-"""Servicio de inferencia: carga el modelo GIN y ejecuta prediccion + XAI."""
+"""Servicio de inferencia: carga el modelo GIN y ejecuta predicción + XAI.
+
+Mantiene el modelo cargado como singleton en memoria para evitar pagar
+el coste de re-cargar el state_dict en cada petición HTTP.
+
+Funciones públicas (todas thread-safe vía el GIL):
+    model_available() / get_model_error() — diagnóstico para /api/status y /health
+    get_device() — torch.device (cuda si disponible, cpu si no)
+    get_model() — devuelve el ``GINToxicity`` cargado (lazy)
+    predict(smiles) — 12 probabilidades Tox21 (dict) o None si SMILES inválido
+    explain_gnnexplainer(smiles, task_idx) — importancia por átomo [0,1]
+    explain_gradcam(smiles, task_idx) — importancia por átomo [0,1] (más rápido)
+    full_analysis(smiles) — predict + XAI para tareas top + propiedades RDKit
+"""
 
 from __future__ import annotations
 

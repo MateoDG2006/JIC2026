@@ -1,4 +1,17 @@
-"""Utilidades moleculares: SMILES a 3D, propiedades, SDF."""
+"""Utilidades moleculares: SMILES → 3D, propiedades, SDF.
+
+Funciones:
+    smiles_to_sdf(smiles)       — bloque SDF con coordenadas 3D (ETKDG + MMFF)
+    smiles_to_mol_block(smiles) — MOL block (sin header SDF) para 3Dmol.js
+    molecular_properties(smiles)→ MW, LogP, PSA, HBA/HBD, anillos, SMILES canónico
+    atom_symbols(smiles)        — lista de símbolos atómicos en orden RDKit
+
+Notas:
+    - Las coordenadas 3D usan ETKDGv3 (Riniker & Landrum 2015) con seed=42
+      para reproducibilidad. Si falla, se intenta con ETKDG clásico.
+    - Optimización MMFF94 con 500 iteraciones máximas.
+    - Se quitan hidrógenos explícitos antes de devolver para reducir tamaño.
+"""
 
 from __future__ import annotations
 

@@ -1,4 +1,14 @@
-"""Rutas HTML (Jinja2) para el dashboard de visualizacion."""
+"""Rutas HTML (Jinja2) para el visor GNN 3D.
+
+Estas rutas sirven las páginas del visor — la lógica interactiva
+(predicción, XAI, render 3D con 3Dmol.js) la hace el JavaScript
+del cliente, que pega a los endpoints de ``viz.routes.api``.
+
+Endpoints:
+    GET /                       → corpus precomputado en grid
+    GET /molecule/{compound_id} → vista detallada de molécula del corpus
+    GET /analyze?smiles=...     → vista de análisis ad-hoc para SMILES libre
+"""
 
 from __future__ import annotations
 

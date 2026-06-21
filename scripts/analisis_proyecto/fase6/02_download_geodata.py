@@ -2,8 +2,12 @@
 """
 Pipeline Flujo D — geodatos Panamá (distritos + variables sociodemográficas).
 
+Pertenece a la **Fase 6 — Geodatos y contexto Panamá** del proyecto de
+analítica de datos. Construye ``data/processed/panama_distritos_merged.geojson``
+con los 76 distritos y las 4 variables visualizadas en el mapa coroplético.
+
 Uso:
-  python scripts/analisis_proyecto/02_download_geodata.py
+  python scripts/analisis_proyecto/fase6/02_download_geodata.py
 """
 
 from __future__ import annotations
@@ -12,7 +16,7 @@ import json
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 

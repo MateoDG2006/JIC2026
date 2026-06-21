@@ -1,4 +1,3 @@
-# Stack: docs/00_indice.md, AGENTS.md, docs/EXPANSION_CHEMBL_PLAN.md
 # Requiere Python >=3.10,<3.13 (deepchem no publica wheels para 3.13+)
 
 # ── Core científico ──────────────────────────────────────────────────────────

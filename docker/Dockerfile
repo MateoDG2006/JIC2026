@@ -18,4 +18,4 @@ ENV PYTHONPATH=/app
 ENV CHEMBL_BACKEND=sqlite
 ENV CHEMBL_DB_PATH=/data/chembl/chembl_37.db
 
-CMD ["python", "scripts/analisis_proyecto/extract_chembl_local.py"]
+CMD ["python", "scripts/analisis_proyecto/fase1/extract_chembl_local.py"]

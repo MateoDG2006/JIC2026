@@ -1,4 +1,26 @@
-"""Configuracion central del visor GNN + analytics (FastAPI)."""
+"""Configuración central del visor GNN-Tox (FastAPI).
+
+Define rutas absolutas a:
+    - Código: ``templates/``, ``static/`` y corpus precomputado (``viz/data/``)
+    - Datos canónicos: ``data/processed/``, ``outputs/models/``, ``outputs/dashboard/``
+    - Bundle de despliegue: ``outputs/dashboard/bundle/`` para Render/Docker
+
+Constantes Tox21:
+    TASK_NAMES         — 12 dianas biológicas en orden DeepChem (AUDIT P5: definidas
+                         localmente, sin importar src.data.dataset para que el visor
+                         pueda iniciar aunque torch_geometric no esté instalado)
+    TASK_DESCRIPTIONS  — etiquetas en español para mostrar en la UI
+
+Constantes ChEMBL (UI):
+    NUMERIC_COLS, FEATURE_LABELS, PREDICTOR_NOTE, MAP_VARIABLES
+
+Funciones:
+    use_bundle()        — True si se debe leer desde outputs/dashboard/bundle/
+                          (modo despliegue cloud sin datos crudos)
+    resolve_path(p, n)  — canónico o bundle según use_bundle()
+    resolve_dir(p, n)   — análogo para directorios (xai/, models/)
+    viz_host(), viz_port() — config de bind para uvicorn (env vars o config.yaml)
+"""
 
 from __future__ import annotations
 

@@ -2,10 +2,14 @@
 """
 Pipeline Flujo A — extracción ChEMBL offline (SQLite).
 
+Pertenece a la **Fase 1 — Adquisición y extracción de datos** del proyecto de
+analítica de datos. Genera ``data/raw/chembl_panama_bioactivity.csv`` a partir
+de la base ``chembl_37.db`` (o vía API REST si se invoca con ``--backend api``).
+
 Uso:
-  python scripts/analisis_proyecto/extract_chembl_local.py
-  python scripts/analisis_proyecto/extract_chembl_local.py --corpus-mode mida
-  python scripts/analisis_proyecto/extract_chembl_local.py --backend api
+  python scripts/analisis_proyecto/fase1/extract_chembl_local.py
+  python scripts/analisis_proyecto/fase1/extract_chembl_local.py --corpus-mode mida
+  python scripts/analisis_proyecto/fase1/extract_chembl_local.py --backend api
 """
 
 from __future__ import annotations
@@ -14,7 +18,7 @@ import argparse
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 

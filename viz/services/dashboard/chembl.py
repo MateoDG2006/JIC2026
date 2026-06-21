@@ -1,4 +1,14 @@
-"""Inferencia sklearn ChEMBL."""
+"""Inferencia del predictor pChEMBL (Random Forest Regressor).
+
+Encadena:
+    1. ``load_predictor_defaults()`` — valores típicos para las features
+       de contexto de ensayo (one-hot codificado en entrenamiento)
+    2. Sobreescribe con los descriptores moleculares que envía el usuario
+       desde el formulario de la página ``/chembl/models``
+    3. Reordena las columnas según ``model.feature_names_in_`` para evitar
+       errores de sklearn si el orden cambió
+    4. Devuelve pChEMBL predicho (escala log10 — típicamente entre 4 y 9)
+"""
 
 from __future__ import annotations
 

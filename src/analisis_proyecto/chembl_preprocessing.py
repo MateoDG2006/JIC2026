@@ -1,5 +1,20 @@
 """
 Preprocesamiento y utilidades EDA para el dataset ChEMBL panameño (Flujo B).
+
+Pipeline típico:
+    df = load_bioactivity(csv)                       # parseo + dtypes
+    df, dup = filter_potential_duplicates(df)        # quita duplicados marcados
+    df_clean, rep = drop_columns_high_nan(df)        # umbral 250 NaN
+    df_clean = impute_median_by_family(df_clean)     # mediana por familia
+    X, y, groups = build_supervised_matrix(df_clean, target_col="activity_class")
+    X_tr, X_te, y_tr, y_te = train_test_split_by_group(X, y, groups)  # split honesto
+    metrics = evaluate_classification(model, X_tr, X_te, y_tr, y_te)
+
+Constantes importantes:
+    FEATURE_COLS              — 8 descriptores RDKit usados para modelar
+    NUMERIC_DESCRIPTOR_COLS   — FEATURE_COLS + pchembl_value + standard_value (EDA)
+    CATEGORICAL_COLS          — variables categóricas (family, target_type, etc.)
+    ASSAY_FEATURE_COLS        — columnas de contexto de ensayo (one-hot opcional)
 """
 
 from __future__ import annotations
@@ -13,7 +28,7 @@ from sklearn.metrics import accuracy_score, mean_absolute_error, mean_squared_er
 from sklearn.model_selection import train_test_split
 
 # Descriptores moleculares para modelado (sin leakage de ensayo/diana).
-# heavy_atoms excluido: colinealidad ~0.99 con mw_freebase (ver AUDIT_REPORT.md).
+# heavy_atoms excluido: colinealidad ~0.99 con mw_freebase.
 # cx_logp/cx_logd excluidos: 100% NaN en extracción ChEMBL local.
 FEATURE_COLS: list[str] = [
     "mw_freebase",

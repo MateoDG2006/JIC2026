@@ -1,4 +1,17 @@
-"""Aplicacion FastAPI unificada: visor GNN 3D + analytics ChEMBL/Panama."""
+"""Aplicación FastAPI unificada del proyecto: visor GNN 3D + analytics ChEMBL/Panamá.
+
+Estructura:
+    /                        → visor GNN 3D (vistas Jinja2)
+    /eda, /chembl/models     → analytics ChEMBL (EDA, modelos)
+    /panama/{toxicity,map}   → análisis Panamá (toxicidad, mapa)
+    /panama/models           → comparativa baselines vs GIN (AUDIT P9)
+    /api/*                   → REST: predicción GIN, XAI, propiedades
+    /api/analytics/*         → REST: datos EDA, métricas, geo, comparativa
+    /api/analytics/refresh   → POST: invalida caché si artefactos cambiaron en disco (P3)
+    /xai/<filename>          → SVGs precomputados (GNNExplainer/Grad-CAM)
+    /health                  → estado del servidor (P12)
+    /static/*                → CSS, JS, imágenes
+"""
 
 from __future__ import annotations
 
@@ -26,7 +39,11 @@ app.include_router(api_router)
 
 @app.get("/xai/{filename}")
 def serve_xai_svg(filename: str):
-    """Sirve figuras XAI precomputadas desde outputs/xai/figures/."""
+    """Sirve figuras XAI precomputadas desde ``outputs/xai/figures/``.
+
+    Solo acepta archivos SVG. Útil para incrustar explicaciones GNNExplainer/Grad-CAM
+    en las plantillas Jinja2 sin tener que regenerarlas en cada petición.
+    """
     directory = xai_figures_dir()
     path = directory / filename
     if not path.is_file() or path.suffix.lower() != ".svg":
@@ -36,7 +53,11 @@ def serve_xai_svg(filename: str):
 
 @app.get("/health")
 def health_check():
-    """Health check para deployment (AUDIT P12)."""
+    """Health check para deployment cloud (Render/Docker) — AUDIT P12.
+
+    Devuelve filas de ChEMBL, número de compuestos del perfil de toxicidad
+    y si el modelo GIN está disponible. Permite probes de Kubernetes/Render.
+    """
     from viz.services.dashboard.artifacts import load_chembl, load_toxicity_profile
     from viz.services import inference
 

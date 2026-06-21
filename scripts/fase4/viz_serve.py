@@ -1,5 +1,20 @@
 #!/usr/bin/env python3
-"""Arranca el servidor FastAPI del visor (usa el venv del proyecto)."""
+"""Arranca el servidor FastAPI del visor (usa el venv del proyecto).
+
+Wrapper sobre uvicorn que:
+    1. Añade la raíz del repo al PYTHONPATH (uvicorn --reload lanza
+       subprocesos sin el cwd correcto).
+    2. Comprueba que el puerto está libre antes de bindar (Windows suele
+       reservar puertos para WSL/Docker incluso si están "libres").
+    3. Soporta ``--check-only`` para CI: solo importa la app sin levantar
+       servidor (usado por ``make test-viz``).
+
+Uso:
+    python scripts/fase4/viz_serve.py                       # local :8000
+    python scripts/fase4/viz_serve.py --host 0.0.0.0        # exposicion LAN
+    python scripts/fase4/viz_serve.py --reload              # hot reload (dev)
+    python scripts/fase4/viz_serve.py --check-only          # solo importa
+"""
 
 from __future__ import annotations
 
@@ -19,6 +34,12 @@ os.environ["PYTHONPATH"] = _ROOT if not _prev_pp else f"{_ROOT}{os.pathsep}{_pre
 
 
 def port_available(host: str, port: int) -> tuple[bool, str]:
+    """Verifica si ``host:port`` se puede bindar.
+
+    Returns:
+        (True, "")        si el puerto está libre
+        (False, mensaje)  si ya está en uso (OSError convertido a string)
+    """
     bind_host = "" if host in ("0.0.0.0", "::") else host
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         try:

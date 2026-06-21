@@ -1,4 +1,22 @@
-"""Servicio de corpus pre-computado: carga y sirve datos XAI pre-calculados."""
+"""Corpus precomputado del visor.
+
+Carga JSON por compuesto desde ``viz/data/`` (1 archivo = 1 molécula
+con predicciones GIN + importancias XAI por tarea). Se cargan en memoria
+una sola vez como cache simple.
+
+Estructura esperada de cada JSON:
+    {
+      "name": "Chlorpyrifos",
+      "smiles": "...",
+      "family": "Organophosphates",
+      "predictions": {"NR-AR": 0.12, "SR-ARE": 0.84, ...},
+      "xai": {"gnnexplainer": {...}, "gradcam": {...}},
+      "atom_symbols": ["C","C","O",...],
+      "demo": false
+    }
+
+Generado por ``scripts/fase4/build_viz_corpus.py``.
+"""
 
 from __future__ import annotations
 

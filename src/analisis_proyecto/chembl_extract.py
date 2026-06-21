@@ -1,7 +1,21 @@
 """
 Fachada unificada para extracción ChEMBL (Flujo A).
 
-Por defecto usa SQLite local (`backend=sqlite`). La API REST queda como fallback.
+Decide a qué backend pegarle según ``config.yaml``:
+    backend: sqlite   → dump local descargado (rápido, offline, ~50 GB)
+    backend: api      → REST PUG (lento, online, sin dump)
+
+Funciones públicas:
+    load_chembl_config        — lee sección `chembl` del config + overrides ENV
+    resolve_backend           — valida y normaliza el backend elegido
+    resolve_standard_types    — IC50/EC50/Ki/... a buscar en ChEMBL
+    resolve_corpus_mode       — `full` (235 compuestos) | `mida` (20 oficiales)
+    build_mapping_table       — corpus PubChem → CHEMBL_ID (delega en backend)
+    build_bioactivity_table   — CHEMBL_ID → filas de activity (delega)
+    apply_quality_filters_*   — filtros pChEMBL/relation/validity_comment
+
+Las funciones build_* son polimórficas en el backend, lo que permite
+intercambiar SQLite vs API sin tocar los notebooks.
 """
 
 from __future__ import annotations
