@@ -8,8 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const TASKS = JSON.parse(app.dataset.tasks || "[]");
     const TASK_DESC = JSON.parse(app.dataset.taskDescriptions || "{}");
     const fromCorpus = app.dataset.fromCorpus === "true";
+    const liveAnalysis = app.dataset.liveAnalysis === "true";
     const compoundId = app.dataset.compoundId;
     let smiles = app.dataset.smiles || "";
+    const initialName = app.dataset.compoundName || "";
+    const initialFamily = app.dataset.family || "";
 
     let state = {
         predictions: {},
@@ -67,6 +70,57 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btn-toggle-style")?.addEventListener("click", (e) => {
         const style = MoleculeViewer3D.toggleStyle();
         e.target.textContent = `Estilo: ${style}`;
+    });
+
+    async function downloadStl(style, btnId, defaultLabel) {
+        if (!smiles) {
+            showError("No hay SMILES disponible para exportar.");
+            return;
+        }
+        const btn = document.getElementById(btnId);
+        const originalText = btn?.textContent;
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = "Generando…";
+        }
+        try {
+            const compoundName =
+                els.compoundName?.textContent?.trim() || "molecule";
+            const url =
+                `/api/stl?smiles=${encodeURIComponent(smiles)}` +
+                `&name=${encodeURIComponent(compoundName)}` +
+                `&style=${encodeURIComponent(style)}`;
+            const res = await fetch(url);
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.detail || "No se pudo generar el STL");
+            }
+            const blob = await res.blob();
+            const filename =
+                res.headers
+                    .get("Content-Disposition")
+                    ?.match(/filename="([^"]+)"/)?.[1] || "molecule.stl";
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        } catch (e) {
+            showError(e.message);
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = originalText || defaultLabel;
+            }
+        }
+    }
+
+    document.getElementById("btn-download-stl")?.addEventListener("click", () => {
+        downloadStl("ballstick", "btn-download-stl", "↓ STL 3D");
+    });
+
+    document.getElementById("btn-download-stl-flat")?.addEventListener("click", () => {
+        downloadStl("flat_keychain", "btn-download-stl-flat", "↓ STL llavero");
     });
 
     document.querySelectorAll("[data-method]").forEach((btn) => {
@@ -446,6 +500,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (data.name) {
             els.compoundName.textContent = data.name;
             els.breadcrumbName.textContent = data.name;
+        } else if (initialName) {
+            els.compoundName.textContent = initialName;
+            els.breadcrumbName.textContent = initialName;
         }
         if (smiles) els.smilesDisplay.textContent = smiles;
 
@@ -501,8 +558,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function init() {
+        if (initialName) {
+            els.compoundName.textContent = initialName;
+            els.breadcrumbName.textContent = initialName;
+        }
+        if (smiles) els.smilesDisplay.textContent = smiles;
+
         const corpusScript = document.getElementById("corpus-data");
-        if (corpusScript) {
+        if (corpusScript && !liveAnalysis) {
             try {
                 const data = JSON.parse(corpusScript.textContent);
                 await applyCorpusData(data);
@@ -510,7 +573,12 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch { /* fall through */ }
         }
 
-        if (fromCorpus && compoundId) {
+        if (liveAnalysis && smiles) {
+            await loadLiveAnalysis();
+            return;
+        }
+
+        if (fromCorpus && compoundId && !liveAnalysis) {
             showLoading("Cargando compuesto del corpus…");
             try {
                 const res = await fetch(`/api/corpus/${compoundId}`);

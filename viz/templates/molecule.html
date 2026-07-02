@@ -1,27 +1,32 @@
 {% extends "base.html" %}
 
 {% block title %}
-{% if compound %}{{ compound.name }} — {% endif %}GNN-Tox Viewer
+{% if compound_name %}{{ compound_name }} — {% elif compound %}{{ compound.name }} — {% endif %}GNN-Tox Viewer
 {% endblock %}
 
 {% block content %}
 <div id="molecule-app"
      data-from-corpus="{{ 'true' if from_corpus else 'false' }}"
+     data-live-analysis="{{ 'true' if live_analysis else 'false' }}"
      data-compound-id="{{ compound_id or '' }}"
      data-smiles="{{ (compound.smiles if compound else smiles_input) or '' }}"
+     data-compound-name="{{ compound_name or '' }}"
+     data-family="{{ compound_family or '' }}"
      data-tasks='{{ task_names | tojson }}'
      data-task-descriptions='{{ task_descriptions | tojson }}'>
 
     <nav class="breadcrumb">
         <a href="/">Corpus</a>
         <span>/</span>
-        <span id="breadcrumb-name">{{ compound.name if compound else 'Análisis' }}</span>
+        <span id="breadcrumb-name">{{ compound_name or (compound.name if compound else 'Análisis') }}</span>
     </nav>
 
     <header class="molecule-header">
         <div>
-            <h1 id="compound-name">{{ compound.name if compound else 'Análisis de molécula' }}</h1>
-            {% if compound and compound.family %}
+            <h1 id="compound-name">{{ compound_name or (compound.name if compound else 'Análisis de molécula') }}</h1>
+            {% if compound_family %}
+            <span class="family-tag">{{ compound_family }}</span>
+            {% elif compound and compound.family %}
             <span class="family-tag">{{ compound.family }}</span>
             {% endif %}
         </div>
@@ -37,17 +42,14 @@
 
     <div id="error-banner" class="error-banner" hidden></div>
 
-    <div
-        id="demo-banner"
-        class="demo-banner"
-        role="note"
-        {% if not (compound and compound.demo) %}hidden{% endif %}
-    >
+    {% if compound and compound.demo %}
+    <div id="demo-banner" class="demo-banner" role="note">
         <strong>Ejemplo de prueba.</strong>
         Las predicciones Tox21 y las explicaciones XAI mostradas aquí son datos simulados
         para demostrar la interfaz. No provienen del modelo GNN entrenado ni constituyen
         predicciones verdaderas de toxicidad.
     </div>
+    {% endif %}
 
     <div class="molecule-layout">
         <!-- Panel izquierdo: visualización 3D + 2D -->
@@ -55,6 +57,12 @@
             <div class="viz-toolbar">
                 <button type="button" class="btn btn-sm" id="btn-reset-view" title="Resetear vista">⟳ Vista</button>
                 <button type="button" class="btn btn-sm" id="btn-toggle-style" title="Alternar estilo">Estilo</button>
+                <button type="button" class="btn btn-sm" id="btn-download-stl" title="Modelo 3D ball-and-stick">
+                    ↓ STL 3D
+                </button>
+                <button type="button" class="btn btn-sm" id="btn-download-stl-flat" title="Ball-and-stick plano con placa y nombre (~35 mm)">
+                    ↓ STL llavero
+                </button>
                 <span class="toolbar-label">Coloración XAI</span>
             </div>
             <div class="viewer-3d-wrap">
@@ -78,9 +86,13 @@
 
             <section class="card">
                 <h2>Predicciones Tox21</h2>
-                <p id="demo-predictions-note" class="demo-inline-note" hidden>
+                {% if compound and compound.demo %}
+                <p id="demo-predictions-note" class="demo-inline-note">
                     Valores de demostración — no son predicciones reales del modelo.
                 </p>
+                {% else %}
+                <p id="demo-predictions-note" class="demo-inline-note" hidden></p>
+                {% endif %}
                 <div id="predictions-chart" class="predictions-chart"></div>
             </section>
 

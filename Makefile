@@ -169,14 +169,19 @@ panama-predict: build-panama-corpus explain-panama
 panama-all: build-panama-corpus explain-panama validate-ghs generate-panama-report
 
 # ── ChEMBL local — Flujo A (análisis de datos, corpus MIDA) ───────────────
-# Requisito setup: ~5 GB descarga + ~15 GB en data/external/chembl/chembl_37.db
-#   make setup-chembl          → descarga ChEMBLdb vía Docker (una vez)
-#   make test-chembl           → verifica BD + query de prueba
-#   make chembl-extract        → genera CSV en data/raw/
-#   make chembl-all            → setup + extracción completa
+# BD persistente en volumen Docker ``jic2026_chembl_db`` (~5 GB descarga + ~15 GB instalada)
+#   make chembl-docker-up        → build + descarga ChEMBLdb al volumen (una vez)
+#   make chembl-docker-import    → copia BD existente en data/external/chembl/ al volumen
+#   make test-chembl-docker      → verifica BD dentro del contenedor
+#   make chembl-extract-docker   → extracción CSV vía contenedor (sin copiar BD al host)
+#   make chembl-sync-host        → copia volumen → data/external/chembl/ (scripts locales)
+#   make test-chembl             → verifica BD en host (requiere chembl-sync-host)
+#   make chembl-extract          → extracción CSV en host (requiere chembl-sync-host)
 
 CHEMBL_COMPOSE := docker compose -f docker/docker-compose.yml
-CHEMBL_DB := data/external/chembl/chembl_37.db
+CHEMBL_VOLUME := jic2026_chembl_db
+CHEMBL_HOST_DIR := data/external/chembl
+CHEMBL_DB := $(CHEMBL_HOST_DIR)/chembl_37.db
 CHEMBL_NOTEBOOK := notebooks/proyecto analisis de datos/fase1_adquisicion.ipynb
 
 chembl-docker-build:
@@ -185,10 +190,42 @@ chembl-docker-build:
 chembl-docker-build-app:
 	$(CHEMBL_COMPOSE) build toxgnn
 
-setup-chembl: chembl-docker-build
-	$(CHEMBL_COMPOSE) --profile setup run --rm chembl-init
+# Levanta Docker y guarda chembl_37.db en el volumen nombrado (idempotente)
+chembl-docker-up: chembl-docker-build chembl-docker-build-app
+	$(CHEMBL_COMPOSE) --profile setup up --abort-on-container-exit chembl-init
 
-test-chembl:
+chembl-docker-down:
+	$(CHEMBL_COMPOSE) --profile setup down --remove-orphans
+
+# Migra una BD ya descargada en data/external/chembl/ al volumen Docker
+chembl-docker-import: chembl-docker-build
+	$(CHEMBL_COMPOSE) --profile setup run --rm --entrypoint "" \
+		-v "$(CURDIR)/$(CHEMBL_HOST_DIR):/import:ro" \
+		chembl-init \
+		sh -c 'if [ -f /data/chembl/chembl_37.db ]; then echo "[chembl-import] Volumen ya tiene chembl_37.db"; \
+		elif [ -f /import/chembl_37.db ]; then cp -a /import/. /data/chembl/ && echo "[chembl-import] Copiado al volumen $(CHEMBL_VOLUME)"; \
+		else echo "[chembl-import] No hay BD en $(CHEMBL_HOST_DIR)/ ni en el volumen"; exit 1; fi'
+
+setup-chembl: chembl-docker-up
+
+test-chembl-docker: chembl-docker-build-app
+	$(CHEMBL_COMPOSE) run --rm toxgnn python scripts/analisis_proyecto/fase1/verify_chembl_db.py
+
+# Copia volumen → host (solo si falta chembl_37.db local; ~15 GB)
+chembl-sync-host: chembl-docker-build-app
+ifeq ($(OS),Windows_NT)
+	if not exist "$(CHEMBL_HOST_DIR)" mkdir "$(CHEMBL_HOST_DIR)"
+else
+	mkdir -p $(CHEMBL_HOST_DIR)
+endif
+	$(CHEMBL_COMPOSE) run --rm --no-deps --entrypoint "" \
+		-v "$(CURDIR)/$(CHEMBL_HOST_DIR):/host" \
+		toxgnn \
+		sh -c 'if [ ! -f /data/chembl/chembl_37.db ]; then echo "Volumen vacío — ejecuta make chembl-docker-up"; exit 1; fi; \
+		if [ -f /host/chembl_37.db ]; then echo "Host ya tiene chembl_37.db — omitiendo copia"; \
+		else cp /data/chembl/chembl_37.db /data/chembl/manifest.json /host/ && echo "Copiado a $(CHEMBL_HOST_DIR)/"; fi'
+
+test-chembl: chembl-sync-host
 	"$(VENV_PYTHON)" scripts/analisis_proyecto/fase1/verify_chembl_db.py
 
 chembl-extract: test-chembl
@@ -197,7 +234,7 @@ chembl-extract: test-chembl
 chembl-extract-api:
 	"$(VENV_PYTHON)" scripts/analisis_proyecto/fase1/extract_chembl_local.py --config $(CONFIG) --backend api
 
-chembl-extract-docker: chembl-docker-build-app test-chembl
+chembl-extract-docker: chembl-docker-build-app test-chembl-docker
 	$(CHEMBL_COMPOSE) run --rm toxgnn
 
 chembl-notebook: test-chembl
@@ -206,7 +243,7 @@ chembl-notebook: test-chembl
 test-chembl-flow-b:
 	"$(VENV_PYTHON)" scripts/analisis_proyecto/fase4/verify_flow_b.py
 
-chembl-all: setup-chembl chembl-extract
+chembl-all: setup-chembl chembl-extract-docker
 
 # ── Geodatos Panamá (Flujo D) ───────────────────────────────────────────────
 download-geodata:
@@ -234,4 +271,4 @@ viz-analytics-all: download-geodata prepare-dashboard test-viz-analytics
 # Pipeline JIC: predicciones GNN + artefactos analytics
 viz-jic: panama-predict prepare-dashboard test-viz-analytics
 
-.PHONY: setup install-pyg-ext clean prepare-graphs powershell-extract-data-from-tox21 wsl-extract-data-from-tox21 eda baselines train-baselines train-baselines-verbose train-gin train-gin-cv train-gin-verbose train-gin-wandb train-gin-all train-gin-all-verbose check-gin-gpu train-gin-notebook build-viz-corpus build-viz-corpus-demo setup-viz setup-viz-full xai-all xai-demo install-viz viz-check viz viz-serve viz-lan viz-prod build-panama-corpus build-panama-corpus-fast build-panama-corpus-graphs explain-panama validate-ghs generate-panama-report panama-predict panama-all panama-notebook chembl-docker-build chembl-docker-build-app setup-chembl test-chembl chembl-extract chembl-extract-api chembl-extract-docker chembl-notebook test-chembl-flow-b chembl-all download-geodata prepare-dashboard prepare-dashboard-bundle test-viz-analytics test-dashboard dashboard-serve dashboard-all dashboard-jic viz-analytics-all viz-jic
+.PHONY: setup install-pyg-ext clean prepare-graphs powershell-extract-data-from-tox21 wsl-extract-data-from-tox21 eda baselines train-baselines train-baselines-verbose train-gin train-gin-cv train-gin-verbose train-gin-wandb train-gin-all train-gin-all-verbose check-gin-gpu train-gin-notebook build-viz-corpus build-viz-corpus-demo setup-viz setup-viz-full xai-all xai-demo install-viz viz-check viz viz-serve viz-lan viz-prod build-panama-corpus build-panama-corpus-fast build-panama-corpus-graphs explain-panama validate-ghs generate-panama-report panama-predict panama-all panama-notebook chembl-docker-build chembl-docker-build-app chembl-docker-up chembl-docker-down chembl-docker-import setup-chembl test-chembl test-chembl-docker chembl-sync-host chembl-extract chembl-extract-api chembl-extract-docker chembl-notebook test-chembl-flow-b chembl-all download-geodata prepare-dashboard prepare-dashboard-bundle test-viz-analytics test-dashboard dashboard-serve dashboard-all dashboard-jic viz-analytics-all viz-jic

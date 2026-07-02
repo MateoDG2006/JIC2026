@@ -60,7 +60,8 @@ def ensure_db_exists(db_path: str | Path | None = None) -> Path:
     if not path.is_file():
         raise ChemblDatabaseError(
             f"No se encontró ChEMBLdb en {path}. "
-            "Ejecuta: docker compose -f docker/docker-compose.yml --profile setup run chembl-init"
+            "Opciones: make chembl-docker-up (volumen Docker) + make chembl-sync-host, "
+            "o make chembl-extract-docker (sin copiar la BD al host)."
         )
     return path
 

@@ -18,13 +18,16 @@ Endpoints (montados bajo ``/api``):
     POST /xai-colors {importance}                      → colores hex YlOrRd
 
     GET  /mol3d?smiles=...    → SDF / MOL block para 3Dmol.js
+    GET  /stl?smiles=...&style=...  → STL 3D (ballstick) o plano (flat_keychain)
     GET  /properties?smiles=  → MW, LogP, PSA, etc. (RDKit Descriptors)
+    GET  /pubchem/search?q=   → búsqueda por nombre en PubChem (CID + imagen)
     GET  /tasks               → lista de 12 tareas Tox21 con descripción
 """
 
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import Response
 from pydantic import BaseModel
 
 from viz.config import TASK_NAMES
@@ -82,10 +85,46 @@ def get_corpus_compound(compound_id: str):
     return data
 
 
-@router.post("/corpus/reload")
+@router.get("/corpus/reload")
 def reload_corpus():
-    """Recarga el corpus desde disco."""
+    """Recarga el corpus pre-computado legacy desde disco."""
     n = corpus.reload_corpus()
+    return {"reloaded": n}
+
+
+@router.get("/panama/compounds")
+def list_panama_compounds():
+    """Lista plana del catálogo panameño (sin predicciones)."""
+    from viz.services import panama_corpus
+
+    return panama_corpus.list_compounds()
+
+
+@router.get("/panama/families")
+def list_panama_families():
+    """Catálogo panameño agrupado por familia química."""
+    from viz.services import panama_corpus
+
+    return panama_corpus.list_by_family()
+
+
+@router.get("/panama/compounds/{compound_id}")
+def get_panama_compound(compound_id: str):
+    """Metadatos de un compuesto del catálogo panameño."""
+    from viz.services import panama_corpus
+
+    data = panama_corpus.get_compound(compound_id)
+    if data is None:
+        raise HTTPException(404, f"Compuesto '{compound_id}' no encontrado")
+    return data
+
+
+@router.post("/panama/reload")
+def reload_panama_catalog():
+    """Recarga el catálogo panameño desde CSV."""
+    from viz.services import panama_corpus
+
+    n = panama_corpus.reload_catalog()
     return {"reloaded": n}
 
 
@@ -233,6 +272,61 @@ def get_mol3d(smiles: str):
         "mol_block": block,
         "format": "sdf" if sdf else "mol",
     }
+
+
+@router.get("/stl")
+def get_stl(
+    smiles: str,
+    name: str = "molecule",
+    style: str = "ballstick",
+    mol_height: float | None = None,
+    ring_side: str | None = None,
+):
+    """Genera malla STL para impresión 3D (ball-and-stick o plano para llavero)."""
+    from viz.services.stl_export import smiles_to_stl, smiles_to_stl_flat_keychain
+
+    safe_name = "".join(c if c.isalnum() or c in "-_" else "_" for c in name)[:64] or "molecule"
+    style_key = style.strip().lower()
+
+    if style_key in ("flat", "flat_keychain", "keychain", "llavero"):
+        stl = smiles_to_stl_flat_keychain(
+            smiles,
+            title=safe_name,
+            label=name,
+            mol_height_above_plate=mol_height,
+            keyring_side=ring_side,
+        )
+        suffix = "_llavero"
+    else:
+        stl = smiles_to_stl(smiles, title=safe_name)
+        suffix = ""
+
+    if stl is None:
+        raise HTTPException(400, f"No se pudo generar STL para: {smiles}")
+    return Response(
+        content=stl,
+        media_type="model/stl",
+        headers={"Content-Disposition": f'attachment; filename="{safe_name}{suffix}.stl"'},
+    )
+
+
+@router.get("/pubchem/search")
+def pubchem_search(q: str, limit: int = 10):
+    """Busca compuestos en PubChem por nombre (autocomplete + propiedades)."""
+    import requests
+
+    from viz.services.pubchem import search_compounds
+
+    query = q.strip()
+    if not query:
+        raise HTTPException(400, "Ingresa al menos un carácter para buscar")
+
+    try:
+        results = search_compounds(query, limit=limit)
+    except requests.RequestException as exc:
+        raise HTTPException(502, f"Error consultando PubChem: {exc}") from exc
+
+    return {"query": query, "count": len(results), "results": results}
 
 
 @router.get("/properties")

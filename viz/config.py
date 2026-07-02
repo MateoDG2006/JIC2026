@@ -50,6 +50,8 @@ CHEMBL_CSV = DATA_DIR / "chembl_clean.csv"
 CHEMBL_MODELS_DIR = PROJECT_ROOT / "outputs" / "chembl" / "models"
 CHEMBL_METRICS = PROJECT_ROOT / "outputs" / "chembl" / "results" / "metrics_summary.csv"
 TOXICITY_PROFILE_CSV = PROJECT_ROOT / "outputs" / "reports" / "panama_pesticides_profile.csv"
+PANAMA_CIDS_CSV = PROJECT_ROOT / "data" / "raw" / "pubchem_panama_cids.csv"
+PANAMA_PROFILE_CSV = TOXICITY_PROFILE_CSV
 GEOJSON_PATH = DATA_DIR / "panama_distritos_merged.geojson"
 XAI_FIGURES_DIR = PROJECT_ROOT / "outputs" / "xai" / "figures"
 

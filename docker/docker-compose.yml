@@ -2,7 +2,7 @@ services:
   chembl-init:
     build: ./chembl-init
     volumes:
-      - ../data/external/chembl:/data/chembl
+      - chembl_db:/data/chembl
     environment:
       CHEMBL_VERSION: "37"
     profiles: ["setup"]
@@ -12,7 +12,7 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
     volumes:
-      - ../data/external/chembl:/data/chembl:ro
+      - chembl_db:/data/chembl:ro
       - ../data:/app/data
       - ../outputs:/app/outputs
       - ../notebooks:/app/notebooks
@@ -21,3 +21,7 @@ services:
       CHEMBL_DB_PATH: /data/chembl/chembl_37.db
       CHEMBL_VERSION: "37"
     working_dir: /app
+
+volumes:
+  chembl_db:
+    name: jic2026_chembl_db

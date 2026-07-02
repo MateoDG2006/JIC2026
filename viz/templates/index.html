@@ -9,89 +9,131 @@
 </section>
 
 <section class="search-panel card">
-    <h2>Analizar SMILES</h2>
-    <form id="search-form" action="/analyze" method="get" class="search-form">
-        <input
-            type="text"
-            name="smiles"
-            id="smiles-input"
-            placeholder="Ej: CCOP(=S)(OCC)Oc1nc(Cl)c(Cl)cc1Cl (Clorpirifos)"
-            required
-            autocomplete="off"
-        />
-        <button type="submit" class="btn btn-primary">Analizar</button>
-    </form>
-    <p class="hint">Ingresa un SMILES canónico o busca en el corpus pre-computado abajo.</p>
+    <div class="search-tabs" role="tablist">
+        <button type="button" class="search-tab active" data-tab="pubchem" role="tab" aria-selected="true">
+            Buscar por nombre
+        </button>
+        <button type="button" class="search-tab" data-tab="smiles" role="tab" aria-selected="false">
+            Analizar SMILES
+        </button>
+    </div>
+
+    <div id="tab-pubchem" class="search-tab-panel" role="tabpanel">
+        <h2>Buscar en PubChem</h2>
+        <div class="pubchem-search-wrap">
+            <input
+                type="search"
+                id="pubchem-input"
+                placeholder="Ej: Chlorpyrifos, Atrazine, Glyphosate…"
+                autocomplete="off"
+                aria-label="Nombre del compuesto"
+            />
+            <div id="pubchem-results" class="pubchem-results" hidden></div>
+        </div>
+        <p class="hint">Con una letra verás 10 compuestos aleatorios de PubChem. Con más texto, la búsqueda se afina por nombre.</p>
+        <div id="pubchem-status" class="pubchem-status" hidden></div>
+    </div>
+
+    <div id="tab-smiles" class="search-tab-panel" hidden role="tabpanel">
+        <h2>Analizar SMILES</h2>
+        <form id="search-form" action="/analyze" method="get" class="search-form">
+            <input
+                type="text"
+                name="smiles"
+                id="smiles-input"
+                placeholder="Ej: CCOP(=S)(OCC)Oc1nc(Cl)c(Cl)cc1Cl (Clorpirifos)"
+                autocomplete="off"
+            />
+            <button type="submit" class="btn btn-primary">Analizar</button>
+        </form>
+        <p class="hint">Ingresa un SMILES canónico para análisis directo con el modelo GIN.</p>
+    </div>
+
     <div id="model-status" class="status-banner" hidden></div>
 </section>
 
-{% if has_demo %}
-<div class="demo-banner" role="note">
-    <strong>Corpus de demostración.</strong>
-    Los compuestos marcados como <span class="demo-badge">Ejemplo de prueba</span> muestran
-    predicciones y explicaciones XAI simuladas. No son resultados del modelo entrenado ni
-    predicciones verdaderas.
-</div>
-{% endif %}
-
+{% if families %}
 <section class="filters card">
     <div class="filter-row">
-        <label for="filter-risk">Riesgo</label>
-        <select id="filter-risk">
-            <option value="">Todos</option>
-            <option value="ALTO">Alto</option>
-            <option value="MODERADO">Moderado</option>
-            <option value="BAJO">Bajo</option>
-        </select>
         <label for="filter-family">Familia</label>
         <select id="filter-family">
             <option value="">Todas</option>
+            {% for section in families %}
+            <option value="{{ section.family }}">{{ section.family }} ({{ section.count }})</option>
+            {% endfor %}
         </select>
-        <input type="search" id="filter-text" placeholder="Buscar por nombre..." />
+        <input type="search" id="filter-text" placeholder="Buscar por nombre o fórmula…" />
+        <label class="filter-checkbox">
+            <input type="checkbox" id="filter-mida" />
+            Solo registrados MIDA
+        </label>
+        <button type="button" class="btn btn-sm" id="btn-expand-all">Expandir todas</button>
+        <button type="button" class="btn btn-sm" id="btn-collapse-all">Colapsar todas</button>
     </div>
 </section>
 
 <section class="corpus-section">
-    <h2>Corpus Panamá <span id="corpus-count" class="badge">{{ compounds|length }}</span></h2>
-    {% if compounds %}
-    <div class="corpus-grid" id="corpus-grid">
-        {% for c in compounds %}
-        <a
-            href="/molecule/{{ c.id }}"
-            class="corpus-card"
-            data-risk="{{ c.risk }}"
-            data-family="{{ c.family }}"
-            data-name="{{ c.name|lower }}"
+    <h2>Corpus Panamá <span id="corpus-count" class="badge">{{ total_compounds }}</span></h2>
+    <p class="corpus-intro hint">
+        Plaguicidas del registro MIDA y familias químicas de PubChem. Haz clic en un compuesto para
+        ejecutar la predicción GNN-GIN en vivo.
+    </p>
+
+    <div id="corpus-by-family">
+        {% for section in families %}
+        <details
+            class="corpus-family-block"
+            data-family="{{ section.family }}"
+            {% if loop.first %}open{% endif %}
         >
-            <div class="card-header">
-                <h3>{{ c.name }}</h3>
-                <div class="card-badges">
-                    {% if c.demo %}
-                    <span class="demo-badge" title="Datos simulados para pruebas de la interfaz">Ejemplo de prueba</span>
+            <summary class="corpus-family-toggle">
+                <span class="corpus-family-chevron" aria-hidden="true">▸</span>
+                <span class="corpus-family-title">{{ section.family }}</span>
+                <span class="badge corpus-family-count">{{ section.count }}</span>
+            </summary>
+            <div class="corpus-family-body">
+                <div class="corpus-grid">
+                {% for c in section.compounds %}
+                <a
+                    href="/molecule/{{ c.id }}"
+                    class="corpus-card"
+                    data-family="{{ c.family }}"
+                    data-name="{{ c.name|lower }}"
+                    data-formula="{{ (c.formula or '')|lower }}"
+                    data-mida="{{ 'true' if c.mida else 'false' }}"
+                >
+                    <div class="card-header">
+                        <h4>{{ c.name }}</h4>
+                        {% if c.mida %}
+                        <span class="mida-badge" title="Ingrediente activo del registro MIDA">MIDA</span>
+                        {% endif %}
+                    </div>
+                    {% if c.formula %}
+                    <span class="formula-tag">{{ c.formula }}</span>
                     {% endif %}
-                    <span class="risk-badge risk-{{ c.risk|lower }}">{{ c.risk }}</span>
+                    <p class="smiles-preview" title="{{ c.smiles }}">{{ c.smiles[:48] }}{% if c.smiles|length > 48 %}…{% endif %}</p>
+                    <div class="card-footer">
+                        <span class="predict-cta">Predecir toxicidad →</span>
+                    </div>
+                </a>
+                {% endfor %}
                 </div>
             </div>
-            {% if c.family %}
-            <span class="family-tag">{{ c.family }}</span>
-            {% endif %}
-            <p class="smiles-preview" title="{{ c.smiles }}">{{ c.smiles[:50] }}{% if c.smiles|length > 50 %}…{% endif %}</p>
-            <div class="card-footer">
-                <span class="task-label">{{ c.top_task }}</span>
-                <span class="prob-value">{{ "%.0f"|format(c.top_prob * 100) }}%</span>
-            </div>
-        </a>
+        </details>
         {% endfor %}
     </div>
-    {% else %}
-    <div class="empty-state card">
-        <p>No hay compuestos pre-computados en <code>viz/data/</code>.</p>
-        <p>Ejecuta: <code>python scripts/fase4/build_viz_corpus.py</code></p>
-    </div>
-    {% endif %}
 </section>
+{% else %}
+<section class="corpus-section">
+    <div class="empty-state card">
+        <p>No se encontró el corpus panameño en <code>data/raw/pubchem_panama_cids.csv</code>.</p>
+        <p>Ejecuta: <code>python scripts/fase5/build_panama_corpus.py</code></p>
+    </div>
+</section>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
 <script src="/static/js/dashboard.js"></script>
+<script src="/static/js/pubchem-search.js"></script>
 {% endblock %}
