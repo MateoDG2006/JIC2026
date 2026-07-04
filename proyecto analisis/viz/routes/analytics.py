@@ -47,6 +47,12 @@ def page_eda(request: Request):
     return templates.TemplateResponse(request, "analytics_exploration.html", {"active_nav": "eda"})
 
 
+@router.get("/presentacion", response_class=HTMLResponse)
+def page_presentacion(request: Request):
+    """Presentación tipo diapositivas del proyecto (basada en el informe IEEE)."""
+    return templates.TemplateResponse(request, "presentacion.html", {"active_nav": "presentacion"})
+
+
 @router.get("/api/analytics/chembl/meta")
 def chembl_meta():
     df = load_chembl()

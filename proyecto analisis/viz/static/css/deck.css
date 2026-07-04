@@ -1,0 +1,371 @@
+/* ============================================================================
+   deck.css — Presentación tipo diapositivas del Proyecto de Análisis de Datos
+   Reutiliza las variables de color de style.css (paleta oscura).
+   ============================================================================ */
+
+html, body.deck {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+body.deck {
+    background: radial-gradient(1200px 800px at 70% -10%, #16233a 0%, var(--bg) 55%);
+    display: block;
+}
+
+/* ---- Barra de progreso ---- */
+.deck-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, var(--accent), var(--success));
+    z-index: 60;
+    transition: width 0.35s ease;
+}
+
+/* ---- Contenedor de diapositivas ---- */
+.deck {
+    position: fixed;
+    inset: 0;
+}
+
+.slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    padding: clamp(1.5rem, 4vw, 4rem) clamp(1.5rem, 6vw, 6rem);
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateY(18px);
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.slide.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* ---- Tipografía de diapositiva ---- */
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0;
+}
+.eyebrow::before {
+    content: "";
+    width: 26px;
+    height: 2px;
+    background: var(--accent);
+    display: inline-block;
+}
+
+.slide h1 {
+    font-size: clamp(1.6rem, 3.4vw, 3rem);
+    line-height: 1.12;
+    margin: 0.35rem 0 0.25rem;
+    max-width: 22ch;
+}
+.slide h2.slide-title {
+    font-size: clamp(1.4rem, 2.8vw, 2.3rem);
+    color: var(--text);
+    font-weight: 700;
+    margin: 0.35rem 0 0.25rem;
+    max-width: 26ch;
+    line-height: 1.15;
+}
+.slide .lead {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: var(--text-muted);
+    max-width: 70ch;
+    margin: 0;
+}
+.slide p { max-width: 78ch; }
+.accent { color: var(--accent); }
+.good { color: var(--success); }
+.bad  { color: var(--danger); }
+.warn { color: var(--warning); }
+.mono { font-family: var(--mono); }
+
+/* ---- Portada ---- */
+.slide-cover { justify-content: center; }
+.cover-authors {
+    margin-top: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.98rem;
+    line-height: 1.7;
+}
+.cover-authors strong { color: var(--text); }
+.cover-inst { font-size: 0.9rem; }
+
+/* ---- Badges de tecnología ---- */
+.badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1.25rem;
+    max-width: 60ch;
+}
+.tech-badge {
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    background: rgba(59,130,246,0.08);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    color: var(--text);
+    font-family: var(--mono);
+}
+
+/* ---- Grids reutilizables ---- */
+.q-grid, .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 0.9rem;
+    margin-top: 0.5rem;
+}
+.mini-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+}
+.mini-card .tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    text-transform: uppercase;
+}
+.mini-card h4 { margin: 0.3rem 0 0.35rem; font-size: 1rem; }
+.mini-card p { margin: 0; font-size: 0.88rem; color: var(--text-muted); }
+
+/* ---- Stack tecnológico agrupado ---- */
+.stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.9rem;
+    margin-top: 0.75rem;
+}
+.stack-col h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.35rem;
+}
+.stack-col ul { margin: 0; padding-left: 1.1rem; }
+.stack-col li { font-size: 0.9rem; margin-bottom: 0.2rem; }
+
+/* ---- Stat tiles ---- */
+.stat-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+.stat-tile {
+    flex: 1 1 150px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1rem;
+}
+.stat-tile .val {
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+.stat-tile .lbl { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem; }
+
+/* ---- Funnel del corpus ---- */
+.funnel { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.5rem; max-width: 720px; }
+.funnel-step {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.9rem;
+    border-radius: var(--radius);
+    background: linear-gradient(90deg, rgba(59,130,246,0.25), rgba(59,130,246,0.05));
+    border: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+.funnel-step .n { font-weight: 800; font-variant-numeric: tabular-nums; }
+.funnel-step.s1 { width: 100%; }
+.funnel-step.s2 { width: 88%; }
+.funnel-step.s3 { width: 78%; }
+.funnel-step.s4 { width: 66%; }
+.funnel-step.s5 { width: 54%; background: linear-gradient(90deg, rgba(34,197,94,0.28), rgba(34,197,94,0.05)); }
+
+/* ---- Layout de contenido + gráfico ---- */
+.split {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.85fr) 1.4fr;
+    gap: 1.25rem;
+    align-items: stretch;
+    min-height: 0;
+    flex: 1;
+}
+.split .notes { align-self: center; }
+.split ul { padding-left: 1.1rem; margin: 0.5rem 0; }
+.split li { margin-bottom: 0.4rem; font-size: 0.92rem; }
+
+@media (max-width: 900px) {
+    .split { grid-template-columns: 1fr; }
+}
+
+/* ---- Paneles de gráfico ---- */
+.plot {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    min-height: 300px;
+    width: 100%;
+}
+.plot-lg { min-height: 420px; }
+.chart-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.75rem;
+    flex: 1;
+    min-height: 0;
+}
+.chart-2x2 .plot { min-height: 210px; }
+@media (max-width: 900px) {
+    .chart-2x2 { grid-template-columns: 1fr; grid-template-rows: none; }
+}
+
+/* ---- Controles reactivos ---- */
+.deck-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+    margin: 0.25rem 0 0.5rem;
+    padding: 0.65rem 0.85rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.deck-controls label { font-size: 0.82rem; color: var(--text-muted); }
+.deck-controls select,
+.deck-controls input[type="number"] {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: var(--radius);
+    padding: 0.35rem 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    min-width: 130px;
+}
+
+/* ---- Callout grande (hallazgo central) ---- */
+.callout {
+    margin-top: 0.75rem;
+    padding: 1rem 1.2rem;
+    border-left: 4px solid var(--danger);
+    background: rgba(239,68,68,0.1);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 1rem;
+}
+.callout.good-callout { border-left-color: var(--success); background: rgba(34,197,94,0.1); }
+
+/* ---- Tabla compacta ---- */
+.deck-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 0.5rem; }
+.deck-table th, .deck-table td { padding: 0.4rem 0.6rem; text-align: left; border-bottom: 1px solid var(--border); }
+.deck-table th { color: var(--text-muted); font-weight: 600; }
+.deck-table td.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--mono); }
+
+/* ---- Navegación ---- */
+.deck-nav {
+    position: fixed;
+    bottom: 1.1rem;
+    right: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    z-index: 60;
+}
+.deck-nav button {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    color: var(--text);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+.deck-nav button:hover { background: var(--bg-hover); border-color: var(--accent); }
+.deck-counter {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    min-width: 46px;
+    text-align: center;
+}
+
+.deck-dots {
+    position: fixed;
+    bottom: 1.35rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.4rem;
+    z-index: 60;
+}
+.deck-dots button {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    border: none;
+    background: var(--border);
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s, transform 0.2s;
+}
+.deck-dots button.active { background: var(--accent); transform: scale(1.35); }
+
+.deck-brand {
+    position: fixed;
+    top: 0.9rem;
+    left: 1.3rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    z-index: 60;
+}
+.deck-brand a { color: var(--accent); text-decoration: none; }
+
+.deck-hint {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    margin-top: 1.5rem;
+}
+kbd {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    padding: 0.1rem 0.4rem;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    background: var(--bg-card);
+}
+
+@media (max-width: 640px) {
+    .deck-dots { display: none; }
+}

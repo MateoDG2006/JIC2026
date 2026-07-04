@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentación — Análisis multivariado de plaguicidas (ChEMBL / Panamá)</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/deck.css">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body class="deck">
+
+<div class="deck-progress" id="deck-progress"></div>
+<div class="deck-brand"><a href="/eda">← Dashboard interactivo</a></div>
+
+<div class="deck" id="deck">
+
+    <!-- 1 · PORTADA ------------------------------------------------------- -->
+    <section class="slide slide-cover active">
+        <p class="eyebrow">Proyecto Final · Análisis de Datos y Toma de Decisiones en Computación</p>
+        <h1>Caracterización multivariada de la bioactividad de plaguicidas registrados en Panamá</h1>
+        <p class="lead">y el <span class="accent">límite honesto</span> de predecir la potencia con descriptores moleculares clásicos.</p>
+        <div class="badge-row">
+            <span class="tech-badge">Python 3.10–3.12</span>
+            <span class="tech-badge">ChEMBL v37</span>
+            <span class="tech-badge">RDKit</span>
+            <span class="tech-badge">scikit-learn</span>
+            <span class="tech-badge">FastAPI · Plotly.js</span>
+        </div>
+        <div class="cover-authors">
+            <strong>Frida Leis</strong> · <strong>Mateo Del Giudice</strong> · <strong>Javier Sánchez-Galán, Ph.D.</strong><br>
+            <span class="cover-inst">Facultad de Ingeniería de Sistemas Computacionales (FISC) — Universidad Tecnológica de Panamá</span>
+        </div>
+        <p class="deck-hint">Navega con <kbd>→</kbd> <kbd>←</kbd> o la <kbd>barra espaciadora</kbd> · <kbd>F</kbd> pantalla completa</p>
+    </section>
+
+    <!-- 2 · PREGUNTA DE INVESTIGACIÓN ------------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">El problema · Pregunta de investigación</p>
+        <h2 class="slide-title">¿Los descriptores clásicos de una molécula explican y predicen su toxicidad?</h2>
+        <p class="lead">Panamá usa plaguicidas intensivamente en su agricultura de exportación. ChEMBL contiene millones de mediciones experimentales de bioactividad ligadas a estructuras químicas: ¿basta la <span class="accent">tabla de descriptores fisicoquímicos</span> para caracterizarlos y predecir su potencia sobre compuestos <em>no vistos</em>?</p>
+        <div class="q-grid">
+            <div class="mini-card"><span class="tag">P1 · Correlación</span><h4>¿Cómo se organiza el espacio fisicoquímico?</h4><p>Relaciones entre peso, lipofilia, polaridad, enlaces de H y aromaticidad.</p></div>
+            <div class="mini-card"><span class="tag">P3 · Agrupamiento</span><h4>¿Forman clusters naturales?</h4><p>¿Los agrupamientos coinciden con las familias químicas conocidas?</p></div>
+            <div class="mini-card"><span class="tag">P4 · Diferencias</span><h4>¿Difieren las familias?</h4><p>¿La potencia y las propiedades cambian entre familias de plaguicidas?</p></div>
+            <div class="mini-card"><span class="tag">P6 · Predicción</span><h4>¿Se puede predecir la potencia?</h4><p>Bajo validación honesta por compuesto, no por filas.</p></div>
+        </div>
+    </section>
+
+    <!-- 3 · CAMPOS Y TECNOLOGÍAS ------------------------------------------ -->
+    <section class="slide">
+        <p class="eyebrow">Campos del proyecto · Stack tecnológico</p>
+        <h2 class="slide-title">Ciencia de datos aplicada a cheminformática regulatoria</h2>
+        <p class="lead">Cuatro roles cubren el flujo completo: <strong>Ingeniería de Datos</strong> (extracción trazable), <strong>Análisis de Datos</strong> (limpieza y EDA), <strong>Ciencia de Datos</strong> (multivariado e hipótesis) e <strong>Ingeniería de ML</strong> (validación y dashboard).</p>
+        <div class="stack-grid">
+            <div class="stack-col"><h4>Lenguaje y datos</h4><ul><li>Python 3.10–3.12</li><li>pandas · NumPy</li><li>ChEMBL v37 (SQLite)</li><li>PubChem (corpus MIDA)</li></ul></div>
+            <div class="stack-col"><h4>Cheminformática</h4><ul><li>RDKit — 8 descriptores</li><li>SMILES canónico</li><li>Regla de Lipinski (Ro5)</li></ul></div>
+            <div class="stack-col"><h4>Modelado y estadística</h4><ul><li>scikit-learn (Random Forest)</li><li>SciPy · statsmodels (FDR)</li><li>scikit-posthocs (Dunn)</li></ul></div>
+            <div class="stack-col"><h4>Visualización</h4><ul><li>Matplotlib · seaborn</li><li>missingno · UpSetPlot</li><li>Plotly.js (interactivo)</li></ul></div>
+            <div class="stack-col"><h4>Infraestructura</h4><ul><li>Docker (servidor ChEMBL)</li><li>FastAPI + Jinja2</li><li>uvicorn · despliegue Render</li></ul></div>
+            <div class="stack-col"><h4>Geodatos (futuro)</h4><ul><li>GeoPandas</li><li>geoBoundaries ADM2</li><li>INEC / portal MAPI</li></ul></div>
+        </div>
+    </section>
+
+    <!-- 4 · PIPELINE / PROCESO -------------------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Proceso · Pipeline de datos (Fases 1–5)</p>
+        <h2 class="slide-title">De 235 candidatos a un corpus limpio y trazable</h2>
+        <div class="split">
+            <div class="notes">
+                <p class="lead">La <strong>unidad de análisis es el compuesto</strong>, no la medición. Una cascada de emparejamiento resuelve cada plaguicida a su ID de ChEMBL, y un filtro de calidad separa los <em>endpoints</em> de unión molecular de las dosis a nivel de organismo.</p>
+                <div class="funnel">
+                    <div class="funnel-step s1"><span>Candidatos PubChem (MIDA + HID72)</span><span class="n">235</span></div>
+                    <div class="funnel-step s2"><span>Resueltos a ChEMBL</span><span class="n">171</span></div>
+                    <div class="funnel-step s3"><span>Mediciones limpias</span><span class="n">9 752</span></div>
+                    <div class="funnel-step s4"><span>Compuestos estructurales (descriptores)</span><span class="n">147</span></div>
+                    <div class="funnel-step s5"><span>Con potencia de unión (≥3 med.)</span><span class="n">89</span></div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-tile"><div class="val">7</div><div class="lbl">Familias químicas</div></div>
+                    <div class="stat-tile"><div class="val">1 015</div><div class="lbl">Dianas proteicas</div></div>
+                    <div class="stat-tile"><div class="val">37.4%</div><div class="lbl">Mediciones censuradas</div></div>
+                </div>
+            </div>
+            <div class="plot plot-lg" id="plot-funnel"></div>
+        </div>
+    </section>
+
+    <!-- 5 · EDA INTERACTIVO ----------------------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Resultados · Exploración interactiva (P1)</p>
+        <h2 class="slide-title">Explora el corpus en vivo</h2>
+        <p class="lead">Elige la variable, filtra por familia y acota el rango de peso molecular. Los cuatro gráficos se recalculan contra la API del dashboard.</p>
+        <div class="deck-controls">
+            <label for="eda-variable">Variable</label>
+            <select id="eda-variable"></select>
+            <label for="eda-family">Familia</label>
+            <select id="eda-family"><option value="ALL">Todas</option></select>
+            <label for="eda-mw-min">MW mín</label>
+            <input type="number" id="eda-mw-min" step="10">
+            <label for="eda-mw-max">MW máx</label>
+            <input type="number" id="eda-mw-max" step="10">
+            <button type="button" class="btn btn-primary btn-sm" id="eda-refresh">Actualizar</button>
+        </div>
+        <div class="chart-2x2">
+            <div class="plot" id="chart-hist"></div>
+            <div class="plot" id="chart-box"></div>
+            <div class="plot" id="chart-corr"></div>
+            <div class="plot" id="chart-scatter"></div>
+        </div>
+    </section>
+
+    <!-- 6 · CORRELACIÓN --------------------------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Resultados · Análisis de correlación (P1)</p>
+        <h2 class="slide-title">El espacio fisicoquímico tiene bloques coherentes</h2>
+        <div class="split">
+            <div class="notes">
+                <p class="lead">Se calcularon dos matrices — <strong>Pearson</strong> (lineal) y <strong>Spearman</strong> (por rangos). Su concordancia indica relaciones monótonas estables.</p>
+                <ul>
+                    <li>Área polar ↔ donores de H: <span class="mono accent">psa–hbd = 0.81</span></li>
+                    <li>Área polar ↔ aceptores de H: <span class="mono accent">psa–hba = 0.78</span></li>
+                    <li>Lipofilia inversa a polaridad: <span class="mono bad">alogp–hbd = −0.57</span></li>
+                </ul>
+                <p>Consecuencia clave: hay <strong>colinealidad</strong> (polaridad vs. lipofilia) que condiciona el modelado posterior.</p>
+            </div>
+            <div class="plot plot-lg" id="plot-corr-big"></div>
+        </div>
+    </section>
+
+    <!-- 7 · DIFERENCIAS ENTRE FAMILIAS ------------------------------------ -->
+    <section class="slide">
+        <p class="eyebrow">Resultados · Pruebas de hipótesis (P4)</p>
+        <h2 class="slide-title">Las familias sí difieren estadísticamente</h2>
+        <div class="split">
+            <div class="notes">
+                <p class="lead"><strong>Kruskal–Wallis</strong> con corrección de <strong>Benjamini–Hochberg</strong> (FDR) sobre 132 compuestos y 6 grupos. Diferencias significativas en <span class="good">6 de 7</span> descriptores.</p>
+                <ul>
+                    <li>Efecto más fuerte: lipofilia <span class="mono">alogp</span> — ε² = <span class="accent">0.203</span>, p<sub>adj</sub> = 8.0×10⁻⁵</li>
+                    <li>Le siguen peso molecular, enlaces rotables y donores de H.</li>
+                    <li>La potencia mediana <em>no</em> separa familias una vez controlada la heterogeneidad de endpoints.</li>
+                </ul>
+                <p class="deck-hint">Barra = tamaño de efecto (ε²). Verde: significativo (p<sub>adj</sub> &lt; 0.05).</p>
+            </div>
+            <div class="plot plot-lg" id="plot-kruskal"></div>
+        </div>
+    </section>
+
+    <!-- 8 · PCA / CLUSTERING ---------------------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Resultados · Estructura multivariada (P3)</p>
+        <h2 class="slide-title">…pero los clusters NO reconstruyen la taxonomía química</h2>
+        <div class="split">
+            <div class="notes">
+                <p class="lead">PCA sobre 7 descriptores estandarizados. Las familias se <strong>solapan</strong>: no hay fronteras nítidas en el espacio fisicoquímico.</p>
+                <div class="stat-row">
+                    <div class="stat-tile"><div class="val">78.2%</div><div class="lbl">Varianza en 2 componentes</div></div>
+                    <div class="stat-tile"><div class="val">0.36</div><div class="lbl">Silueta (K-means, k=2)</div></div>
+                    <div class="stat-tile"><div class="val bad">0.018</div><div class="lbl">ARI clusters vs. familias</div></div>
+                </div>
+                <p>Un <strong>ARI ≈ 0</strong> significa que la partición es exploratoria, no una clasificación química.</p>
+            </div>
+            <div class="plot plot-lg" id="plot-pca"></div>
+        </div>
+    </section>
+
+    <!-- 9 · HALLAZGO CENTRAL ---------------------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Hallazgo central · Baseline honesto (P6)</p>
+        <h2 class="slide-title">El mismo modelo, conclusiones opuestas según la validación</h2>
+        <div class="split">
+            <div class="notes">
+                <p class="lead">Un <strong>Random Forest</strong> (300 árboles) sobre los mismos 8 descriptores y el mismo objetivo, evaluado con tres esquemas de validación cruzada:</p>
+                <ul>
+                    <li><span class="good">Por filas (con fuga):</span> R² = <span class="mono">0.44</span> — parece aceptable.</li>
+                    <li><span class="warn">Por grupos (honesto):</span> R² = <span class="mono">−0.23</span> — peor que la media.</li>
+                    <li><span class="bad">Por compuesto:</span> R² = <span class="mono">−0.52</span> — sin poder predictivo.</li>
+                </ul>
+                <div class="callout">Como los descriptores son <strong>constantes por compuesto</strong>, partir por filas coloca la misma molécula en train y test. El R² positivo es un <strong>espejismo por fuga de datos</strong>.</div>
+            </div>
+            <div class="plot plot-lg" id="plot-baseline"></div>
+        </div>
+    </section>
+
+    <!-- 10 · CONCLUSIONES ------------------------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Conclusiones</p>
+        <h2 class="slide-title">Los descriptores diferencian, pero no predicen lo no visto</h2>
+        <div class="card-grid">
+            <div class="mini-card"><span class="tag">P1 / P4 ✓</span><h4>Sí diferencian familias</h4><p>Colinealidad polaridad–lipofilia; 6/7 descriptores significativos.</p></div>
+            <div class="mini-card"><span class="tag">P3 ✗</span><h4>No reconstruyen taxonomía</h4><p>ARI = 0.018 — sin agrupamientos naturales por familia.</p></div>
+            <div class="mini-card"><span class="tag">P6 ✗</span><h4>No predicen potencia</h4><p>R² &lt; 0 bajo validación honesta por compuesto.</p></div>
+            <div class="mini-card"><span class="tag">Aporte</span><h4>Fuga de datos demostrada</h4><p>La validación por grupos es indispensable con features constantes por entidad.</p></div>
+        </div>
+        <div class="callout good-callout">Este límite justifica el <strong>proyecto hermano GNN-GIN</strong>: redes neuronales sobre el <em>grafo molecular</em> (no descriptores tabulares), evaluadas con <em>scaffold split</em>, superan la limitación representacional aquí evidenciada.</div>
+    </section>
+
+    <!-- 11 · DASHBOARD Y DISPONIBILIDAD ----------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Comunicación · Dashboard y despliegue</p>
+        <h2 class="slide-title">Resultados reproducibles y publicados</h2>
+        <div class="split">
+            <div class="notes">
+                <p class="lead">Dashboard interactivo con <strong>FastAPI + Plotly.js + Jinja2</strong>. Datos servidos como artefactos JSON precomputados y consumidos por controles reactivos.</p>
+                <ul>
+                    <li>Página <span class="mono">/eda</span>: 4 gráficos + selector de variable, familia y rango de MW.</li>
+                    <li>Extracción reproducible de ChEMBL v37 vía <strong>Docker/FastAPI</strong>.</li>
+                    <li>Despliegue continuo en <strong>Render</strong> (<span class="mono">uvicorn viz.app:app</span>) ante cada push.</li>
+                    <li>Trabajo futuro: mapa de distritos (GeoPandas + INEC) y panel completo de modelos.</li>
+                </ul>
+                <p class="deck-hint">Código, notebooks (Fases 1–5), datos procesados y artefactos se entregan junto al informe IEEE.</p>
+            </div>
+            <div class="notes" style="align-self:center">
+                <div class="stat-row">
+                    <div class="stat-tile"><div class="val">4</div><div class="lbl">Gráficos reactivos</div></div>
+                    <div class="stat-tile"><div class="val">5</div><div class="lbl">Fases documentadas</div></div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-tile"><div class="val">JSON</div><div class="lbl">Artefactos precomputados</div></div>
+                    <div class="stat-tile"><div class="val">HTTPS</div><div class="lbl">Público en Render</div></div>
+                </div>
+                <p style="margin-top:1.25rem"><a href="/eda" class="btn btn-primary">Abrir el dashboard interactivo →</a></p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<div class="deck-dots" id="deck-dots"></div>
+<div class="deck-nav">
+    <button id="nav-prev" aria-label="Anterior">‹</button>
+    <span class="deck-counter" id="deck-counter">1 / 11</span>
+    <button id="nav-next" aria-label="Siguiente">›</button>
+</div>
+
+<script src="/static/js/presentacion.js"></script>
+</body>
+</html>
