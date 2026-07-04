@@ -2,26 +2,26 @@ services:
   chembl-init:
     build: ./chembl-init
     volumes:
-      - chembl_db:/data/chembl
+      - chembl_data:/data/chembl
+      - ../config/config.yaml:/config/config.yaml:ro
     environment:
-      CHEMBL_VERSION: "37"
+      CONFIG_PATH: /config/config.yaml
+      CHEMBL_DB_PATH: /data/chembl/chembl_37.db
     profiles: ["setup"]
 
-  chembl-app:
+  chembl-server:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.server
     volumes:
-      - chembl_db:/data/chembl:ro
-      - ../data:/app/data
-      - ../outputs:/app/outputs
-      - ../notebooks:/app/notebooks
+      - chembl_data:/data/chembl:ro
+    ports:
+      - "8765:8765"
     environment:
-      CHEMBL_BACKEND: sqlite
       CHEMBL_DB_PATH: /data/chembl/chembl_37.db
-      CHEMBL_VERSION: "37"
-    working_dir: /app
+    restart: unless-stopped
 
 volumes:
-  chembl_db:
+  chembl_data:
+    external: true
     name: jic2026_chembl_db

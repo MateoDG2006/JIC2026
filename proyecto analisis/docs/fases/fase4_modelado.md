@@ -24,7 +24,7 @@ Esta fase responde a tres preguntas de investigación del rediseño:
 - **P4** — ¿Difiere la potencia (`pchembl`) y las propiedades fisicoquímicas entre familias?
 - **P1 (extensión multivariada)** — ¿Cómo se organiza el espacio fisicoquímico de los 107 compuestos?
 
-**Unidad de análisis:** el **compuesto** (107 filas de `compounds_features.csv`), NO la fila/medición. Los 9 descriptores moleculares son constantes dentro de cada compuesto, por lo que el análisis multivariado solo tiene sentido a nivel de compuesto único.
+**Unidad de análisis:** el **compuesto** (107 filas de `compounds_features.csv`), NO la fila/medición. Para PCA/clustering/tests se usan **7 descriptores multivariados** (`MULTIVARIATE_FEATURE_COLS` en `config/chembl/columns.json`), excluyendo `num_ro5_violations` por varianza casi nula. El baseline P6 a nivel fila usa los 8 descriptores del RF (`FEATURE_COLS`).
 
 **Salida principal:** una caracterización honesta de la estructura del corpus (P3–P5). El **baseline predictivo honesto (P6)** forma parte de esta misma fase como bloque complementario (§12): cuantifica el límite de los descriptores clásicos y cierra el puente al proyecto GNN.
 
@@ -48,21 +48,17 @@ La versión anterior de esta fase entrenaba clasificadores (`activity_class`) y 
 
 ### 3.1 Descriptores de entrada
 
-Los 9 descriptores fisicoquímicos, constantes por compuesto:
+**Multivariado (PCA, clustering, Kruskal):** 7 descriptores sin degenerados:
 
 ```python
-DESCRIPTOR_FEATURES = [
-    "mw_freebase",        # Peso molecular
-    "alogp",              # LogP (lipofilicidad)
-    "psa",                # Area de superficie polar
-    "hba",                # Aceptores de H
-    "hbd",                # Donores de H
-    "aromatic_rings",     # Anillos aromaticos
-    "rtb",                # Enlaces rotables
-    "heavy_atoms",        # Atomos pesados
-    "num_ro5_violations", # Violaciones Lipinski
+MULTIVARIATE_FEATURE_COLS = [
+    "mw_freebase", "alogp", "psa", "hba", "hbd",
+    "aromatic_rings", "rtb",
 ]
+# num_ro5_violations excluido: 106/107 = 0 (near-zero variance)
 ```
+
+**Baseline RF (`FEATURE_COLS`):** 8 descriptores incluyendo `num_ro5_violations` (impacto mínimo en RF).
 
 ### 3.2 Estandarización + PCA
 
@@ -194,8 +190,9 @@ Objetivo (P4): determinar si las propiedades fisicoquímicas y la potencia media
 
 Con n=107 y familias desbalanceadas (varias con pocos compuestos), se usan **pruebas no paramétricas**, que no asumen normalidad ni homocedasticidad:
 
-- **Kruskal-Wallis** por cada descriptor y por `pchembl_median`, comparando las distribuciones entre familias.
+- **Kruskal-Wallis** por cada descriptor multivariado (batería confirmatoria). Excluir grupo `mixed`. Corrección **Benjamini-Hochberg** (`p_adjusted`) entre tests.
 - **Post-hoc de Dunn** con corrección **Holm** cuando Kruskal-Wallis es significativo (identifica qué pares de familias difieren).
+- **`pchembl_median`:** solo en tabla **exploratoria aparte** (`stats_tests_exploratory.csv`) con advertencia de heterogeneidad de endpoints.
 - **Tamaño de efecto**: epsilon² (ε²) para Kruskal-Wallis, para no confundir significancia estadística con magnitud del efecto.
 - **Reportar SIEMPRE el n por familia** junto a cada prueba: un p-valor sobre una familia de 3 compuestos no es interpretable como uno sobre 40.
 
@@ -378,26 +375,27 @@ El notebook `fase4_modelado.ipynb` tiene cuatro bloques: PCA (§1), clustering (
 
 | Elemento | Valor |
 |---|---|
-| **Unidad** | Compuesto (107 filas de `compounds_features.csv`) |
-| **Target** | `pchembl_median` |
-| **Features** | 9 descriptores (`FEATURE_COLS` / `DESCRIPTOR_FEATURES`) |
-| **Modelo principal** | `RandomForestRegressor` |
-| **Contraste opcional** | `Ridge` (baseline lineal) |
-| **Validación** | Split por grupo (`train_test_split_by_group`, `group_col="chembl_id"`) + `GroupKFold` |
-| **Módulo** | `src/analisis_proyecto/chembl_baseline.py` → `honest_baseline_compound_level`, `leaky_baseline_row_level` |
+| **Contraste principal (filas)** | Mismo target (`pchembl_value`), mismo n (~2807 filas); solo cambia el split |
+| **Fuga** | `KFold(5)` aleatorio — ignora que un compuesto tiene N filas |
+| **Honesto (filas)** | `GroupKFold(5, groups=chembl_id)` — cada compuesto en un solo fold |
+| **Vista complementaria** | Compuesto (107 filas), target `pchembl_median`, `GroupKFold` |
+| **Features** | 8 descriptores (`FEATURE_COLS`) |
+| **Modelo** | `RandomForestRegressor` |
+| **Métrica primaria** | R² CV = media ± σ entre folds + IC bootstrap 95% (no split único) |
+| **Módulo** | `src/analisis_proyecto/modeling/baseline.py` → `RowLevelSplitContrast`, `CompoundLevelBaseline` |
 | **Salida** | `outputs/chembl/results/baseline_honest_metrics.csv` |
-| **Ejecución** | Sección §4 de `notebooks/fase4_modelado.ipynb` |
 
-**Regla de honestidad (no negociable):** split por filas **no es válido** aquí — reintroduce fuga porque los descriptores son idénticos para todas las mediciones del mismo compuesto.
+**Regla de honestidad:** el contraste filas-KFold vs filas-GroupKFold aísla la fuga manteniendo target y n idénticos.
 
 ### 12.3 Contraste que revela la fuga
 
-| Protocolo | R² (referencia) | ¿Válido? | Por qué |
-|---|---|---|---|
-| Split por **filas** (medición) | Alto (~0.5–0.6) | **No — fuga** | Mismas moléculas en train y test |
-| Split por **compuesto** (P6) | Bajo o **negativo** | **Sí — honesto** | Generalización real a moléculas nuevas |
+| Protocolo | ¿Válido? | Por qué |
+|---|---|---|
+| **filas_KFold_CON_FUGA** | No — fuga | Mismas moléculas en train y test |
+| **filas_GroupKFold_HONESTO** | Sí — honesto (filas) | Cada `chembl_id` en un solo fold |
+| **compuesto** (pchembl_median) | Complementario | Agregación heterogénea; no es el par de contraste |
 
-En el notebook se recalculan ambos protocolos lado a lado. La inflación del split por filas **no es mejora del modelo**: es fuga de datos.
+En el notebook se reportan los tres protocolos. La diferencia entre las dos filas del contraste es **únicamente** el split.
 
 ### 12.4 Conclusión y puente al JIC
 

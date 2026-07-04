@@ -9,8 +9,8 @@
 | **Entrada** | `data/processed/compounds_features.csv` (107 compuestos, principal) + `data/processed/activities_clean.csv` (nivel medicion, para dianas) |
 | **Salida** | Figuras en `outputs/chembl/figures/`, tablas de correlacion y de perfil de dianas |
 | **Rol lider** | Analista de Datos |
-| **Notebook** | `notebooks/proyecto analisis de datos/fase3_eda.ipynb` |
-| **Modulo** | `src/analisis_proyecto/chembl_preprocessing.py` |
+| **Notebook** | `notebooks/fase3_eda.ipynb` |
+| **Modulo** | `src/analisis_proyecto/preprocessing/pipeline.py` |
 
 ---
 
@@ -40,7 +40,7 @@ Por eso el EDA fisicoquimico opera sobre las 107 filas de `compounds_features.cs
 
 ### Funcion: `summary_statistics(df)`
 
-**Ubicacion:** `chembl_preprocessing.py`
+**Ubicacion:** `preprocessing/pipeline.py`
 
 Se aplica sobre `compounds_features.csv` (107 filas). Calcula para cada columna numerica:
 
@@ -232,7 +232,7 @@ La tabla resultante DEBE encabezarse con `n_compuestos` para que quede claro sob
 
 ### Funcion: `correlation_with_target(df, target, features)`
 
-**Ubicacion:** `chembl_preprocessing.py`
+**Ubicacion:** `preprocessing/pipeline.py`
 
 Se aplica sobre `compounds_features.csv` con `target="pchembl_median"` (la potencia mediana por compuesto), NO sobre `pchembl_value` a nivel fila. Esto evita que un compuesto con 1.167 mediciones domine la correlacion.
 
@@ -362,14 +362,14 @@ No participa directamente en esta fase.
 
 ```bash
 # Ejecutar notebook completo
-jupyter notebook "notebooks/proyecto analisis de datos/fase3_eda.ipynb"
+jupyter notebook "proyecto analisis/notebooks/fase3_eda.ipynb"
 
 # Verificar que las figuras existen
 ls outputs/chembl/figures/
 
 # Correlacion honesta a nivel compuesto desde terminal
 python -c "
-from src.analisis_proyecto.chembl_preprocessing import correlation_with_target
+from src.analisis_proyecto.preprocessing.pipeline import correlation_with_target
 import pandas as pd
 comp = pd.read_csv('data/processed/compounds_features.csv')
 print('n compuestos:', len(comp))

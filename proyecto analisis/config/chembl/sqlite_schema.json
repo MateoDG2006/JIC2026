@@ -1,0 +1,26 @@
+{
+  "description": "Candidatos de nombre físico por tabla lógica ChEMBLdb (variantes mayúsculas entre versiones)",
+  "table_candidates": {
+    "molecule_dictionary": ["molecule_dictionary", "MOLECULE_DICTIONARY"],
+    "compound_structures": ["compound_structures", "COMPOUND_STRUCTURES"],
+    "compound_properties": ["compound_properties", "COMPOUND_PROPERTIES"],
+    "activities": ["activities", "ACTIVITIES"],
+    "assays": ["assays", "ASSAYS"],
+    "target_dictionary": ["target_dictionary", "TARGET_DICTIONARY"],
+    "molecule_synonyms": ["molecule_synonyms", "MOLECULE_SYNONYMS"]
+  },
+  "column_aliases": {
+    "molecule_chembl": ["chembl_id", "molecule_chembl_id"],
+    "molecule_pref": ["pref_name"],
+    "molecule_molregno": ["molregno"],
+    "structure_smiles": ["canonical_smiles"],
+    "synonym": ["molsynonym", "synonyms", "molecule_synonym"],
+    "assay_chembl": ["assay_chembl_id", "chembl_id"],
+    "assay_type": ["assay_type"],
+    "bao": ["bao_label", "bao_format"],
+    "target_chembl": ["chembl_id", "target_chembl_id"],
+    "target_pref": ["pref_name"],
+    "target_type": ["target_type"],
+    "target_organism": ["organism"]
+  }
+}

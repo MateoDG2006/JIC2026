@@ -1,22 +1,11 @@
 #!/usr/bin/env python
-"""Verificación end-to-end del pipeline Opción A (análisis descriptivo + multivariado).
-
-Reproduce Fases 2–4 incluyendo baseline P6 (Fase 4 §12):
-
-    1. load_bioactivity + filter_potential_duplicates
-    2. drop_columns_high_nan + impute_median_by_family
-    3. activities_clean.csv + compounds_features.csv (107 compuestos)
-    4. PCA + clustering + Kruskal-Wallis
-    5. baseline_honest_metrics.csv (compuesto vs filas_CON_FUGA)
-
-Uso:
-    python scripts/fase4/verify_flow_b.py
-"""
+"""Verificación end-to-end del pipeline Opción A (Fases 2–4)."""
 
 from __future__ import annotations
 
 import json
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
@@ -24,98 +13,129 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-from src.analisis_proyecto.chembl_baseline import (  # noqa: E402
-    honest_baseline_compound_level,
-    leaky_baseline_row_level,
+from src.analisis_proyecto.modeling.baseline import (  # noqa: E402
+    CompoundLevelBaseline,
+    RowLevelSplitContrast,
 )
-from src.analisis_proyecto.chembl_multivariate import (  # noqa: E402
+from src.analisis_proyecto.modeling.multivariate import (  # noqa: E402
+    MULTIVARIATE_FEATURE_COLS,
+    MultivariateAnalyzer,
+)
+from src.analisis_proyecto.preprocessing.pipeline import (  # noqa: E402
+    ChemblPreprocessor,
     FEATURE_COLS,
-    cluster_vs_family_ari,
-    kruskal_by_family,
-    run_kmeans_silhouette,
-    run_pca,
-    scale_features,
-)
-from src.analisis_proyecto.chembl_preprocessing import (  # noqa: E402
-    build_compound_features,
-    drop_columns_high_nan,
-    filter_potential_duplicates,
-    impute_median_by_family,
     load_bioactivity,
-    numeric_and_categorical_cols,
-    pchembl_imputation_report,
 )
 
-RAW_CSV = ROOT / "data" / "raw" / "chembl_panama_bioactivity.csv"
-ACTIVITIES_CSV = ROOT / "data" / "processed" / "activities_clean.csv"
-COMPOUNDS_CSV = ROOT / "data" / "processed" / "compounds_features.csv"
-STATS_CSV = ROOT / "outputs" / "chembl" / "results" / "stats_tests.csv"
-CLUSTER_JSON = ROOT / "outputs" / "chembl" / "results" / "clustering_summary.json"
-BASELINE_CSV = ROOT / "outputs" / "chembl" / "results" / "baseline_honest_metrics.csv"
-NAN_THRESHOLD = 250
+
+@dataclass
+class FlowBPaths:
+    root: Path
+
+    @property
+    def raw_csv(self) -> Path:
+        return self.root / "data" / "raw" / "chembl_panama_bioactivity.csv"
+
+    @property
+    def activities_csv(self) -> Path:
+        return self.root / "data" / "processed" / "activities_clean.csv"
+
+    @property
+    def compounds_csv(self) -> Path:
+        return self.root / "data" / "processed" / "compounds_features.csv"
+
+    @property
+    def stats_csv(self) -> Path:
+        return self.root / "outputs" / "chembl" / "results" / "stats_tests.csv"
+
+    @property
+    def stats_exploratory_csv(self) -> Path:
+        return self.root / "outputs" / "chembl" / "results" / "stats_tests_exploratory.csv"
+
+    @property
+    def cluster_json(self) -> Path:
+        return self.root / "outputs" / "chembl" / "results" / "clustering_summary.json"
+
+    @property
+    def baseline_csv(self) -> Path:
+        return self.root / "outputs" / "chembl" / "results" / "baseline_honest_metrics.csv"
 
 
-def run_pipeline(df: pd.DataFrame) -> None:
-    df, dup_report = filter_potential_duplicates(df)
-    if not dup_report.empty:
-        print(f"  Duplicados eliminados: {dup_report.iloc[0]['filas_eliminadas']}")
+class FlowBPipeline:
+    """Orquesta limpieza, agregación, multivariado y baseline P6."""
 
-    df, _ = drop_columns_high_nan(df, threshold=NAN_THRESHOLD)
-    num_cols, cat_cols = numeric_and_categorical_cols(df)
-    activities = impute_median_by_family(df, numeric_cols=num_cols, categorical_cols=cat_cols)
+    NAN_THRESHOLD = 250
+    EXPECTED_COMPOUNDS = 107
 
-    ACTIVITIES_CSV.parent.mkdir(parents=True, exist_ok=True)
-    activities.to_csv(ACTIVITIES_CSV, index=False)
+    def __init__(self, paths: FlowBPaths | None = None) -> None:
+        self.paths = paths or FlowBPaths(ROOT)
+        self.preprocessor = ChemblPreprocessor(nan_threshold=self.NAN_THRESHOLD)
+        self.multivariate = MultivariateAnalyzer()
 
-    compounds = build_compound_features(activities)
-    assert compounds["chembl_id"].nunique() == len(compounds)
-    assert len(compounds) == 107, f"Esperado 107 compuestos, got {len(compounds)}"
+    def run(self, df: pd.DataFrame) -> None:
+        activities = self.preprocessor.clean_activities(df)
+        self.paths.activities_csv.parent.mkdir(parents=True, exist_ok=True)
+        activities.to_csv(self.paths.activities_csv, index=False)
 
-    desc_cols = [c for c in FEATURE_COLS + ["heavy_atoms"] if c in compounds.columns]
-    assert compounds[desc_cols].isna().sum().sum() == 0, "NaN en descriptores"
+        compounds = self.preprocessor.build_compound_features(activities)
+        assert compounds["chembl_id"].nunique() == len(compounds)
+        assert len(compounds) == self.EXPECTED_COMPOUNDS, (
+            f"Esperado {self.EXPECTED_COMPOUNDS} compuestos, got {len(compounds)}"
+        )
 
-    X = scale_features(compounds)
-    pca = run_pca(X, 2)
-    km = run_kmeans_silhouette(X)
-    ari = cluster_vs_family_ari(km["labels"], compounds["family"])
-    compounds["cluster"] = km["labels"]
-    compounds.to_csv(COMPOUNDS_CSV, index=False)
+        desc_cols = [c for c in FEATURE_COLS + ["heavy_atoms"] if c in compounds.columns]
+        assert compounds[desc_cols].isna().sum().sum() == 0, "NaN en descriptores"
 
-    stats_rows = [kruskal_by_family(compounds, v) for v in FEATURE_COLS + ["pchembl_median"]]
-    STATS_CSV.parent.mkdir(parents=True, exist_ok=True)
-    pd.DataFrame(stats_rows).to_csv(STATS_CSV, index=False)
+        mv = self.multivariate.analyze(compounds)
+        assert "num_ro5_violations" not in mv.summary["features_used"]
+        assert mv.summary.get("features_dropped") == ["num_ro5_violations"]
 
-    summary = {
-        "best_k": km["best_k"],
-        "silhouette_by_k": km["silhouette_by_k"],
-        "ari_vs_family": ari,
-        "pca_var_explained": sum(pca["explained_variance_ratio"]),
-    }
-    CLUSTER_JSON.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+        compounds["cluster"] = mv.kmeans_labels
+        compounds["cluster_label"] = mv.summary["cluster_validity_note"]
+        compounds.to_csv(self.paths.compounds_csv, index=False)
 
-    baseline = pd.DataFrame([
-        honest_baseline_compound_level(compounds),
-        leaky_baseline_row_level(activities),
-    ])
-    baseline.to_csv(BASELINE_CSV, index=False)
+        self.paths.stats_csv.parent.mkdir(parents=True, exist_ok=True)
+        pd.DataFrame(mv.stats_rows).to_csv(self.paths.stats_csv, index=False)
+        pd.DataFrame(mv.exploratory_stats_rows).to_csv(
+            self.paths.stats_exploratory_csv, index=False
+        )
+        self.paths.cluster_json.write_text(json.dumps(mv.summary, indent=2), encoding="utf-8")
 
-    imp = pchembl_imputation_report(activities)
-    print(f"  activities: {activities.shape} | compounds: {compounds.shape}")
-    print(f"  pChEMBL imputados: {imp['pct_imputed']}%")
-    print(f"  PCA var PC1+PC2: {summary['pca_var_explained']*100:.1f}%")
-    print(f"  best_k={km['best_k']} | ARI={ari:.3f}")
-    print(f"  baseline honest R²={baseline.iloc[0]['r2_test']:.3f}")
-    print(f"  baseline leaky R²={baseline.iloc[1]['r2_test']:.3f}")
+        row_contrast = RowLevelSplitContrast().evaluate(activities)
+        compound_view = CompoundLevelBaseline().evaluate(compounds)
+        baseline = pd.DataFrame([m.to_dict() for m in row_contrast + [compound_view]])
+        baseline.to_csv(self.paths.baseline_csv, index=False)
+
+        leak = baseline[baseline["split"] == "filas_KFold_CON_FUGA"].iloc[0]
+        honest = baseline[baseline["split"] == "filas_GroupKFold_HONESTO"].iloc[0]
+        assert leak["n"] == honest["n"], "Contraste filas: target y n deben coincidir"
+
+        imp = self.preprocessor.imputation_report(activities)
+        print(f"  activities: {activities.shape} | compounds: {compounds.shape}")
+        print(f"  pChEMBL imputados: {imp['pct_imputed']}%")
+        print(f"  features multivariado: {mv.summary['features_used']}")
+        print(f"  dropped: {mv.summary['features_dropped']}")
+        print(f"  PCA var PC1+PC2: {mv.summary['pca_var_explained'] * 100:.1f}%")
+        print(f"  best_k={mv.summary['best_k']} | ARI={mv.summary['ari_vs_family']:.3f}")
+        print(
+            f"  baseline filas (fuga): R²={leak['r2_cv_mean']:.3f} ± {leak['r2_cv_std']:.3f} (n={leak['n']})"
+        )
+        print(
+            f"  baseline filas (honesto): R²={honest['r2_cv_mean']:.3f} ± {honest['r2_cv_std']:.3f}"
+        )
+        print(
+            f"  baseline compuesto: R²={compound_view.r2_cv_mean:.3f} ± {compound_view.r2_cv_std:.3f}"
+        )
 
 
 def main() -> int:
-    if not RAW_CSV.exists():
-        print(f"ERROR: falta {RAW_CSV}")
+    paths = FlowBPaths(ROOT)
+    if not paths.raw_csv.exists():
+        print(f"ERROR: falta {paths.raw_csv}")
         return 1
 
-    print(f"Usando dataset real: {RAW_CSV}")
-    df = load_bioactivity(RAW_CSV)
-    run_pipeline(df)
+    print(f"Usando dataset real: {paths.raw_csv}")
+    FlowBPipeline(paths).run(load_bioactivity(paths.raw_csv))
     print("=== verify_flow_b OK (Opción A) ===")
     return 0
 

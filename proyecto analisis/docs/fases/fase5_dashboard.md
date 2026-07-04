@@ -9,7 +9,7 @@
 | **Entradas** | `compounds_features.csv` (107 compuestos), `activities_clean.csv`, `outputs/chembl/results/clustering_summary.json`, `outputs/chembl/results/stats_tests.csv`, JSONs de artefactos, GeoJSON (parqueado) |
 | **Salida** | Aplicacion FastAPI en `viz/` accesible en `http://127.0.0.1:8000` |
 | **Rol lider** | ML Engineer |
-| **Notebook** | `notebooks/proyecto analisis de datos/fase5_dashboard.ipynb` |
+| **Notebook** | `notebooks/fase5_dashboard.ipynb` |
 | **Comando** | `make viz` |
 
 ---
@@ -175,7 +175,7 @@ def invalidate_all():
     _cache.clear()
 ```
 
-**Diferencia con `@lru_cache`:** El `lru_cache` solo invalida al reiniciar el servidor. El cache MD5 detecta cambios en disco automaticamente. Esta pieza de infraestructura se conserva integra; ahora cachea `compounds_features.csv`, `activities_clean.csv` y `clustering_summary.json` en lugar de `chembl_clean.csv` y los `.pkl` de modelos.
+**Diferencia con `@lru_cache`:** El `lru_cache` solo invalida al reiniciar el servidor. El cache MD5 detecta cambios en disco automaticamente. Cachea `compounds_features.csv`, `activities_clean.csv` y `clustering_summary.json`.
 
 ---
 
@@ -559,9 +559,9 @@ Retirada del flujo principal del dashboard hasta contar con un dataset de uso/re
 | Problema | Causa | Solucion |
 |---|---|---|
 | `ModuleNotFoundError: viz` | No esta en el PYTHONPATH | Ejecutar desde la raiz del proyecto |
-| `FileNotFoundError: compounds_features.csv` | No se ejecuto Fase 2 (refactor de dos tablas) | Ejecutar `notebooks/proyecto analisis de datos/fase2_limpieza.ipynb` completo |
+| `FileNotFoundError: compounds_features.csv` | No se ejecuto Fase 2 (refactor de dos tablas) | Ejecutar `notebooks/fase2_limpieza.ipynb` completo |
 | `FileNotFoundError: activities_clean.csv` | Idem — falta la tabla de mediciones dedup | Ejecutar Fase 2 completa |
-| `FileNotFoundError: clustering_summary.json` | No se ejecuto Fase 4 (PCA + clustering) | Ejecutar `notebooks/proyecto analisis de datos/fase4_modelado.ipynb` (version reescrita, sin clasificacion/regresion) |
+| `FileNotFoundError: clustering_summary.json` | No se ejecuto Fase 4 (PCA + clustering) | Ejecutar `notebooks/fase4_modelado.ipynb` |
 | `JSONDecodeError` en artefactos | No se ejecuto `prepare_dashboard` | `make prepare-dashboard` |
 | El explorador muestra "compuesto no encontrado" | `chembl_id` no existe en `compounds_features.csv` (107 posibles) | Verificar el id contra la lista de `compound_list` |
 | Puerto 8000 ocupado | Otro proceso usa el puerto | `uvicorn viz.app:app --port 8001` |

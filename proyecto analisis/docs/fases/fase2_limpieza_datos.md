@@ -9,8 +9,8 @@
 | **Entrada** | `data/raw/chembl_panama_bioactivity.csv` (~3,608 filas, 33 columnas) |
 | **Salida** | `data/processed/activities_clean.csv` (medicion, dedup) + `data/processed/compounds_features.csv` (107 compuestos) |
 | **Rol lider** | Ingeniero de Datos |
-| **Notebook** | `notebooks/proyecto analisis de datos/fase2_limpieza.ipynb` |
-| **Modulo** | `src/analisis_proyecto/chembl_preprocessing.py` |
+| **Notebook** | `notebooks/fase2_limpieza.ipynb` |
+| **Modulo** | `src/analisis_proyecto/preprocessing/pipeline.py` |
 
 ---
 
@@ -102,10 +102,10 @@ El orden importa: la **de-duplicacion se aplica primero**, y sobre el mismo data
 
 ### Paso 1 — Carga y tipado
 
-**Funcion:** `load_bioactivity(path)` en `chembl_preprocessing.py:88`
+**Funcion:** `load_bioactivity(path)` en `preprocessing/pipeline.py:88`
 
 ```python
-from src.analisis_proyecto.chembl_preprocessing import load_bioactivity
+from src.analisis_proyecto.preprocessing.pipeline import load_bioactivity
 
 df = load_bioactivity("data/raw/chembl_panama_bioactivity.csv")
 print(f"Shape crudo: {df.shape}")          # esperado (~3608, 33)
@@ -119,12 +119,12 @@ Verificaciones:
 
 ### Paso 2 — De-duplicacion (correccion de bug)
 
-**Funcion:** `filter_potential_duplicates(df)` en `chembl_preprocessing.py:472`
+**Funcion:** `filter_potential_duplicates(df)` en `preprocessing/pipeline.py:472`
 
 En el crudo hay **801 filas (~22%) marcadas `potential_duplicate=1`** que el pipeline anterior **NO eliminaba**. Es un bug: esas mediciones sesgan los conteos de bioactividad y las agregaciones por compuesto. Se corrige aplicando la dedup como **primer** paso de transformacion.
 
 ```python
-from src.analisis_proyecto.chembl_preprocessing import filter_potential_duplicates
+from src.analisis_proyecto.preprocessing.pipeline import filter_potential_duplicates
 
 df_dedup, dup_report = filter_potential_duplicates(df)
 print(dup_report)               # accion, filas_eliminadas (~801), filas_restantes
@@ -146,10 +146,10 @@ print(df_dedup["standard_relation"].value_counts(dropna=False))
 
 ### Paso 4 — Diagnostico de faltantes
 
-**Funcion:** `summary_statistics(df)` en `chembl_preprocessing.py:116`
+**Funcion:** `summary_statistics(df)` en `preprocessing/pipeline.py:116`
 
 ```python
-from src.analisis_proyecto.chembl_preprocessing import summary_statistics
+from src.analisis_proyecto.preprocessing.pipeline import summary_statistics
 
 stats = summary_statistics(df_dedup)   # media, mediana, moda, std, n_missing, pct_missing
 print(stats.to_string())
@@ -157,7 +157,7 @@ print(stats.to_string())
 
 ### Paso 5 — Visualizacion de faltantes (requisito del curso)
 
-**Funcion:** `plot_missingno_report(df)` en `chembl_preprocessing.py:166`. Se mantienen las visualizaciones missingno (al menos 3).
+**Funcion:** `plot_missingno_report(df)` en `preprocessing/pipeline.py:166`. Se mantienen las visualizaciones missingno (al menos 3).
 
 | Visualizacion | Libreria | Proposito |
 |---|---|---|
@@ -167,17 +167,17 @@ print(stats.to_string())
 | UpSet plot | `upsetplot` (via `missingness_upset_series`) | Combinaciones de patrones de faltantes |
 
 ```python
-from src.analisis_proyecto.chembl_preprocessing import plot_missingno_report
+from src.analisis_proyecto.preprocessing.pipeline import plot_missingno_report
 
 plot_missingno_report(df_dedup, save_dir="outputs/chembl/figures/")
 ```
 
 ### Paso 6 — Eliminacion de columnas con alto NaN
 
-**Funcion:** `drop_columns_high_nan(df, threshold=250)` en `chembl_preprocessing.py:209`. Retorna el dataframe reducido y una tabla de auditoria con la decision por columna.
+**Funcion:** `drop_columns_high_nan(df, threshold=250)` en `preprocessing/pipeline.py:209`. Retorna el dataframe reducido y una tabla de auditoria con la decision por columna.
 
 ```python
-from src.analisis_proyecto.chembl_preprocessing import drop_columns_high_nan
+from src.analisis_proyecto.preprocessing.pipeline import drop_columns_high_nan
 
 df_reduced, audit_df = drop_columns_high_nan(df_dedup, threshold=250)
 ```
@@ -209,7 +209,7 @@ activities_clean.to_csv("data/processed/activities_clean.csv", index=False)
 
 ### Paso 8 — Tabla 2: `compounds_features.csv` (nivel COMPUESTO, 107 filas)
 
-**Funcion:** `build_compound_features(activities_df)` en `chembl_preprocessing.py` **(nueva funcion — a implementar)**.
+**Funcion:** `build_compound_features(activities_df)` en `preprocessing/pipeline.py` **(nueva funcion — a implementar)**.
 
 Agrega la tabla de mediciones a **una fila por compuesto** (107). Los descriptores moleculares son constantes por compuesto, asi que se toma el primer valor no nulo por `chembl_id`; los agregados de bioactividad se calculan sobre las mediciones (respetando la censura en `pct_active`/`pchembl_*`).
 
@@ -244,7 +244,7 @@ Columnas de la tabla resultante:
 | Agregados de bioactividad | `pchembl_median`, `pchembl_std`, `n_activities`, `n_targets`, `n_assay_types`, `n_standard_types`, `pct_active` |
 
 ```python
-from src.analisis_proyecto.chembl_preprocessing import build_compound_features
+from src.analisis_proyecto.preprocessing.pipeline import build_compound_features
 
 compounds = build_compound_features(activities_clean)
 assert len(compounds) == 107, "compounds_features debe tener 107 filas"
@@ -252,12 +252,12 @@ assert len(compounds) == 107, "compounds_features debe tener 107 filas"
 
 ### Paso 9 — Imputacion a nivel COMPUESTO
 
-**Funcion:** `impute_median_by_family(df, numeric_cols, categorical_cols)` en `chembl_preprocessing.py:244`
+**Funcion:** `impute_median_by_family(df, numeric_cols, categorical_cols)` en `preprocessing/pipeline.py:244`
 
 La imputacion de descriptores se hace **sobre la tabla de compuestos (107 filas)**, no sobre las 3.608 mediciones. Asi cada molecula se imputa una sola vez y no se repite el mismo valor cientos de veces. Estrategia: mediana por `family` (preserva la estructura fisicoquimica de cada familia) con fallback a mediana global; categoricas por moda global o `"Unknown"`.
 
 ```python
-from src.analisis_proyecto.chembl_preprocessing import impute_median_by_family
+from src.analisis_proyecto.preprocessing.pipeline import impute_median_by_family
 
 descriptor_cols = ["mw_freebase", "alogp", "psa", "hba", "hbd",
                    "aromatic_rings", "rtb", "heavy_atoms", "num_ro5_violations"]
@@ -269,10 +269,10 @@ assert compounds[descriptor_cols].isna().sum().sum() == 0
 
 ### Paso 10 — Verificacion y reporte de imputacion
 
-**Funcion:** `pchembl_imputation_report(df)` en `chembl_preprocessing.py:492`. Se mantiene el diagnostico, ahora coherente porque corre sobre el mismo dataframe dedup que alimenta ambas tablas.
+**Funcion:** `pchembl_imputation_report(df)` en `preprocessing/pipeline.py:492`. Se mantiene el diagnostico, ahora coherente porque corre sobre el mismo dataframe dedup que alimenta ambas tablas.
 
 ```python
-from src.analisis_proyecto.chembl_preprocessing import pchembl_imputation_report
+from src.analisis_proyecto.preprocessing.pipeline import pchembl_imputation_report
 
 print(pchembl_imputation_report(activities_clean))   # n_total, n_imputed, pct_imputed
 assert compounds[descriptor_cols].isna().sum().sum() == 0, "Quedan NaN en descriptores"
@@ -286,7 +286,7 @@ audit_df.to_csv("outputs/chembl/results/nan_audit.csv", index=False)
 dup_report.to_csv("outputs/chembl/results/dedup_report.csv", index=False)
 ```
 
-> Compatibilidad: si algun paso legado aun consume `chembl_clean.csv`, se puede seguir emitiendo como alias de `activities_clean.csv`, pero las dos tablas nuevas son la salida canonica de esta fase.
+Las salidas canonicas de esta fase son `activities_clean.csv` (nivel medicion) y `compounds_features.csv` (nivel compuesto, 107 filas).
 
 ---
 
@@ -370,11 +370,11 @@ Uso: P1, P3, P5 y **P6** (baseline honesto, Fase 4 §12). Es la **unidad princip
 
 ```bash
 # Ejecutar notebook completo
-jupyter notebook "notebooks/proyecto analisis de datos/fase2_limpieza.ipynb"
+jupyter notebook "proyecto analisis/notebooks/fase2_limpieza.ipynb"
 
 # Pipeline completo desde terminal (dos tablas)
 python -c "
-from src.analisis_proyecto.chembl_preprocessing import (
+from src.analisis_proyecto.preprocessing.pipeline import (
     load_bioactivity, filter_potential_duplicates, drop_columns_high_nan,
     impute_median_by_family, build_compound_features, pchembl_imputation_report,
 )

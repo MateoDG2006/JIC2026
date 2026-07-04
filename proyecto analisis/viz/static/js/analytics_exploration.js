@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const opt = document.createElement("option");
       opt.value = c;
       opt.textContent = c;
-      if (c === "pchembl_value") opt.selected = true;
+      if (c === "pchembl_median") opt.selected = true;
       varSel.appendChild(opt);
     });
     const famSel = document.getElementById("eda-family");

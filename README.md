@@ -301,7 +301,7 @@ Proyecto **autocontenido** en [`proyecto analisis/`](proyecto%20analisis/). Incl
 ```bash
 cd "proyecto analisis"
 pip install -r requirements.txt
-make chembl-extract          # o: python scripts/fase1/extract_chembl_local.py
+make chembl-server-up && make chembl-extract   # o: python scripts/fase1/extract_chembl.py
 jupyter notebook notebooks/fase1_adquisicion.ipynb
 python scripts/fase4/verify_flow_b.py
 make prepare-dashboard && python viz/app.py   # http://127.0.0.1:8001

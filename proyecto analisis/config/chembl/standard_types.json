@@ -1,0 +1,9 @@
+{
+  "description": "Tipos de actividad ChEMBL y umbral pChEMBL para activity_class",
+  "pchembl_active_threshold": 6.0,
+  "narrow": ["IC50", "EC50", "Ki"],
+  "expanded": [
+    "IC50", "EC50", "Ki", "Kd", "Potency", "Inhibition",
+    "AC50", "LC50", "GI50", "MIC", "LD50", "ED50", "IC90"
+  ]
+}

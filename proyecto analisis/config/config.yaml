@@ -1,12 +1,10 @@
 # Configuración — Proyecto Análisis de Datos (ChEMBL Panamá)
 
 chembl:
-  backend: sqlite
   version: "37"
-  db_path: data/external/chembl/chembl_37.db
+  server_url: http://127.0.0.1:8765
   ftp_url: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest/chembl_37_sqlite.tar.gz
   pchembl_active_threshold: 6.0
-  corpus_mode: full
   standard_types:
     - IC50
     - EC50

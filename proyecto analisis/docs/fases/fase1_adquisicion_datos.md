@@ -9,7 +9,7 @@
 | **Entrada** | `data/raw/pubchem_panama_cids.csv` (235 compuestos PubChem) |
 | **Salida principal** | `data/raw/chembl_panama_bioactivity.csv` (3,608 mediciones, ~107 compuestos unicos) |
 | **Rol lider** | Ingeniero de Datos |
-| **Notebook** | `notebooks/proyecto analisis de datos/fase1_adquisicion.ipynb` |
+| **Notebook** | `notebooks/fase1_adquisicion.ipynb` |
 | **Comando** | `make chembl-extract` |
 
 ---
@@ -51,22 +51,22 @@ Los tres comparten el dominio (bioactividad de agroquimicos) pero NO comparten a
 | Herbicides | Glyphosate, Paraquat, 2,4-D | CHEMBL556, CHEMBL282020, CHEMBL519 |
 | Fungicides | Mancozeb, Chlorothalonil | (polimero, problematico), CHEMBL44847 |
 
-Estos IDs estan hardcodeados en `KNOWN_MIDA_CHEMBL_IDS` dentro de `chembl_api.py` (linea 31) para evitar llamadas API innecesarias.
+Los ChEMBL IDs y familias quimicas de los 20 ingredientes estan curados en `config/chembl/mida_registry.json` y se cargan via `MidaRegistry` (lookup local, sin API).
 
-Estos 20 ingredientes son el punto de partida, pero **no son el conteo final de compuestos del dataset**: la extraccion corre en `corpus_mode: full` (235 candidatos PubChem, ver seccion 6) porque cada ingrediente arrastra formas emparentadas (sales, isomeros, metabolitos, entradas duplicadas de PubChem que resuelven a distintos `chembl_id`). Del total de candidatos, solo una parte tiene bioactividad registrada en ChEMBL con `pchembl_value` calculable. El numero real de compuestos unicos que llegan con actividad util es ~107 (ver 8.bis).
+Estos 20 ingredientes son el punto de partida, pero **no son el conteo final de compuestos del dataset**: la extraccion usa el corpus PubChem completo (~235 candidatos, ver seccion 6) porque cada ingrediente arrastra formas emparentadas (sales, isomeros, metabolitos, entradas duplicadas de PubChem que resuelven a distintos `chembl_id`). Del total de candidatos, solo una parte tiene bioactividad registrada en ChEMBL con `pchembl_value` calculable. El numero real de compuestos unicos que llegan con actividad util es ~107 (ver 8.bis).
 
 ---
 
 ## 3. Pipeline de extraccion
 
 ```
-pubchem_panama_cids.csv (235 CIDs de PubChem)
+pubchem_panama_cids.csv (~235 CIDs de PubChem)
      |
-     v  PASO 1: Filtrar source == MIDA_name_search
-chembl_mida_compounds.csv (20 compuestos)
+     v  PASO 1: Carga corpus completo (SMILES validos)
+chembl_corpus_compounds.csv (~235 compuestos)
      |
      v  PASO 2: Resolucion cascada PubChem -> ChEMBL ID
-chembl_mida_mapping.csv (20 filas con match_method y match_status)
+chembl_corpus_mapping.csv (~235 filas con match_method y match_status)
      |
      v  PASO 3: Descarga bioactividad por ChEMBL ID
      v  13 tipos de ensayo: IC50, EC50, Ki, Kd, Potency, Inhibition,
@@ -85,21 +85,18 @@ El pipeline tecnico corre sobre el corpus completo (235 candidatos, familias emp
 
 ## 4. Detalle de cada paso
 
-### Paso 1 — Filtrado MIDA
+### Paso 1 — Carga del corpus completo
 
-**Funcion:** `load_mida_compounds(corpus_path)` en `chembl_api.py:342`
+**Clase:** `CorpusLoader.load()` en `acquisition/common.py`
 
 ```python
-# Filtra del corpus PubChem solo los 20 ingredientes MIDA
-mida = corpus[
-    (corpus["source"] == "MIDA_name_search")
-    & (corpus["name"].isin(MIDA_ACTIVE_INGREDIENTS))
-]
+# Todos los compuestos PubChem con SMILES válido (~235)
+compounds = CorpusLoader().load("data/raw/pubchem_panama_cids.csv")
 ```
 
-Cada compuesto recibe una familia quimica del diccionario `MIDA_FAMILY_MAP` (linea 70), porque en PubChem todos aparecen como `family = mixed`.
+Los 20 ingredientes MIDA se marcan con `is_mida=True` via `MidaRegistry`; su familia química se toma del registro JSON cuando aplica.
 
-**Salida:** `data/raw/chembl_mida_compounds.csv` (20 filas)
+**Salida:** `data/raw/chembl_corpus_compounds.csv` (~235 filas)
 
 | Columna | Tipo | Ejemplo |
 |---|---|---|
@@ -112,30 +109,29 @@ Cada compuesto recibe una familia quimica del diccionario `MIDA_FAMILY_MAP` (lin
 
 ### Paso 2 — Resolucion ChEMBL ID (cascada)
 
-**Funcion:** `resolve_chembl_id(compound_name, pubchem_cid, smiles)` en `chembl_api.py:426`
+**Clase:** `ChemblIdResolver.resolve()` en `acquisition/local.py`
 
 Estrategia de resolucion en 5 niveles:
 
-| Nivel | Metodo | Endpoint ChEMBL | Criterio |
+| Nivel | Metodo | Fuente | Criterio |
 |---|---|---|---|
-| 0 | known_registry | — | Lookup en `KNOWN_MIDA_CHEMBL_IDS` (sin API) |
-| 1 | pubchem_xref | `/molecule?molecule_cross_references__xref_id=` | CID de PubChem |
-| 2 | smiles | `/molecule?molecule_structures__canonical_smiles__flexmatch=` | SMILES canonico RDKit |
-| 3 | pref_name | `/molecule?pref_name__iexact=` | Nombre exacto |
-| 4 | synonym | `/molecule?molecule_synonyms__molecule_synonym__iexact=` | Sinonimo registrado |
+| 0 | known_registry | `config/chembl/mida_registry.json` | Lookup en `MidaRegistry` |
+| 1 | pubchem_xref | SQLite `compound_structures` + xref | CID de PubChem |
+| 2 | smiles | SQLite | SMILES canonico RDKit |
+| 3 | pref_name | SQLite `molecule_dictionary` | Nombre exacto |
+| 4 | synonym | SQLite `molecule_synonyms` | Sinonimo registrado |
 
-Si multiples candidatos, `_pick_best_match()` (linea 413) prioriza moleculas con mayor conteo de actividades y tipo `MOL` sobre `UNKNOWN`.
-
-**Backend SQLite alternativo:** `resolve_chembl_id_local()` en `chembl_local.py:139` ejecuta las mismas estrategias via SQL contra `chembl_37.db`:
+Todas las consultas corren contra `chembl_37.db` via SQLAlchemy Core (`acquisition/sqlalchemy.py`).
 
 ```sql
+-- Ejemplo: match por SMILES
 SELECT DISTINCT md.chembl_id
 FROM molecule_dictionary md
 JOIN compound_structures cs ON cs.molregno = md.molregno
 WHERE cs.canonical_smiles = ?
 ```
 
-**Salida:** `data/raw/chembl_mida_mapping.csv`
+**Salida:** `data/raw/chembl_corpus_mapping.csv`
 
 | Columna | Significado |
 |---|---|
@@ -151,21 +147,9 @@ WHERE cs.canonical_smiles = ?
 
 ### Paso 3 — Descarga de bioactividad
 
-**Funcion:** `fetch_activities_raw(chembl_id, sleep_s, standard_types)` en `chembl_api.py:631`
+**Clase:** `ChemblDatabase.fetch_activities()` / `build_bioactivity_table()` en `acquisition/local.py`
 
-Por cada `molecule_chembl_id` valido, descarga actividades con paginacion automatica:
-
-```python
-for st in standard_types:
-    params = {
-        "molecule_chembl_id": chembl_id,
-        "standard_type": st,
-        "limit": 1000,
-    }
-    records = _fetch_paginated("activity", params, page_limit=5)
-```
-
-**Backend SQLite:** `fetch_activities_local()` en `chembl_local.py:387` ejecuta un `UNION ALL` de queries SQL con 13 `standard_type` en una sola conexion.
+Por cada `chembl_id` valido, ejecuta un `SELECT` con join de 7 tablas reflejadas (actividades, ensayos, dianas, propiedades moleculares) filtrado por los `standard_type` de `config/chembl/standard_types.json`.
 
 **Campos descargados por registro:**
 
@@ -184,7 +168,7 @@ Cuatro de estos campos merecen mencion aparte porque **ya no son metadata de pas
 
 ### Paso 4 — Derivacion de activity_class
 
-**Funcion:** `derive_activity_class(df, threshold=6.0)` en `chembl_api.py:901`
+**Clase:** `ActivityClassAssigner.assign()` en `acquisition/common.py` (umbral desde `config/chembl/standard_types.json`)
 
 | Clase | Criterio | Significado |
 |---|---|---|
@@ -194,20 +178,18 @@ Cuatro de estos campos merecen mencion aparte porque **ya no son metadata de pas
 
 **Importante — que es y que ya no es esta columna:** `activity_class` se sigue generando aqui porque es una columna derivada barata y util para describir el dataset (por ejemplo, "que fraccion de mediciones por familia caen del lado activo"). Pero **ya no es la variable objetivo de ningun modelo supervisado**. En el diseno original se uso como target de clasificacion; el intento fallo porque es circular respecto a `pchembl_value` (es literalmente su binarizacion) y porque a nivel de compuesto (la unidad de analisis correcta) 63 de 107 compuestos tienen ambas clases segun la diana evaluada — no hay una "clase" unica por compuesto. De aqui en adelante, `activity_class` se usa solo descriptivamente (conteos, proporciones), nunca como target.
 
-**Imputacion de pChEMBL faltante:** `impute_pchembl_value()` (linea 873) calcula `pChEMBL = -log10(valor_en_molar)` cuando `standard_relation == '='` y el valor es convertible a molar. Esta imputacion sigue restringida a mediciones exactas: no se estima un pChEMBL puntual para valores censurados, porque eso inventaria precision que el dato no tiene.
+**Imputacion de pChEMBL faltante:** `PchemblImputer.impute_dataframe()` calcula `pChEMBL = -log10(valor_en_molar)` cuando `standard_relation == '='` y el valor es convertible a molar. Factores de unidad en `config/chembl/concentration_units.json`.
 
 ```python
-def compute_pchembl_from_standard_value(value, units):
-    factor = _UNIT_TO_MOLAR.get(units)  # nM -> 1e-9, uM -> 1e-6, etc.
-    if factor is None or value <= 0:
-        return None
-    molar = value * factor
-    return round(-math.log10(molar), 2)
+# ConcentrationUnits.molar_factor(units) — ver concentration_units.json
+factor = ConcentrationUnits.molar_factor(units)  # nM -> 1e-9, uM -> 1e-6, etc.
+molar = value * factor
+pchembl = -math.log10(molar)
 ```
 
 ### Paso 5 — Filtros de calidad
 
-**Funcion:** `apply_quality_filters(df)` en `chembl_api.py:914`
+**Clase:** `QualityFilterPipeline.apply()` en `acquisition/common.py` (config en `config.yaml` → `chembl.quality_filters`)
 
 | Filtro | Accion | Registros tipicos eliminados |
 |---|---|---|
@@ -222,47 +204,56 @@ El CSV raw se conserva intacto para auditoria. Solo el CSV limpio pasa a la Fase
 
 ## 4.bis Notas de implementacion tecnica
 
-### Por que no `chembl_webresource_client`
+### Backend unico: SQLite local
 
-El paquete oficial `chembl_webresource_client` falla al importar si el endpoint `/spore` de EBI devuelve HTTP 500. La implementacion del proyecto evita esa dependencia y usa `requests` directamente con:
+La extraccion usa **solo** `chembl_37.db` (ChEMBLdb SQLite). No hay cliente REST ni dependencia de `chembl_webresource_client`. Las consultas usan SQLAlchemy 2.0 Core con reflexion parcial de 7 tablas.
 
-- 4 reintentos con backoff (`RETRY_DELAY = 2.5 s`)
-- Paginacion automatica (`limit=1000`, `offset` incremental)
-- Rate limiting respetuoso (`time.sleep(0.4)` entre familias)
+### Orquestador y constantes
 
 ```python
-from src.analisis_proyecto.chembl_api import (
-    load_mida_compounds,
-    build_mapping_table,
-    build_bioactivity_table,
-    apply_quality_filters,
-)
+from src.analisis_proyecto.acquisition.extract import ChemblExtractor
+
+extractor = ChemblExtractor.from_config_file("config/config.yaml")
+result = extractor.run("data/raw/pubchem_panama_cids.csv")
+# result.compounds, result.mapping, result.raw, result.clean, result.summary
 ```
 
-### Funciones principales (`src/analisis_proyecto/`)
+Constantes editables en `config/chembl/` (MIDA, columnas, tipos de actividad, unidades, esquema SQLite).
 
-| Funcion | Rol |
+### Clases principales (`src/analisis_proyecto/`)
+
+| Clase / modulo | Rol |
 |---|---|
-| `load_mida_compounds()` | Filtra 20 MIDA desde PubChem CSV |
-| `resolve_chembl_id()` | Mapeo en cascada por compuesto |
-| `build_mapping_table()` | Tabla de mapping para los 20 |
-| `fetch_activities_raw()` | Descarga IC50/EC50/Ki paginada |
-| `build_bioactivity_table()` | Tabla larga enriquecida |
-| `derive_activity_class()` | Active / Inactive (uso descriptivo, no target) |
-| `apply_quality_filters()` | Filtros + tabla de exclusion (conserva censura) |
+| `ChemblExtractor` | Pipeline completo corpus → mapping → bioactividad → filtros |
+| `ChemblDatabase` | Consultas SQLite (mapping, actividades, metadatos DB) |
+| `ChemblIdResolver` | Mapeo en cascada PubChem → ChEMBL ID |
+| `CorpusLoader` | Carga corpus PubChem completo (SMILES válidos) |
+| `QualityFilterPipeline` | Filtros de calidad + stats de exclusion |
+| `ActivityClassAssigner` | Active / Inactive (uso descriptivo) |
+| `PchemblImputer` | Imputacion pChEMBL desde standard_value |
+| `ExtractionSummarizer` | Resumen por compuesto |
 
 ### Verificacion rapida desde terminal
 
 ```bash
-# Confirmar que el mapeo de un compuesto resuelve correctamente
+# Confirmar que la DB es legible
+make test-chembl
+
+# Extraccion completa
+make chembl-extract
+
+# Verificar resolucion de un compuesto (Python)
 python -c "
-from src.analisis_proyecto.chembl_api import resolve_chembl_id
-m = resolve_chembl_id('Chlorpyrifos', 2730, 'CCOP(=S)(OCC)Oc1nc(Cl)c(Cl)cc1Cl')
-print(m)
+from src.analisis_proyecto.acquisition.extract import ChemblExtractor
+from src.analisis_proyecto.core.models import CorpusCompound
+from src.analisis_proyecto.acquisition.local import ChemblIdResolver
+
+extractor = ChemblExtractor.from_config_file('config/config.yaml')
+compound = CorpusCompound('Chlorpyrifos', 2730, 'CCOP(=S)(OCC)Oc1nc(Cl)c(Cl)cc1Cl', 'Organophosphates')
+match = ChemblIdResolver().resolve(compound, extractor.database._sql, extractor.database._sql.schema())
+print(match.to_dict())
 "
 ```
-
-Si la respuesta incluye `match_method` y un `chembl_id` valido, la cascada esta funcional.
 
 ---
 
@@ -270,26 +261,23 @@ Si la respuesta incluye `match_method` y un `chembl_id` valido, la cascada esta 
 
 ### Ingeniero de Datos (LIDER)
 
-| # | Tarea | Archivo | Funcion clave |
+| # | Tarea | Archivo | Componente clave |
 |---|---|---|---|
-| 1 | Configurar backend (sqlite/api) | `config/config.yaml` | Seccion `chembl:` |
-| 2 | Implementar cliente REST | `chembl_api.py` | `_get_json()`, `_fetch_paginated()` |
-| 3 | Implementar extraccion SQLite | `chembl_local.py` | `connect_readonly()`, `_bioactivity_sql()` |
-| 4 | Crear facade unificada | `chembl_extract.py` | `build_mapping_table()`, `build_bioactivity_table()` |
-| 5 | Mapeo cascada ChEMBL ID | `chembl_api.py` | `resolve_chembl_id()` |
-| 6 | Descarga bioactividad | `chembl_api.py` | `fetch_activities_raw()` |
-| 7 | Filtros de calidad (conservando censura) | `chembl_api.py` | `apply_quality_filters()` |
-| 8 | Derivar activity_class (descriptivo) | `chembl_api.py` | `derive_activity_class()` |
-| 9 | Imputar pChEMBL faltante (solo relacion `=`) | `chembl_api.py` | `impute_pchembl_value()` |
-| 10 | Script de extraccion | `scripts/analisis_proyecto/fase1/extract_chembl_local.py` | `main()` |
+| 1 | Configurar extraccion | `config/config.yaml` + `config/chembl/*.json` | Seccion `chembl:` |
+| 2 | Consultas ChEMBL | `acquisition/remote.py`, `acquisition/server.py`, `acquisition/local.py` | Cliente HTTP + servidor SQLite (Docker) |
+| 3 | Orquestador | `acquisition/extract.py` | `ChemblExtractor.run()` |
+| 4 | Mapeo cascada ChEMBL ID | `acquisition/local.py` | `ChemblIdResolver` |
+| 5 | Filtros e imputacion | `acquisition/common.py` | `QualityFilterPipeline`, `PchemblImputer` |
+| 6 | Script CLI | `scripts/fase1/extract_chembl.py` | `main()` |
+| 7 | Verificacion DB | `scripts/fase1/verify_acquisition/db.py` | `make test-chembl` |
 
 ### ML Engineer (APOYO)
 
 | Tarea | Descripcion |
 |---|---|
-| Verificar integridad de DB | Ejecutar `make test-chembl` para validar que SQLite es legible |
+| Verificar conexion al servidor | Ejecutar `make test-chembl` (health + consulta de prueba via HTTP) |
 | Documentar esquema de salida | Verificar que columnas coincidan con lo esperado por Fase 2/3 (incluyendo `standard_relation`, `target_chembl_id`, `target_name`, `standard_type`) |
-| Probar modo corpus completo | Ejecutar con `--corpus-mode full` (235 compuestos) vs `mida` (20) |
+| Probar corpus completo | Verificar ~235 compuestos cargados y conteo `is_mida == 20` |
 
 ### Analista / Cientifico de Datos
 
@@ -303,24 +291,9 @@ No participan directamente en esta fase. Reciben `chembl_panama_bioactivity.csv`
 
 ```yaml
 chembl:
-  backend: "sqlite"                    # sqlite (rapido, offline) o api (REST, lento)
   version: "37"
-  db_path: "data/external/chembl/chembl_37.db"
-  corpus_mode: "full"                  # full (235) o mida (20)
-  standard_types:
-    - IC50
-    - EC50
-    - Ki
-    - Kd
-    - Potency
-    - Inhibition
-    - AC50
-    - LC50
-    - GI50
-    - MIC
-    - LD50
-    - ED50
-    - IC90
+  server_url: http://127.0.0.1:8765   # host → chembl-server (Docker)
+  standard_types: expanded             # o lista explicita; ver standard_types.json
   pchembl_active_threshold: 6.0
   quality_filters:
     impute_pchembl: true
@@ -328,38 +301,34 @@ chembl:
     exclude_validity_comment: true
 ```
 
-### Variables de entorno (opcionales)
-
-| Variable | Efecto |
-|---|---|
-| `CHEMBL_BACKEND` | Override backend (sqlite/api) |
-| `CHEMBL_DB_PATH` | Override ruta a chembl_37.db |
-| `CHEMBL_VERSION` | Override version (e.g. "34") |
-| `CHEMBL_CORPUS_MODE` | Override modo corpus (full/mida) |
-
----
-
 ## 7. Ejecucion
 
+La BD ChEMBL (~30 GB) vive en el volumen Docker `jic2026_chembl_db`. El host la consulta via **chembl-server** (HTTP, puerto 8765) — igual que Postgres o MinIO.
+
+```yaml
+# config/config.yaml
+chembl:
+  server_url: http://127.0.0.1:8765
+```
+
 ```bash
-# Setup: descargar ChEMBL 37 via Docker (una vez, ~15 GB)
+# 1. Descargar BD al volumen (una vez; reutiliza jic2026_chembl_db si ya existe)
 make setup-chembl
 
-# Verificar que la DB es legible
+# 2. Solo levantar el servidor (si la BD ya esta descargada)
+make chembl-server-up
+
+# 3. Verificar conexion
 make test-chembl
 
-# Extraer bioactividad (SQLite, rapido)
+# 4. Extraer CSVs
 make chembl-extract
 
-# Alternativa: via API REST (lento, sin DB local)
-make chembl-extract-api
-
-# Alternativa: via Docker (aislado)
-make chembl-extract-docker
-
-# Ejecutar notebook interactivo
-jupyter notebook "notebooks/proyecto analisis de datos/fase1_adquisicion.ipynb"
+# 5. Notebook
+jupyter notebook "proyecto analisis/notebooks/fase1_adquisicion.ipynb"
 ```
+
+Health check manual: `curl http://127.0.0.1:8765/health`
 
 ---
 
@@ -367,8 +336,8 @@ jupyter notebook "notebooks/proyecto analisis de datos/fase1_adquisicion.ipynb"
 
 | Archivo | Filas | Columnas | Tamano |
 |---|---|---|---|
-| `chembl_mida_compounds.csv` | 20 | 6 | ~2 KB |
-| `chembl_mida_mapping.csv` | 20 | 9 | ~3 KB |
+| `chembl_corpus_compounds.csv` | ~235 | 6 | ~15 KB |
+| `chembl_corpus_mapping.csv` | ~235 | 9 | ~25 KB |
 | `chembl_panama_bioactivity_raw.csv` | ~10,745 | 33 | ~5 MB |
 | `chembl_panama_bioactivity.csv` | ~3,608 | 33 | ~2 MB |
 
@@ -378,7 +347,7 @@ jupyter notebook "notebooks/proyecto analisis de datos/fase1_adquisicion.ipynb"
 
 Este es el numero que mas condiciona el diseno de las fases siguientes, asi que vale dejarlo explicito aca, en el origen del dato:
 
-- Los 20 ingredientes activos del MIDA, mas sus formas emparentadas y familias relacionadas (corpus_mode full), resuelven a **~107 compuestos unicos** con bioactividad registrada en ChEMBL.
+- Los 20 ingredientes activos del MIDA, mas sus formas emparentadas y familias relacionadas del corpus completo, resuelven a **~107 compuestos unicos** con bioactividad registrada en ChEMBL.
 - Los 8 descriptores moleculares precalculados (mw_freebase, alogp, psa, hba, hbd, aromatic_rings, rtb, heavy_atoms) son **constantes dentro de cada compuesto**: no varian entre las distintas mediciones de una misma molecula. Esto significa que, para cualquier tarea que use esos descriptores como entrada, el modelo en realidad solo "ve" 107 vectores de entrada distintos — el resto de las 3,608 filas son repeticiones del mismo vector con distinto resultado de bioactividad.
 - 107 puntos de entrada es un dataset **chico para machine learning supervisado**, sobre todo si se pretende evaluar generalizacion con un split honesto (por compuesto, no por fila). Splitear por fila deja moleculas identicas en train y test y produce metricas artificialmente altas; splitear por compuesto es lo correcto, pero con solo ~75-85 compuestos de entrenamiento el modelo no tiene con que generalizar.
 - Por esta razon el proyecto se reencuadra como **descriptivo y multivariado**: caracterizar, agrupar y contrastar los 107 compuestos (Fases 3 y 4), en vez de forzar una prediccion que el volumen de datos no puede sostener. El intento predictivo original se documenta como **resultado negativo honesto** en la [Fase 4 — §12 Baseline predictivo (P6)](fase4_modelado.md#12-bloque-4--baseline-predictivo-honesto-p6), que funciona como puente hacia el proyecto JIC: motiva por que ese proyecto usa grafos moleculares (GNN-GIN) entrenados sobre Tox21 (~8,000 compuestos) en vez de descriptores tabulares sobre un corpus de 107.
@@ -414,19 +383,22 @@ Este es el numero que mas condiciona el diseno de las fases siguientes, asi que 
 
 ```
 config/config.yaml
+config/chembl/*.json
      |
      v
-src/analisis_proyecto/chembl_extract.py  (facade)
+src/analisis_proyecto/acquisition/extract.py  (ChemblExtractor)
      |
-     +---> chembl_local.py  (backend SQLite)
+     +---> acquisition/common.py   (CorpusLoader, filtros, imputacion)
+     |
+     +---> acquisition/remote.py   (ChemblRemoteDatabase — cliente HTTP)
      |         |
      |         v
-     |     data/external/chembl/chembl_37.db
+     |     chembl-server :8765  (Docker, volumen jic2026_chembl_db)
+     |         |
+     |         +---> acquisition/local.py + acquisition/sqlalchemy.py
      |
-     +---> chembl_api.py    (backend REST)
-               |
-               v
-           https://www.ebi.ac.uk/chembl/api/data/
+     v
+data/raw/chembl_panama_bioactivity.csv
 ```
 
 ---

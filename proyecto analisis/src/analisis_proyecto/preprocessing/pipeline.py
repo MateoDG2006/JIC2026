@@ -25,62 +25,21 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-# Descriptores moleculares para modelado (sin leakage de ensayo/diana).
-# heavy_atoms excluido: colinealidad ~0.99 con mw_freebase.
-# cx_logp/cx_logd excluidos: 100% NaN en extracción ChEMBL local.
-FEATURE_COLS: list[str] = [
-    "mw_freebase",
-    "alogp",
-    "psa",
-    "hba",
-    "hbd",
-    "aromatic_rings",
-    "rtb",
-    "num_ro5_violations",
-]
+from src.analisis_proyecto.core.constants import (
+    assay_feature_columns,
+    categorical_columns,
+    feature_columns,
+    id_and_text_columns,
+    numeric_coerce_columns,
+    numeric_descriptor_columns,
+)
 
-# Columnas numéricas adicionales para EDA (incluye objetivo y standard_value).
-NUMERIC_DESCRIPTOR_COLS: list[str] = FEATURE_COLS + [
-    "pchembl_value",
-    "standard_value",
-]
-
-ID_AND_TEXT_COLS = {
-    "compound_name",
-    "pubchem_cid",
-    "chembl_id",
-    "smiles",
-    "family",
-    "match_method",
-    "activity_id",
-    "assay_chembl_id",
-    "target_chembl_id",
-    "target_name",
-    "activity_comment",
-    "data_validity_comment",
-}
-
-CATEGORICAL_COLS = [
-    "family",
-    "activity_class",
-    "standard_type",
-    "standard_units",
-    "standard_relation",
-    "target_type",
-    "organism",
-    "assay_type",
-    "bao_label",
-    "molecular_species",
-    "potential_duplicate",
-]
-
-# Contexto de ensayo — captura variación de pChEMBL dentro del mismo compuesto.
-ASSAY_FEATURE_COLS = [
-    "standard_type",
-    "target_type",
-    "organism",
-    "assay_type",
-]
+# Ver ``config/chembl/columns.json`` para editar estas listas.
+FEATURE_COLS: list[str] = feature_columns()
+NUMERIC_DESCRIPTOR_COLS: list[str] = numeric_descriptor_columns()
+ID_AND_TEXT_COLS = id_and_text_columns()
+CATEGORICAL_COLS = categorical_columns()
+ASSAY_FEATURE_COLS = assay_feature_columns()
 
 
 def load_bioactivity(path: str | Path) -> pd.DataFrame:
@@ -89,7 +48,7 @@ def load_bioactivity(path: str | Path) -> pd.DataFrame:
     for col in NUMERIC_DESCRIPTOR_COLS:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
-    for col in ("hba", "hbd", "aromatic_rings", "heavy_atoms", "rtb", "num_ro5_violations"):
+    for col in numeric_coerce_columns():
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
     if "pubchem_cid" in df.columns:
@@ -424,17 +383,7 @@ def build_compound_features(activities_df: pd.DataFrame) -> pd.DataFrame:
     """
     df = activities_df.copy()
 
-    descriptor_cols = [
-        "mw_freebase",
-        "alogp",
-        "psa",
-        "hba",
-        "hbd",
-        "aromatic_rings",
-        "rtb",
-        "heavy_atoms",
-        "num_ro5_violations",
-    ]
+    descriptor_cols = list(feature_columns()) + ["heavy_atoms"]
     descriptor_cols = [c for c in descriptor_cols if c in df.columns]
 
     g = df.groupby("chembl_id", dropna=False)
@@ -496,3 +445,24 @@ def pchembl_imputation_report(df: pd.DataFrame) -> dict[str, float | int]:
         "n_original": n_total - n_imputed,
         "pct_imputed": round(100 * n_imputed / n_total, 2) if n_total else 0.0,
     }
+
+
+class ChemblPreprocessor:
+    """Pipeline de limpieza Fase 2 — encapsula dedup, NaN e imputación."""
+
+    def __init__(self, nan_threshold: int = 250) -> None:
+        self.nan_threshold = nan_threshold
+
+    def clean_activities(self, df: pd.DataFrame) -> pd.DataFrame:
+        df, dup_report = filter_potential_duplicates(df)
+        if not dup_report.empty:
+            print(f"  Duplicados eliminados: {dup_report.iloc[0]['filas_eliminadas']}")
+        df, _ = drop_columns_high_nan(df, threshold=self.nan_threshold)
+        num_cols, cat_cols = numeric_and_categorical_cols(df)
+        return impute_median_by_family(df, numeric_cols=num_cols, categorical_cols=cat_cols)
+
+    def build_compound_features(self, activities: pd.DataFrame) -> pd.DataFrame:
+        return build_compound_features(activities)
+
+    def imputation_report(self, df: pd.DataFrame) -> dict[str, float | int]:
+        return pchembl_imputation_report(df)

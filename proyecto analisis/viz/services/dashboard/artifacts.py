@@ -1,41 +1,18 @@
-"""Carga de artefactos desde rutas canónicas del pipeline GIN/ChEMBL.
-
-Todos los loaders pasan por ``viz.services.dashboard.cache`` que comprueba
-el checksum MD5 del archivo en cada llamada (AUDIT P3). Si el archivo
-cambió en disco (p. ej. tras re-ejecutar ``make prepare-dashboard``), la
-caché se invalida automáticamente — no hace falta reiniciar el servidor.
-
-Loaders disponibles:
-    load_chembl()              → DataFrame con bioactividad limpia
-    load_toxicity_profile()    → perfil Tox21 de plaguicidas panameños
-    load_correlation()         → matriz Pearson para heatmap EDA
-    load_model_eval()          → métricas RF/SVM/RF-Reg/SVR (filas + compuesto)
-    load_metrics_summary()     → CSV con métricas crudas del flujo ChEMBL
-    load_predictor_defaults()  → valores por defecto para el predictor interactivo
-    load_model_comparison()    → comparativa baselines vs GIN (P9)
-    load_feature_cols()        → lista de columnas usadas por el RF
-    load_geojson()             → distritos de Panamá con propiedades INEC
-    load_xai_index()           → índice de SVGs disponibles por compuesto
-    geojson_to_dataframe()     → properties del GeoJSON como DataFrame
-"""
+"""Carga de artefactos del pipeline de análisis (Fases 2–5)."""
 
 from __future__ import annotations
 
-from functools import lru_cache
 from pathlib import Path
 
 import pandas as pd
 
 from viz.config import (
+    ACTIVITIES_CSV,
     ARTIFACTS_DIR,
     BUNDLE_DIR,
     CHEMBL_CSV,
-    CHEMBL_METRICS,
-    CHEMBL_MODELS_DIR,
-    GEOJSON_PATH,
-    TOXICITY_PROFILE_CSV,
+    STATIC_DATA_DIR,
     resolve_path,
-    use_bundle,
 )
 from viz.services.dashboard.cache import load_csv_cached, load_json_cached
 
@@ -46,60 +23,46 @@ def _artifact_json(name: str) -> Path:
     return BUNDLE_DIR / name
 
 
+def _static_json(name: str) -> Path:
+    return STATIC_DATA_DIR / name
+
+
 def load_chembl() -> pd.DataFrame:
-    return load_csv_cached(resolve_path(CHEMBL_CSV, "chembl_clean.csv"))
+    return load_csv_cached(resolve_path(CHEMBL_CSV, "compounds_features.csv"))
 
 
-def load_toxicity_profile() -> pd.DataFrame:
-    return load_csv_cached(resolve_path(TOXICITY_PROFILE_CSV, "panama_toxicity_profile.csv"))
+def load_activities() -> pd.DataFrame:
+    return load_csv_cached(resolve_path(ACTIVITIES_CSV, "activities_clean.csv"))
 
 
 def load_correlation() -> dict:
     return load_json_cached(_artifact_json("correlation_pearson.json"))
 
 
-def load_model_eval() -> dict:
-    return load_json_cached(_artifact_json("model_eval.json"))
-
-
-def load_metrics_summary() -> pd.DataFrame:
-    return load_csv_cached(resolve_path(CHEMBL_METRICS, "metrics_summary.csv"))
-
-
-def load_predictor_defaults() -> dict:
-    return load_json_cached(_artifact_json("predictor_defaults.json"))
-
-
-def load_model_comparison() -> dict:
-    path = _artifact_json("model_comparison.json")
+def load_baseline_honest() -> dict:
+    path = _artifact_json("baseline_honest.json")
     if not path.is_file():
-        return {"models": [], "note": "Ejecute: make prepare-dashboard"}
+        return {"rows": [], "note": "Ejecuta: make prepare-dashboard"}
     return load_json_cached(path)
 
 
-@lru_cache(maxsize=1)
-def load_feature_cols() -> list[str]:
-    if use_bundle() and (BUNDLE_DIR / "models" / "feature_cols.json").is_file():
-        path = BUNDLE_DIR / "models" / "feature_cols.json"
-    else:
-        path = CHEMBL_MODELS_DIR / "feature_cols.json"
+def load_pca_clusters() -> dict:
+    path = _static_json("pca_clusters.json")
+    if not path.is_file():
+        return {"points": [], "note": "Ejecuta: make prepare-dashboard"}
+    return load_json_cached(path)
+
+
+def load_family_stats() -> dict:
+    path = _static_json("family_stats.json")
+    if not path.is_file():
+        return {"kruskal_tests": [], "n_by_family": {}}
+    return load_json_cached(path)
+
+
+def load_compounds_profile() -> list[dict]:
+    path = _static_json("compounds_profile.json")
+    if not path.is_file():
+        return []
     payload = load_json_cached(path)
-    return list(payload) if isinstance(payload, list) else list(payload.get("feature_cols", []))
-
-
-def load_geojson() -> dict:
-    path = resolve_path(GEOJSON_PATH, "panama_distritos.geojson")
-    return load_json_cached(path)
-
-
-def load_xai_index() -> dict:
-    path = _artifact_json("xai_index.json")
-    if not path.is_file():
-        return {}
-    return load_json_cached(path)
-
-
-def geojson_to_dataframe() -> pd.DataFrame:
-    geo = load_geojson()
-    rows = [feat["properties"] for feat in geo.get("features", [])]
-    return pd.DataFrame(rows)
+    return list(payload) if isinstance(payload, list) else []

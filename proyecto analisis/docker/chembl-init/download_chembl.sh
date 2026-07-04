@@ -1,12 +1,35 @@
 #!/usr/bin/env bash
-# Descarga e instala ChEMBLdb SQLite (idempotente).
+# Descarga ChEMBLdb SQLite al volumen Docker (idempotente).
 set -euo pipefail
 
-CHEMBL_DIR="${CHEMBL_DIR:-/data/chembl}"
-VERSION="${CHEMBL_VERSION:-37}"
-URL="${CHEMBL_FTP_URL:-https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest/chembl_${VERSION}_sqlite.tar.gz}"
+CONFIG="${CONFIG_PATH:-/app/config/config.yaml}"
+
+if [[ ! -f "${CONFIG}" ]]; then
+  echo "[chembl-init] ERROR: no se encontró ${CONFIG}"
+  exit 1
+fi
+
+mapfile -t _cfg < <(python3 - "${CONFIG}" <<'PY'
+import os
+import sys
+import yaml
+from pathlib import Path
+
+config_path = Path(sys.argv[1])
+root = config_path.parent.parent
+cfg = yaml.safe_load(config_path.read_text(encoding="utf-8"))["chembl"]
+db_path = Path(os.environ["CHEMBL_DB_PATH"])
+print(cfg["version"])
+print(cfg["ftp_url"])
+print(db_path)
+PY
+)
+
+VERSION="${_cfg[0]}"
+URL="${_cfg[1]}"
+DB_PATH="${_cfg[2]}"
+CHEMBL_DIR="$(dirname "${DB_PATH}")"
 TAR="${CHEMBL_DIR}/chembl_${VERSION}_sqlite.tar.gz"
-DB_PATH="${CHEMBL_DIR}/chembl_${VERSION}.db"
 MANIFEST="${CHEMBL_DIR}/manifest.json"
 
 mkdir -p "${CHEMBL_DIR}"
@@ -36,7 +59,6 @@ if [[ "${EXTRACTED}" != "${DB_PATH}" ]]; then
   mv "${EXTRACTED}" "${DB_PATH}"
 fi
 
-# Limpiar directorios vacíos del tar
 find "${CHEMBL_DIR}" -type d -empty -delete 2>/dev/null || true
 
 python3 - <<PY

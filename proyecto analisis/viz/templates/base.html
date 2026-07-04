@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ChEMBL Analytics{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/eda" class="nav-brand">ChEMBL Analytics</a>
+        <div class="nav-links">
+            <a href="/eda" class="nav-link{% if active_nav == 'eda' %} active{% endif %}">Exploración</a>
+        </div>
+    </nav>
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="footer">
+        <p>Proyecto Análisis de Datos — bioactividad ChEMBL / plaguicidas MIDA</p>
+    </footer>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

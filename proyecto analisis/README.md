@@ -10,15 +10,12 @@ proyecto analisis/
 ├── config/config.yaml       # ChEMBL + viz analytics
 ├── data/
 │   ├── raw/                 # Extracción ChEMBL + geodatos
-│   ├── processed/           # activities_clean + compounds_features (107)
-│   └── external/chembl/     # chembl_37.db (SQLite local)
-├── src/analisis_proyecto/   # Pipeline Python
-├── notebooks/               # Fases 1–7 (baseline P6 en fase4 + notebook dedicado)
+│   └── processed/           # activities_clean + compounds_features (107)
+├── src/analisis_proyecto/   # Pipeline Python (core/, acquisition/, preprocessing/, modeling/)
+├── notebooks/               # Fases 1–7
 ├── docs/                    # Documentación por fase
-├── outputs/chembl/          # Figuras, modelos legacy, resultados
-├── outputs/dashboard/       # JSON para viz analytics
+├── docker/                  # chembl-init + chembl-server (BD en volumen Docker)
 ├── scripts/                 # CLI por fase
-├── docker/chembl-init/      # Descarga BD ChEMBL
 └── viz/                     # FastAPI analytics (puerto 8001)
 ```
 
@@ -31,7 +28,8 @@ make help              # listado de comandos JIC + analisis
 make setup             # entorno JIC
 make setup-analisis    # deps adicionales del subproyecto
 
-# Analisis — pipeline
+# Analisis — pipeline (requiere chembl-server)
+make chembl-server-up
 make chembl-extract
 make analisis-verify
 jupyter notebook "proyecto analisis/notebooks/fase2_limpieza.ipynb"

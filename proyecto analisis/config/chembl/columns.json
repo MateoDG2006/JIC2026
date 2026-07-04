@@ -1,0 +1,34 @@
+{
+  "description": "Esquemas de columnas — extracción ChEMBL y preprocesamiento Flujo B",
+  "bioactivity": [
+    "compound_name", "pubchem_cid", "chembl_id", "smiles", "family", "match_method",
+    "activity_id", "assay_chembl_id", "target_chembl_id", "target_name", "target_type",
+    "organism", "standard_type", "standard_value", "standard_units", "standard_relation",
+    "pchembl_value", "pchembl_imputed", "activity_class", "activity_comment",
+    "data_validity_comment", "potential_duplicate", "assay_type", "bao_label",
+    "mw_freebase", "alogp", "psa", "hba", "hbd", "num_ro5_violations",
+    "aromatic_rings", "heavy_atoms", "rtb", "molecular_species", "cx_logp", "cx_logd"
+  ],
+  "descriptor": [
+    "mw_freebase", "alogp", "psa", "hba", "hbd", "num_ro5_violations",
+    "aromatic_rings", "heavy_atoms", "rtb", "molecular_species", "cx_logp", "cx_logd"
+  ],
+  "feature": [
+    "mw_freebase", "alogp", "psa", "hba", "hbd", "aromatic_rings", "rtb", "num_ro5_violations"
+  ],
+  "multivariate_feature": [
+    "mw_freebase", "alogp", "psa", "hba", "hbd", "aromatic_rings", "rtb"
+  ],
+  "numeric_descriptor_extra": ["pchembl_value", "standard_value"],
+  "numeric_coerce": ["hba", "hbd", "aromatic_rings", "heavy_atoms", "rtb", "num_ro5_violations"],
+  "id_and_text": [
+    "compound_name", "pubchem_cid", "chembl_id", "smiles", "family", "match_method",
+    "activity_id", "assay_chembl_id", "target_chembl_id", "target_name",
+    "activity_comment", "data_validity_comment"
+  ],
+  "categorical": [
+    "family", "activity_class", "standard_type", "standard_units", "standard_relation",
+    "target_type", "organism", "assay_type", "bao_label", "molecular_species", "potential_duplicate"
+  ],
+  "assay_feature": ["standard_type", "target_type", "organism", "assay_type"]
+}

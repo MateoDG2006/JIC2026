@@ -28,8 +28,6 @@ PANAMA_PREDICTIONS := outputs/results/panama_predictions.csv
 GHS_LABELS := data/raw/pubchem_ghs_labels.csv
 
 CHEMBL_COMPOSE := docker compose -f "$(ANALISIS_DIR)/docker/docker-compose.yml"
-CHEMBL_VOLUME := jic2026_chembl_db
-CHEMBL_HOST_DIR := $(ANALISIS_DIR)/data/external/chembl
 CHEMBL_NOTEBOOK := $(ANALISIS_DIR)/notebooks/fase1_adquisicion.ipynb
 
 VIZ_HOST := 127.0.0.1
@@ -93,17 +91,12 @@ help:
 	@echo   make panama-all             Pipeline Fase V completo
 	@echo.
 	@echo   === Analisis — ChEMBL / datos (Fases 1-2) ===
-	@echo   make chembl-docker-up       Descargar ChEMBLdb al volumen Docker (una vez)
-	@echo   make chembl-docker-down     Bajar contenedores ChEMBL
-	@echo   make chembl-docker-import   Importar BD local al volumen Docker
-	@echo   make chembl-sync-host       Volumen Docker -^> host (~15 GB)
-	@echo   make test-chembl            Verificar SQLite en host
-	@echo   make test-chembl-docker     Verificar SQLite en contenedor
-	@echo   make chembl-extract         CSV bioactividad MIDA (SQLite local)
-	@echo   make chembl-extract-api     Extraccion via REST ChEMBL
-	@echo   make chembl-extract-docker  Extraccion dentro de Docker
+	@echo   make setup-chembl           Descargar BD al volumen Docker + levantar servidor
+	@echo   make chembl-server-up       Servidor HTTP ChEMBL http://127.0.0.1:8765
+	@echo   make test-chembl            Verificar conexion al servidor
+	@echo   make chembl-extract         Extraer CSVs de bioactividad
 	@echo   make chembl-notebook        Ejecutar fase1_adquisicion.ipynb
-	@echo   make chembl-all             setup-chembl + extract-docker
+	@echo   make chembl-all             setup-chembl + chembl-extract
 	@echo.
 	@echo   === Analisis — Pipeline y dashboard (Fases 3-5, puerto $(ANALISIS_VIZ_PORT)) ===
 	@echo   make analisis-verify        Smoke test Flujo B (Opcion A, 107 compuestos)
@@ -269,61 +262,30 @@ panama-all: build-panama-corpus explain-panama validate-ghs generate-panama-repo
 # ANALISIS — ChEMBL / datos (Fases 1-2)
 # ═══════════════════════════════════════════════════════════════════════════
 
-.PHONY: chembl-docker-build chembl-docker-build-app chembl-docker-up chembl-docker-down chembl-docker-import setup-chembl test-chembl test-chembl-docker chembl-sync-host chembl-extract chembl-extract-api chembl-extract-docker chembl-notebook chembl-all
-chembl-docker-build:
+.PHONY: setup-chembl chembl-server-up chembl-server-down test-chembl chembl-extract chembl-notebook chembl-all
+
+setup-chembl:
 	$(CHEMBL_COMPOSE) build chembl-init
-
-chembl-docker-build-app:
-	$(CHEMBL_COMPOSE) build chembl-app
-
-chembl-docker-up: chembl-docker-build chembl-docker-build-app
 	$(CHEMBL_COMPOSE) --profile setup up --abort-on-container-exit chembl-init
+	$(MAKE) chembl-server-up
 
-chembl-docker-down:
-	$(CHEMBL_COMPOSE) --profile setup down --remove-orphans
+chembl-server-up:
+	$(CHEMBL_COMPOSE) build chembl-server
+	$(CHEMBL_COMPOSE) up -d chembl-server
 
-chembl-docker-import: chembl-docker-build
-	$(CHEMBL_COMPOSE) --profile setup run --rm --entrypoint "" \
-		-v "$(CURDIR)/$(CHEMBL_HOST_DIR):/import:ro" \
-		chembl-init \
-		sh -c 'if [ -f /data/chembl/chembl_37.db ]; then echo "[chembl-import] Volumen ya tiene chembl_37.db"; \
-		elif [ -f /import/chembl_37.db ]; then cp -a /import/. /data/chembl/ && echo "[chembl-import] Copiado al volumen $(CHEMBL_VOLUME)"; \
-		else echo "[chembl-import] No hay BD en $(CHEMBL_HOST_DIR)/ ni en el volumen"; exit 1; fi'
+chembl-server-down:
+	$(CHEMBL_COMPOSE) stop chembl-server
 
-setup-chembl: chembl-docker-up
-
-test-chembl-docker: chembl-docker-build-app
-	$(CHEMBL_COMPOSE) run --rm chembl-app python scripts/fase1/verify_chembl_db.py
-
-chembl-sync-host: chembl-docker-build-app
-ifeq ($(OS),Windows_NT)
-	if not exist "$(CHEMBL_HOST_DIR)" mkdir "$(CHEMBL_HOST_DIR)"
-else
-	mkdir -p $(CHEMBL_HOST_DIR)
-endif
-	$(CHEMBL_COMPOSE) run --rm --no-deps --entrypoint "" \
-		-v "$(CURDIR)/$(CHEMBL_HOST_DIR):/host" \
-		chembl-app \
-		sh -c 'if [ ! -f /data/chembl/chembl_37.db ]; then echo "Volumen vacio — ejecuta make chembl-docker-up"; exit 1; fi; \
-		if [ -f /host/chembl_37.db ]; then echo "Host ya tiene chembl_37.db — omitiendo copia"; \
-		else cp /data/chembl/chembl_37.db /data/chembl/manifest.json /host/ && echo "Copiado a $(CHEMBL_HOST_DIR)/"; fi'
-
-test-chembl: chembl-sync-host
+test-chembl: chembl-server-up
 	"$(VENV_PYTHON)" "$(ANALISIS_DIR)/scripts/fase1/verify_chembl_db.py"
 
 chembl-extract: test-chembl
-	"$(VENV_PYTHON)" "$(ANALISIS_DIR)/scripts/fase1/extract_chembl_local.py" --config "$(ANALISIS_CONFIG)"
+	"$(VENV_PYTHON)" "$(ANALISIS_DIR)/scripts/fase1/extract_chembl.py" --config "$(ANALISIS_CONFIG)"
 
-chembl-extract-api:
-	"$(VENV_PYTHON)" "$(ANALISIS_DIR)/scripts/fase1/extract_chembl_local.py" --config "$(ANALISIS_CONFIG)" --backend api
-
-chembl-extract-docker: chembl-docker-build-app test-chembl-docker
-	$(CHEMBL_COMPOSE) run --rm chembl-app
-
-chembl-notebook: test-chembl
+chembl-notebook:
 	"$(VENV_PYTHON)" -m jupyter nbconvert --execute --to notebook --inplace "$(CHEMBL_NOTEBOOK)"
 
-chembl-all: setup-chembl chembl-extract-docker
+chembl-all: setup-chembl chembl-extract
 
 # ═══════════════════════════════════════════════════════════════════════════
 # ANALISIS — Pipeline y dashboard (Fases 3-5)

@@ -59,9 +59,9 @@ Fase 6 (Geodatos) **no esta implementada**: solo [spec futura](fases/fase6_geoda
 | Fase | Entrada | Salida principal | Codigo fuente |
 |---|---|---|---|
 | 1 | `pubchem_panama_cids.csv` | `chembl_panama_bioactivity.csv` | `chembl_*.py` |
-| 2 | `chembl_panama_bioactivity.csv` | `activities_clean.csv` + `compounds_features.csv` (107) | `chembl_preprocessing.py` |
-| 3 | `compounds_features.csv` + `activities_clean.csv` | Figuras EDA | `chembl_preprocessing.py` |
-| 4 | `compounds_features.csv` | `stats_tests.csv`, `clustering_summary.json`, `baseline_honest_metrics.csv`, figuras PCA/cluster | `chembl_multivariate.py`, `chembl_baseline.py` |
+| 2 | `chembl_panama_bioactivity.csv` | `activities_clean.csv` + `compounds_features.csv` (107) | `preprocessing/pipeline.py` |
+| 3 | `compounds_features.csv` + `activities_clean.csv` | Figuras EDA | `preprocessing/pipeline.py` |
+| 4 | `compounds_features.csv` | `stats_tests.csv`, `clustering_summary.json`, `baseline_honest_metrics.csv`, figuras PCA/cluster | `modeling/multivariate.py`, `modeling/baseline.py` |
 | 5 | Artefactos Fases 2–4 | Dashboard en `viz/` (puerto 8001) | `prepare_dashboard.py`, `viz/` |
 | 6 | — spec futura — | GeoJSON (futuro) | ver [fase6_geodatos.md](fases/fase6_geodatos.md) |
 | 7 | Artefactos Fases 2–5 + `baseline_honest_metrics.csv` | Articulo + video | — |
@@ -72,12 +72,19 @@ Fase 6 (Geodatos) **no esta implementada**: solo [spec futura](fases/fase6_geoda
 
 | Modulo | Rol |
 |---|---|
-| `src/analisis_proyecto/chembl_api.py` | Descarga REST (Flujo A) |
-| `src/analisis_proyecto/chembl_local.py` | Extraccion SQLite offline |
-| `src/analisis_proyecto/chembl_extract.py` | Facade de extraccion |
-| `src/analisis_proyecto/chembl_preprocessing.py` | Limpieza, EDA, features compuesto |
-| `src/analisis_proyecto/chembl_multivariate.py` | PCA, clustering, Kruskal |
-| `src/analisis_proyecto/chembl_baseline.py` | Baseline honesto P6 (Fase 4 §12) |
+| `config/chembl/*.json` | Constantes editables (MIDA, columnas, tipos de actividad, esquema SQLite) |
+| `src/analisis_proyecto/core/constants.py` | Carga de JSON en `config/chembl/` |
+| `src/analisis_proyecto/core/models.py` | Dataclasses tipadas (`ChemblConfig`, `MidaRegistry`, …) |
+| `src/analisis_proyecto/acquisition/extract.py` | Orquestador `ChemblExtractor` (Flujo A) |
+| `src/analisis_proyecto/acquisition/remote.py` | Cliente HTTP hacia chembl-server |
+| `src/analisis_proyecto/acquisition/server.py` | API FastAPI (solo contenedor Docker) |
+| `src/analisis_proyecto/acquisition/local.py` | Consultas SQLite internas del servidor |
+| `src/analisis_proyecto/acquisition/sqlalchemy.py` | SQLAlchemy Core — reflexion parcial (7 tablas) |
+| `src/analisis_proyecto/acquisition/common.py` | Corpus, filtros de calidad, imputacion pChEMBL |
+| `src/analisis_proyecto/preprocessing/pipeline.py` | Limpieza, EDA, features compuesto |
+| `src/analisis_proyecto/modeling/multivariate.py` | PCA, clustering, Kruskal |
+| `src/analisis_proyecto/modeling/baseline.py` | Baseline honesto P6 (`CompoundLevelBaseline`, `RowLevelLeakyBaseline`) |
+| `scripts/fase1/extract_chembl.py` | CLI de extraccion ChEMBL |
 | `scripts/fase4/verify_flow_b.py` | Verificacion end-to-end Flujo B |
 | `scripts/fase5/prepare_dashboard.py` | JSON para dashboard |
 | `viz/` | Dashboard analytics (puerto 8001) |

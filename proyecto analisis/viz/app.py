@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.paths import setup_path
@@ -19,6 +20,11 @@ app = FastAPI(
 
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 app.include_router(analytics_router)
+
+
+@app.get("/")
+def home():
+    return RedirectResponse(url="/eda")
 
 
 @app.get("/health")

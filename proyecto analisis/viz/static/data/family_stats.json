@@ -1,0 +1,83 @@
+{
+  "kruskal_tests": [
+    {
+      "value_col": "mw_freebase",
+      "H": 21.397703487466085,
+      "p": 0.0006812162110437,
+      "p_adjusted": 0.0047685134773064,
+      "epsilon2": 0.1821967054162898,
+      "k_groups": 6,
+      "n": 96,
+      "n_excluded_groups": 11
+    },
+    {
+      "value_col": "alogp",
+      "H": 18.50013243855664,
+      "p": 0.0023807017083353,
+      "p_adjusted": 0.0083324559791737,
+      "epsilon2": 0.1500014715395182,
+      "k_groups": 6,
+      "n": 96,
+      "n_excluded_groups": 11
+    },
+    {
+      "value_col": "psa",
+      "H": 11.387702129798404,
+      "p": 0.0442123778150524,
+      "p_adjusted": 0.0442123778150524,
+      "epsilon2": 0.0709744681088711,
+      "k_groups": 6,
+      "n": 96,
+      "n_excluded_groups": 11
+    },
+    {
+      "value_col": "hba",
+      "H": 15.573217235245298,
+      "p": 0.0081743170346897,
+      "p_adjusted": 0.0141513694245929,
+      "epsilon2": 0.1174801915027255,
+      "k_groups": 6,
+      "n": 96,
+      "n_excluded_groups": 11
+    },
+    {
+      "value_col": "hbd",
+      "H": 14.06408855633491,
+      "p": 0.0152074013957106,
+      "p_adjusted": 0.0177419682949958,
+      "epsilon2": 0.1007120950703878,
+      "k_groups": 6,
+      "n": 96,
+      "n_excluded_groups": 11
+    },
+    {
+      "value_col": "aromatic_rings",
+      "H": 15.06021557335256,
+      "p": 0.0101081210175664,
+      "p_adjusted": 0.0141513694245929,
+      "epsilon2": 0.1117801730372506,
+      "k_groups": 6,
+      "n": 96,
+      "n_excluded_groups": 11
+    },
+    {
+      "value_col": "rtb",
+      "H": 17.149075871465378,
+      "p": 0.0042255782923087,
+      "p_adjusted": 0.0098596826820538,
+      "epsilon2": 0.1349897319051708,
+      "k_groups": 6,
+      "n": 96,
+      "n_excluded_groups": 11
+    }
+  ],
+  "n_by_family": {
+    "Azole_fungicides": 10,
+    "Carbamates": 14,
+    "Herbicides": 19,
+    "Organophosphates": 17,
+    "Pyrethroids": 22,
+    "Triazines": 14,
+    "mixed": 11
+  }
+}
