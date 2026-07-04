@@ -34,11 +34,18 @@ class FlowBPaths:
 
     @property
     def raw_csv(self) -> Path:
+        raw = self.root / "data" / "raw" / "chembl_panama_bioactivity_raw.csv"
+        if raw.is_file():
+            return raw
         return self.root / "data" / "raw" / "chembl_panama_bioactivity.csv"
 
     @property
     def activities_csv(self) -> Path:
         return self.root / "data" / "processed" / "activities_clean.csv"
+
+    @property
+    def compounds_all_csv(self) -> Path:
+        return self.root / "data" / "processed" / "compounds_all.csv"
 
     @property
     def compounds_csv(self) -> Path:
@@ -60,12 +67,20 @@ class FlowBPaths:
     def baseline_csv(self) -> Path:
         return self.root / "outputs" / "chembl" / "results" / "baseline_honest_metrics.csv"
 
+    @property
+    def censoring_json(self) -> Path:
+        return self.root / "outputs" / "chembl" / "results" / "censoring_report.json"
+
+    @property
+    def funnel_json(self) -> Path:
+        return self.root / "outputs" / "chembl" / "results" / "corpus_funnel.json"
+
 
 class FlowBPipeline:
     """Orquesta limpieza, agregación, multivariado y baseline P6."""
 
     NAN_THRESHOLD = 250
-    EXPECTED_COMPOUNDS = 107
+    MIN_STRUCTURAL_COMPOUNDS = 140
 
     def __init__(self, paths: FlowBPaths | None = None) -> None:
         self.paths = paths or FlowBPaths(ROOT)
@@ -77,32 +92,56 @@ class FlowBPipeline:
         self.paths.activities_csv.parent.mkdir(parents=True, exist_ok=True)
         activities.to_csv(self.paths.activities_csv, index=False)
 
-        compounds = self.preprocessor.build_compound_features(activities)
-        assert compounds["chembl_id"].nunique() == len(compounds)
-        assert len(compounds) == self.EXPECTED_COMPOUNDS, (
-            f"Esperado {self.EXPECTED_COMPOUNDS} compuestos, got {len(compounds)}"
+        assert "is_censored" in activities.columns, "Falta columna is_censored (D2)"
+        assert int(activities["is_censored"].sum()) > 0, (
+            "Se esperaban filas censuradas en activities_clean (usar bioactivity_raw.csv)"
         )
 
-        desc_cols = [c for c in FEATURE_COLS + ["heavy_atoms"] if c in compounds.columns]
-        assert compounds[desc_cols].isna().sum().sum() == 0, "NaN en descriptores"
+        compounds_all = self.preprocessor.build_compounds_all(activities)
+        compounds_all.to_csv(self.paths.compounds_all_csv, index=False)
 
-        mv = self.multivariate.analyze(compounds)
+        compounds_potency = self.preprocessor.build_compound_features(activities)
+        assert compounds_all["chembl_id"].nunique() == len(compounds_all)
+        assert len(compounds_all) >= self.MIN_STRUCTURAL_COMPOUNDS, (
+            f"Corpus estructural esperado >={self.MIN_STRUCTURAL_COMPOUNDS}, got {len(compounds_all)}"
+        )
+
+        desc_cols = [c for c in FEATURE_COLS + ["heavy_atoms"] if c in compounds_all.columns]
+        assert compounds_all[desc_cols].isna().sum().sum() == 0, "NaN en descriptores (corpus estructural)"
+
+        mv = self.multivariate.analyze(compounds_all, potency_compounds=compounds_potency)
         assert "num_ro5_violations" not in mv.summary["features_used"]
         assert mv.summary.get("features_dropped") == ["num_ro5_violations"]
 
-        compounds["cluster"] = mv.kmeans_labels
-        compounds["cluster_label"] = mv.summary["cluster_validity_note"]
-        compounds.to_csv(self.paths.compounds_csv, index=False)
+        compounds_all_out = compounds_all.copy()
+        compounds_all_out["cluster"] = mv.kmeans_labels
+        compounds_all_out["cluster_label"] = mv.summary["cluster_validity_note"]
+        compounds_all_out.to_csv(self.paths.compounds_all_csv, index=False)
+
+        compounds_potency = compounds_potency.merge(
+            compounds_all_out[["chembl_id", "cluster", "cluster_label"]],
+            on="chembl_id",
+            how="left",
+        )
+        compounds_potency.to_csv(self.paths.compounds_csv, index=False)
 
         self.paths.stats_csv.parent.mkdir(parents=True, exist_ok=True)
         pd.DataFrame(mv.stats_rows).to_csv(self.paths.stats_csv, index=False)
         pd.DataFrame(mv.exploratory_stats_rows).to_csv(
             self.paths.stats_exploratory_csv, index=False
         )
+        mv.summary["corpus_structural_n"] = len(compounds_all)
+        mv.summary["corpus_potency_n"] = len(compounds_potency)
         self.paths.cluster_json.write_text(json.dumps(mv.summary, indent=2), encoding="utf-8")
 
+        censoring = self.preprocessor.censoring_report(activities)
+        self.paths.censoring_json.write_text(json.dumps(censoring, indent=2), encoding="utf-8")
+
+        funnel = self.preprocessor.corpus_funnel(activities, compounds_all, compounds_potency)
+        self.paths.funnel_json.write_text(json.dumps(funnel, indent=2), encoding="utf-8")
+
         row_contrast = RowLevelSplitContrast().evaluate(activities)
-        compound_view = CompoundLevelBaseline().evaluate(compounds)
+        compound_view = CompoundLevelBaseline().evaluate(compounds_potency)
         baseline = pd.DataFrame([m.to_dict() for m in row_contrast + [compound_view]])
         baseline.to_csv(self.paths.baseline_csv, index=False)
 
@@ -111,11 +150,15 @@ class FlowBPipeline:
         assert leak["n"] == honest["n"], "Contraste filas: target y n deben coincidir"
 
         imp = self.preprocessor.imputation_report(activities)
-        print(f"  activities: {activities.shape} | compounds: {compounds.shape}")
+        print(f"  activities: {activities.shape} | structural: {compounds_all.shape} | potency: {compounds_potency.shape}")
+        print(f"  censuradas: {int(activities['is_censored'].sum())} filas ({censoring['pct_censored']}%)")
+        print(
+            f"  embudo: {funnel['raw_compounds']} -> "
+            f"{funnel['with_potency_binding_min_support']} compuestos con potencia"
+        )
         print(f"  pChEMBL imputados: {imp['pct_imputed']}%")
         print(f"  features multivariado: {mv.summary['features_used']}")
-        print(f"  dropped: {mv.summary['features_dropped']}")
-        print(f"  PCA var PC1+PC2: {mv.summary['pca_var_explained'] * 100:.1f}%")
+        print(f"  PCA var PC1+PC2: {mv.summary['pca_var_explained'] * 100:.1f}% (n={len(compounds_all)})")
         print(f"  best_k={mv.summary['best_k']} | ARI={mv.summary['ari_vs_family']:.3f}")
         print(
             f"  baseline filas (fuga): R²={leak['r2_cv_mean']:.3f} ± {leak['r2_cv_std']:.3f} (n={leak['n']})"

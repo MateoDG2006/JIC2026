@@ -150,9 +150,17 @@ class MultivariateResult:
 class MultivariateAnalyzer:
     """PCA, clustering y pruebas Kruskal-Wallis sobre compuestos agregados."""
 
-    def analyze(self, compounds: pd.DataFrame) -> MultivariateResult:
-        feat_cols, dropped = drop_degenerate(compounds, FEATURE_COLS)
-        assert set(feat_cols) == set(MULTIVARIATE_FEATURE_COLS), (
+    def analyze(
+        self,
+        compounds: pd.DataFrame,
+        *,
+        potency_compounds: pd.DataFrame | None = None,
+    ) -> MultivariateResult:
+        feat_cols = [c for c in MULTIVARIATE_FEATURE_COLS if c in compounds.columns]
+        dropped = sorted(set(FEATURE_COLS) - set(MULTIVARIATE_FEATURE_COLS))
+        feat_cols, dropped_degen = drop_degenerate(compounds, feat_cols)
+        dropped = sorted(set(dropped) | set(dropped_degen))
+        assert set(feat_cols) == set(MULTIVARIATE_FEATURE_COLS) - set(dropped_degen), (
             f"Features multivariado inesperadas: {feat_cols}"
         )
         X = scale_features(compounds, feat_cols)
@@ -166,14 +174,27 @@ class MultivariateAnalyzer:
         ]
         stats_rows = apply_multiple_testing_correction(stats_rows)
 
-        exploratory = kruskal_by_family(
-            compounds,
-            "pchembl_median",
-            exclude_groups=("mixed",),
-        )
+        pot_df = potency_compounds if potency_compounds is not None else compounds
+        if "pchembl_median_binding" in pot_df.columns:
+            exploratory = kruskal_by_family(
+                pot_df,
+                "pchembl_median_binding",
+                exclude_groups=("mixed",),
+            )
+        else:
+            exploratory = {
+                "value_col": "pchembl_median_binding",
+                "H": None,
+                "p": None,
+                "p_adjusted": None,
+                "epsilon2": None,
+                "k_groups": 0,
+                "n": 0,
+                "n_excluded_groups": 0,
+            }
         exploratory["note"] = (
-            "EXPLORATORIO — pchembl_median mezcla 13 standard_type y hasta 133 dianas; "
-            "no es un target de regresión legítimo."
+            "EXPLORATORIO — pchembl_median_binding solo BINDING_TYPES (IC50/Ki/…); "
+            "no usar como feature independiente junto a pct_active."
         )
 
         summary = {

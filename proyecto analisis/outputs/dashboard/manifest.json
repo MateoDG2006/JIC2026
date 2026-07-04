@@ -1,0 +1,79 @@
+{
+  "project": "proyecto analisis",
+  "chembl_rows_structural": 147,
+  "chembl_rows_potency": 89,
+  "activity_rows": 9752,
+  "cluster_validity": {
+    "best_k": 2,
+    "silhouette_by_k": {
+      "2": 0.3632759428412794,
+      "3": 0.34298680799747033,
+      "4": 0.2773740244406572,
+      "5": 0.27958725107673005,
+      "6": 0.2934569746884627,
+      "7": 0.29516600568744594,
+      "8": 0.28091407676913777
+    },
+    "silhouette_best": 0.3632759428412794,
+    "ari_vs_family": 0.01782535200709751,
+    "pca_var_explained": 0.782010878885409,
+    "features_used": [
+      "mw_freebase",
+      "alogp",
+      "psa",
+      "hba",
+      "hbd",
+      "aromatic_rings",
+      "rtb"
+    ],
+    "features_dropped": [
+      "num_ro5_violations"
+    ],
+    "features_dropped_reason": "near-zero variance (nunique < 3)",
+    "cluster_validity_note": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
+    "corpus_structural_n": 147,
+    "corpus_potency_n": 89
+  },
+  "corpus_funnel": {
+    "raw_compounds": 147,
+    "with_eq_pchembl": 131,
+    "with_potency_binding_min_support": 89,
+    "dropped_no_quantitative": 58,
+    "dropped_by_family": {
+      "Azole_fungicides": 4,
+      "Carbamates": 11,
+      "Herbicides": 10,
+      "Organophosphates": 17,
+      "Pyrethroids": 3,
+      "Triazines": 8,
+      "mixed": 5
+    },
+    "n_mixed_endpoint_class": 43,
+    "selection_bias_note": "El subconjunto con potencia excluye compuestos solo-censurados/inactivos \u2192 potencia sesgada al alza."
+  },
+  "censoring_report": {
+    "n_total": 9752,
+    "n_censored": 3646,
+    "pct_censored": 37.39,
+    "by_standard_relation": {
+      "=": 7712,
+      ">": 1956,
+      "<": 73,
+      ">=": 6,
+      "~": 2,
+      "<=": 2,
+      ">>": 1
+    },
+    "n_used_for_potency_aggregation": 6106,
+    "pct_excluded_from_potency": 37.39,
+    "note": "Censurados se conservan en activities_clean; se excluyen solo de pchembl_median_binding y pct_active."
+  },
+  "sources": {
+    "compounds_all": "data\\processed\\compounds_all.csv",
+    "compounds_potency": "data\\processed\\compounds_features.csv",
+    "activities": "data\\processed\\activities_clean.csv",
+    "clustering": "outputs\\chembl\\results\\clustering_summary.json",
+    "stats_tests": "outputs\\chembl\\results\\stats_tests.csv",
+    "static_data": "viz\\static\\data"
+  }
+}

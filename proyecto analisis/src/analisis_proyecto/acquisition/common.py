@@ -164,20 +164,28 @@ class ActivityClassAssigner:
         return out
 
 
+def mark_is_censored(df: pd.DataFrame) -> pd.DataFrame:
+    """Marca filas censuradas (standard_relation distinto de '=')."""
+    out = df.copy()
+    rel = out["standard_relation"].fillna("").astype(str)
+    out["is_censored"] = rel != "="
+    return out
+
+
 class QualityFilterPipeline:
     def __init__(self, config: QualityFilterConfig | None = None) -> None:
         self.config = config or QualityFilterConfig()
 
     def apply(self, df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
         work = PchemblImputer.impute_dataframe(df) if self.config.impute_pchembl else df.copy()
+        work = mark_is_censored(work)
         n_start = len(work)
         rules: list[tuple[str, pd.Series]] = [
-            ("pchembl_value nulo (tras imputación)", work["pchembl_value"].isna()),
+            (
+                "pchembl nulo (relation '=', no imputable)",
+                ~work["is_censored"] & work["pchembl_value"].isna(),
+            ),
         ]
-        if self.config.require_exact_relation:
-            rules.append(
-                ("standard_relation != '='", work["standard_relation"].fillna("").astype(str) != "=")
-            )
         if self.config.exclude_validity_comment:
             rules.append((
                 "data_validity_comment no nulo",

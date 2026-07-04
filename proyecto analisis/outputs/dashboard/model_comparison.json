@@ -1,0 +1,15 @@
+{
+  "models": [
+    {
+      "name": "RF baseline (compuesto)",
+      "metric": -0.5184537147440798,
+      "source": "baseline_honest_metrics.csv"
+    },
+    {
+      "name": "RF baseline (filas_CON_FUGA)",
+      "metric": 0.3990998607318089,
+      "source": "baseline_honest_metrics.csv"
+    }
+  ],
+  "note": "Comparativa GNN opcional (proyecto hermano). M\u00e9tricas ChEMBL = baseline P6."
+}

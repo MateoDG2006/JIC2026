@@ -15,6 +15,7 @@ from viz.config import NUMERIC_COLS, TEMPLATES_DIR
 from viz.services.dashboard.artifacts import (
     load_baseline_honest,
     load_chembl,
+    load_compounds_potency,
     load_correlation,
     load_family_stats,
     load_pca_clusters,
@@ -64,18 +65,35 @@ def chembl_meta():
 
 @router.get("/api/analytics/chembl/data")
 def chembl_data(
-    variable: str = Query("pchembl_median"),
+    variable: str = Query("pchembl_median_binding"),
     family: str = Query("ALL"),
     mw_min: float | None = Query(None),
     mw_max: float | None = Query(None),
 ):
     df = _filter_chembl(family, mw_min, mw_max)
     if variable not in df.columns:
-        raise HTTPException(400, f"Variable desconocida: {variable}")
+        if variable == "pchembl_median_binding":
+            df = load_compounds_potency().copy()
+            if family and family != "ALL":
+                df = df[df["family"] == family]
+            if mw_min is not None:
+                df = df[df["mw_freebase"] >= mw_min]
+            if mw_max is not None:
+                df = df[df["mw_freebase"] <= mw_max]
+        if variable not in df.columns:
+            raise HTTPException(400, f"Variable desconocida: {variable}")
 
     scatter_cols = [
         c
-        for c in ("mw_freebase", "alogp", "activity_class", "compound_name", "pchembl_median")
+        for c in (
+            "mw_freebase",
+            "alogp",
+            "compound_name",
+            "pchembl_median_binding",
+            "pchembl_std_binding",
+            "reliability_tier",
+            "target_inestable",
+        )
         if c in df.columns
     ]
 

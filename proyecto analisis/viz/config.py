@@ -15,6 +15,7 @@ CONFIG_PATH = PROJECT_ROOT / "config" / "config.yaml"
 DATA_DIR = PROJECT_ROOT / "data" / "processed"
 ARTIFACTS_DIR = PROJECT_ROOT / "outputs" / "dashboard"
 BUNDLE_DIR = ARTIFACTS_DIR / "bundle"
+COMPOUNDS_ALL_CSV = DATA_DIR / "compounds_all.csv"
 CHEMBL_CSV = DATA_DIR / "compounds_features.csv"
 ACTIVITIES_CSV = DATA_DIR / "activities_clean.csv"
 RESULTS_DIR = PROJECT_ROOT / "outputs" / "chembl" / "results"
@@ -23,7 +24,9 @@ STATIC_DIR = Path(__file__).resolve().parent / "static"
 STATIC_DATA_DIR = STATIC_DIR / "data"
 
 NUMERIC_COLS = [
-    "pchembl_median",
+    "pchembl_median_binding",
+    "pchembl_std_binding",
+    "pchembl_iqr_binding",
     "mw_freebase",
     "alogp",
     "psa",
@@ -31,8 +34,8 @@ NUMERIC_COLS = [
     "hbd",
     "aromatic_rings",
     "rtb",
-    "num_ro5_violations",
-    "n_activities_clean",
+    "n_activities_total",
+    "n_activities_binding",
 ]
 
 
@@ -50,7 +53,7 @@ def use_bundle() -> bool:
         return True
     if explicit is False:
         return False
-    return not CHEMBL_CSV.is_file() and (BUNDLE_DIR / "compounds_features.csv").is_file()
+    return not COMPOUNDS_ALL_CSV.is_file() and (BUNDLE_DIR / "compounds_all.csv").is_file()
 
 
 def resolve_path(canonical: Path, bundle_name: str) -> Path:

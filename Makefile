@@ -99,7 +99,7 @@ help:
 	@echo   make chembl-all             setup-chembl + chembl-extract
 	@echo.
 	@echo   === Analisis — Pipeline y dashboard (Fases 3-5, puerto $(ANALISIS_VIZ_PORT)) ===
-	@echo   make analisis-verify        Smoke test Flujo B (Opcion A, 107 compuestos)
+	@echo   make analisis-verify        Smoke test Flujo B (corpus estructural ~147 compuestos)
 	@echo   make analisis-prepare-dashboard  JSON para dashboard analytics
 	@echo   make analisis-prepare-dashboard-bundle  Idem + bundle cloud
 	@echo   make analisis-test-dashboard     Smoke test viz analytics

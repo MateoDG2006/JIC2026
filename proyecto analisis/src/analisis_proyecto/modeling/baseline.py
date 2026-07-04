@@ -9,7 +9,10 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GroupKFold, KFold, cross_val_score
 
-from src.analisis_proyecto.preprocessing.pipeline import FEATURE_COLS
+from src.analisis_proyecto.preprocessing.pipeline import (
+    FEATURE_COLS,
+    quantitative_binding_activities,
+)
 
 
 def _bootstrap_ci(
@@ -93,7 +96,7 @@ class RowLevelSplitContrast:
         self.random_state = random_state
 
     def evaluate(self, activities: pd.DataFrame) -> list[BaselineMetrics]:
-        df = activities.dropna(subset=["pchembl_value"] + FEATURE_COLS)
+        df = quantitative_binding_activities(activities).dropna(subset=["pchembl_value"] + FEATURE_COLS)
         X = df[FEATURE_COLS].values
         y = df["pchembl_value"].values
         groups = df["chembl_id"].values
@@ -118,16 +121,16 @@ class RowLevelSplitContrast:
 
 
 class CompoundLevelBaseline:
-    """Vista complementaria a nivel compuesto — predice pchembl_median."""
+    """Vista complementaria a nivel compuesto — predice pchembl_median_binding."""
 
     def __init__(self, n_estimators: int = 300, random_state: int = 42) -> None:
         self.n_estimators = n_estimators
         self.random_state = random_state
 
     def evaluate(self, compounds: pd.DataFrame) -> BaselineMetrics:
-        df = compounds.dropna(subset=["pchembl_median"] + FEATURE_COLS)
+        df = compounds.dropna(subset=["pchembl_median_binding"] + FEATURE_COLS)
         X = df[FEATURE_COLS].values
-        y = df["pchembl_median"].values
+        y = df["pchembl_median_binding"].values
         groups = df["chembl_id"].values
 
         gkf = GroupKFold(5)

@@ -1,0 +1,17 @@
+{
+  "n_total": 9752,
+  "n_censored": 3646,
+  "pct_censored": 37.39,
+  "by_standard_relation": {
+    "=": 7712,
+    ">": 1956,
+    "<": 73,
+    ">=": 6,
+    "~": 2,
+    "<=": 2,
+    ">>": 1
+  },
+  "n_used_for_potency_aggregation": 6106,
+  "pct_excluded_from_potency": 37.39,
+  "note": "Censurados se conservan en activities_clean; se excluyen solo de pchembl_median_binding y pct_active."
+}

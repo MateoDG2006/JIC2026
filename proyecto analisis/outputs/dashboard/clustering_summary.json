@@ -1,0 +1,31 @@
+{
+  "best_k": 2,
+  "silhouette_by_k": {
+    "2": 0.3632759428412794,
+    "3": 0.34298680799747033,
+    "4": 0.2773740244406572,
+    "5": 0.27958725107673005,
+    "6": 0.2934569746884627,
+    "7": 0.29516600568744594,
+    "8": 0.28091407676913777
+  },
+  "silhouette_best": 0.3632759428412794,
+  "ari_vs_family": 0.01782535200709751,
+  "pca_var_explained": 0.782010878885409,
+  "features_used": [
+    "mw_freebase",
+    "alogp",
+    "psa",
+    "hba",
+    "hbd",
+    "aromatic_rings",
+    "rtb"
+  ],
+  "features_dropped": [
+    "num_ro5_violations"
+  ],
+  "features_dropped_reason": "near-zero variance (nunique < 3)",
+  "cluster_validity_note": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
+  "corpus_structural_n": 147,
+  "corpus_potency_n": 89
+}

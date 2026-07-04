@@ -27,12 +27,17 @@ from sklearn.model_selection import train_test_split
 
 from src.analisis_proyecto.core.constants import (
     assay_feature_columns,
+    binding_types,
     categorical_columns,
     feature_columns,
     id_and_text_columns,
+    min_potency_activities,
     numeric_coerce_columns,
     numeric_descriptor_columns,
+    organism_types,
+    reliability_tier,
 )
+from src.analisis_proyecto.acquisition.common import mark_is_censored
 
 # Ver ``config/chembl/columns.json`` para editar estas listas.
 FEATURE_COLS: list[str] = feature_columns()
@@ -40,6 +45,23 @@ NUMERIC_DESCRIPTOR_COLS: list[str] = numeric_descriptor_columns()
 ID_AND_TEXT_COLS = id_and_text_columns()
 CATEGORICAL_COLS = categorical_columns()
 ASSAY_FEATURE_COLS = assay_feature_columns()
+
+PROTECTED_ACTIVITY_COLS = frozenset({
+    "chembl_id",
+    "compound_name",
+    "family",
+    "smiles",
+    "standard_relation",
+    "standard_type",
+    "pchembl_value",
+    "is_censored",
+    "activity_class",
+    "standard_value",
+    "standard_units",
+    "target_chembl_id",
+    "assay_type",
+    "pchembl_imputed",
+})
 
 
 def load_bioactivity(path: str | Path) -> pd.DataFrame:
@@ -166,6 +188,8 @@ def plot_missingno_report(
 def drop_columns_high_nan(
     df: pd.DataFrame,
     threshold: int = 250,
+    *,
+    never_drop: frozenset[str] | set[str] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     Elimina columnas con más de `threshold` valores NaN.
@@ -177,11 +201,15 @@ def drop_columns_high_nan(
     nan_counts = df.isna().sum()
     report_rows: list[dict[str, Any]] = []
     drop_cols: list[str] = []
+    protected = never_drop or frozenset()
 
     for col in df.columns:
         n_nan = int(nan_counts[col])
         pct = round(100 * n_nan / n, 2) if n else 0.0
-        decision = "eliminar" if n_nan > threshold else "conservar"
+        if col in protected:
+            decision = "conservar (protegida)"
+        else:
+            decision = "eliminar" if n_nan > threshold else "conservar"
         if decision == "eliminar":
             drop_cols.append(col)
         report_rows.append(
@@ -374,41 +402,172 @@ def correlation_with_target(
     return result
 
 
-def build_compound_features(activities_df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Agrega el dataset a nivel COMPUESTO (una fila por chembl_id).
+def _descriptor_cols(df: pd.DataFrame) -> list[str]:
+    cols = list(feature_columns()) + ["heavy_atoms"]
+    return [c for c in cols if c in df.columns]
 
-    Los descriptores son constantes dentro de cada compuesto, así que se toma el primer valor.
-    Los agregados de bioactividad resumen todas las mediciones del compuesto.
-    """
-    df = activities_df.copy()
 
-    descriptor_cols = list(feature_columns()) + ["heavy_atoms"]
-    descriptor_cols = [c for c in descriptor_cols if c in df.columns]
+def _ensure_censored_flag(df: pd.DataFrame) -> pd.DataFrame:
+    if "is_censored" in df.columns:
+        return df.copy()
+    return mark_is_censored(df)
 
+
+def quantitative_binding_activities(activities_df: pd.DataFrame) -> pd.DataFrame:
+    """Filas no censuradas con pChEMBL y endpoint de afinidad de unión (BINDING_TYPES)."""
+    df = _ensure_censored_flag(activities_df)
+    binding = binding_types()
+    st = df["standard_type"].astype(str)
+    mask = ~df["is_censored"] & df["pchembl_value"].notna() & st.isin(binding)
+    return df.loc[mask].copy()
+
+
+def censoring_report(activities_df: pd.DataFrame) -> dict[str, Any]:
+    """Recuento de censura y filas excluidas del agregado de potencia."""
+    df = _ensure_censored_flag(activities_df)
+    n_total = len(df)
+    n_censored = int(df["is_censored"].sum())
+    rel_counts = (
+        df["standard_relation"].fillna("NaN").astype(str).value_counts().astype(int).to_dict()
+    )
+    n_potency = int((~df["is_censored"] & df["pchembl_value"].notna()).sum())
+    return {
+        "n_total": n_total,
+        "n_censored": n_censored,
+        "pct_censored": round(100 * n_censored / n_total, 2) if n_total else 0.0,
+        "by_standard_relation": rel_counts,
+        "n_used_for_potency_aggregation": n_potency,
+        "pct_excluded_from_potency": round(100 * n_censored / n_total, 2) if n_total else 0.0,
+        "note": (
+            "Censurados se conservan en activities_clean; "
+            "se excluyen solo de pchembl_median_binding y pct_active."
+        ),
+    }
+
+
+def build_compounds_all(activities_df: pd.DataFrame) -> pd.DataFrame:
+    """Corpus estructural: todos los compuestos con descriptores (~147), con o sin potencia."""
+    df = _ensure_censored_flag(activities_df)
+    desc_cols = _descriptor_cols(df)
     g = df.groupby("chembl_id", dropna=False)
-
-    rows = g.agg(
+    out = g.agg(
         compound_name=("compound_name", "first"),
         family=("family", "first"),
         smiles=("smiles", "first"),
-        pchembl_median=("pchembl_value", "median"),
-        pchembl_std=("pchembl_value", "std"),
-        n_activities=("pchembl_value", "size"),
-        n_targets=("target_chembl_id", "nunique"),
-        n_assay_types=("assay_type", "nunique"),
-        n_standard_types=("standard_type", "nunique"),
-    )
-
-    desc = g[descriptor_cols].first()
-
-    if "activity_class" in df.columns:
-        pct = g["activity_class"].apply(lambda s: (s == "Active").mean())
-        rows["pct_active"] = pct
-
-    out = rows.join(desc).reset_index()
-    out["pchembl_std"] = out["pchembl_std"].fillna(0.0)
+        n_activities_total=("chembl_id", "size"),
+        n_censored=("is_censored", "sum"),
+    ).join(g[desc_cols].first()).reset_index()
+    out["n_censored"] = out["n_censored"].astype(int)
     return out
+
+
+def _endpoint_flags_by_compound(activities_df: pd.DataFrame) -> pd.DataFrame:
+    """Marca compuestos que mezclan endpoints de unión y organismo."""
+    df = _ensure_censored_flag(activities_df)
+    quant = df.loc[~df["is_censored"] & df["pchembl_value"].notna()]
+    binding = binding_types()
+    organism = organism_types()
+    rows: list[dict[str, Any]] = []
+    for chembl_id, group in quant.groupby("chembl_id", dropna=False):
+        types = set(group["standard_type"].astype(str))
+        has_binding = bool(types & binding)
+        has_organism = bool(types & organism)
+        rows.append({
+            "chembl_id": chembl_id,
+            "mixed_endpoint_class": has_binding and has_organism,
+            "endpoint_types_seen": "|".join(sorted(types)),
+        })
+    return pd.DataFrame(rows)
+
+
+def build_compound_features(
+    activities_df: pd.DataFrame,
+    *,
+    min_binding_n: int | None = None,
+) -> pd.DataFrame:
+    """
+    Agrega potencia a nivel compuesto (subconjunto con soporte mínimo).
+
+    Target: pchembl_median_binding — solo BINDING_TYPES, filas no censuradas.
+    """
+    min_n = min_binding_n if min_binding_n is not None else min_potency_activities()
+    df = _ensure_censored_flag(activities_df)
+    qbind = quantitative_binding_activities(df)
+    endpoint_flags = _endpoint_flags_by_compound(df)
+
+    if qbind.empty:
+        base = build_compounds_all(df)
+        return base.iloc[0:0].copy()
+
+    def _iqr(series: pd.Series) -> float:
+        return float(series.quantile(0.75) - series.quantile(0.25))
+
+    potency = qbind.groupby("chembl_id", dropna=False).agg(
+        pchembl_median_binding=("pchembl_value", "median"),
+        pchembl_std_binding=("pchembl_value", "std"),
+        pchembl_iqr_binding=("pchembl_value", _iqr),
+        n_activities_binding=("pchembl_value", "count"),
+    ).reset_index()
+    potency["pchembl_std_binding"] = potency["pchembl_std_binding"].fillna(0.0)
+    potency["target_inestable"] = potency["pchembl_std_binding"] > 1.0
+    potency["reliability_tier"] = potency["n_activities_binding"].apply(reliability_tier)
+
+    low_support = potency["n_activities_binding"] < min_n
+    potency.loc[low_support, "pchembl_median_binding"] = np.nan
+    potency.loc[low_support, "reliability_tier"] = "bajo"
+
+    if "activity_class" in qbind.columns:
+        pct = qbind.groupby("chembl_id")["activity_class"].apply(
+            lambda s: float((s == "Active").mean())
+        )
+        potency = potency.merge(
+            pct.rename("pct_active").reset_index(), on="chembl_id", how="left"
+        )
+        potency["pct_active_note"] = "derivado de pchembl >= 6 (no independiente)"
+
+    potency = potency.merge(endpoint_flags, on="chembl_id", how="left")
+    potency["mixed_endpoint_class"] = potency["mixed_endpoint_class"].fillna(False)
+
+    base = build_compounds_all(df)
+    out = base.merge(potency, on="chembl_id", how="inner")
+    out["has_quantitative_potency"] = out["pchembl_median_binding"].notna()
+    return out.loc[out["has_quantitative_potency"]].reset_index(drop=True)
+
+
+def build_corpus_funnel(
+    activities_df: pd.DataFrame,
+    compounds_all: pd.DataFrame,
+    compounds_potency: pd.DataFrame,
+) -> dict[str, Any]:
+    """Embudo 147→107: sesgo de selección hacia compuestos con potencia cuantitativa."""
+    df = _ensure_censored_flag(activities_df)
+    raw_n = int(df["chembl_id"].nunique())
+    with_eq = int(
+        df.loc[~df["is_censored"] & df["pchembl_value"].notna(), "chembl_id"].nunique()
+    )
+    potency_n = len(compounds_potency)
+    potency_ids = set(compounds_potency["chembl_id"])
+    dropped_ids = set(compounds_all["chembl_id"]) - potency_ids
+    dropped_by_family = (
+        compounds_all.loc[compounds_all["chembl_id"].isin(dropped_ids)]
+        .groupby("family")
+        .size()
+        .astype(int)
+        .to_dict()
+    )
+    mixed_n = int(compounds_potency.get("mixed_endpoint_class", pd.Series(dtype=bool)).sum())
+    return {
+        "raw_compounds": raw_n,
+        "with_eq_pchembl": with_eq,
+        "with_potency_binding_min_support": potency_n,
+        "dropped_no_quantitative": raw_n - potency_n,
+        "dropped_by_family": dropped_by_family,
+        "n_mixed_endpoint_class": mixed_n,
+        "selection_bias_note": (
+            "El subconjunto con potencia excluye compuestos solo-censurados/inactivos "
+            "→ potencia sesgada al alza."
+        ),
+    }
 
 
 def filter_potential_duplicates(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -457,12 +616,31 @@ class ChemblPreprocessor:
         df, dup_report = filter_potential_duplicates(df)
         if not dup_report.empty:
             print(f"  Duplicados eliminados: {dup_report.iloc[0]['filas_eliminadas']}")
-        df, _ = drop_columns_high_nan(df, threshold=self.nan_threshold)
+        df = mark_is_censored(df)
+        df, _ = drop_columns_high_nan(
+            df, threshold=self.nan_threshold, never_drop=PROTECTED_ACTIVITY_COLS
+        )
         num_cols, cat_cols = numeric_and_categorical_cols(df)
+        if "is_censored" in num_cols:
+            num_cols.remove("is_censored")
         return impute_median_by_family(df, numeric_cols=num_cols, categorical_cols=cat_cols)
+
+    def build_compounds_all(self, activities: pd.DataFrame) -> pd.DataFrame:
+        return build_compounds_all(activities)
 
     def build_compound_features(self, activities: pd.DataFrame) -> pd.DataFrame:
         return build_compound_features(activities)
+
+    def censoring_report(self, activities: pd.DataFrame) -> dict[str, Any]:
+        return censoring_report(activities)
+
+    def corpus_funnel(
+        self,
+        activities: pd.DataFrame,
+        compounds_all: pd.DataFrame,
+        compounds_potency: pd.DataFrame,
+    ) -> dict[str, Any]:
+        return build_corpus_funnel(activities, compounds_all, compounds_potency)
 
     def imputation_report(self, df: pd.DataFrame) -> dict[str, float | int]:
         return pchembl_imputation_report(df)

@@ -34,6 +34,7 @@ ARTIFACTS_DIR = ROOT / "outputs" / "dashboard"
 STATIC_DATA_DIR = ROOT / "viz" / "static" / "data"
 BUNDLE_DIR = ARTIFACTS_DIR / "bundle"
 CHEMBL_CSV = ROOT / "data" / "processed" / "compounds_features.csv"
+COMPOUNDS_ALL_CSV = ROOT / "data" / "processed" / "compounds_all.csv"
 ACTIVITIES_CSV = ROOT / "data" / "processed" / "activities_clean.csv"
 RESULTS_DIR = ROOT / "outputs" / "chembl" / "results"
 
@@ -50,7 +51,7 @@ def _write_json(path: Path, payload: object) -> None:
 
 def _build_correlation_json(df: pd.DataFrame, out_path: Path) -> None:
     cols = [c for c in get_available_feature_cols(df) if c in df.columns]
-    for extra in ("pchembl_median", "n_activities_raw", "n_activities_clean"):
+    for extra in ("pchembl_median_binding", "pchembl_std_binding", "n_activities_binding"):
         if extra in df.columns and extra not in cols:
             cols.append(extra)
     pearson = df[cols].corr(method="pearson")
@@ -70,8 +71,14 @@ def _build_compounds_profile_json(
     compounds: pd.DataFrame, activities: pd.DataFrame, out_path: Path
 ) -> None:
     id_col = "chembl_id" if "chembl_id" in activities.columns else "compound_name"
+    if "is_censored" in activities.columns:
+        binding = activities.loc[
+            ~activities["is_censored"] & activities["pchembl_value"].notna()
+        ]
+    else:
+        binding = activities.loc[activities["pchembl_value"].notna()]
     agg = (
-        activities.groupby(id_col, dropna=False)
+        binding.groupby(id_col, dropna=False)
         .agg(
             n_measurements=("pchembl_value", "count"),
             pchembl_median_meas=("pchembl_value", "median"),
@@ -81,6 +88,14 @@ def _build_compounds_profile_json(
     )
     merge_on = id_col if id_col in compounds.columns else "compound_name"
     profile = compounds.merge(agg, on=merge_on, how="left")
+    if "pct_active" in profile.columns:
+        profile["pct_active_label"] = "derivado de pchembl >= 6 (no independiente)"
+    if "target_inestable" in profile.columns:
+        profile["target_inestable_note"] = (
+            profile["target_inestable"].map(
+                {True: "σ_binding > 1 — mediana puede ocultar multimodalidad", False: ""}
+            )
+        )
     _write_json(out_path, profile.to_dict(orient="records"))
 
 
@@ -170,7 +185,13 @@ def _build_baseline_honest_json(src: Path, out_path: Path) -> None:
 
 
 def _copy_fase4_results() -> None:
-    for name in ("clustering_summary.json", "stats_tests.csv", "baseline_honest_metrics.csv"):
+    for name in (
+        "clustering_summary.json",
+        "stats_tests.csv",
+        "baseline_honest_metrics.csv",
+        "corpus_funnel.json",
+        "censoring_report.json",
+    ):
         src = RESULTS_DIR / name
         if src.is_file():
             shutil.copy2(src, ARTIFACTS_DIR / name)
@@ -183,6 +204,7 @@ def _create_bundle() -> None:
     BUNDLE_DIR.mkdir(parents=True)
 
     for src, name in (
+        (COMPOUNDS_ALL_CSV, "compounds_all.csv"),
         (CHEMBL_CSV, "compounds_features.csv"),
         (ACTIVITIES_CSV, "activities_clean.csv"),
     ):
@@ -210,33 +232,45 @@ def main() -> int:
     ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
     STATIC_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-    _require(CHEMBL_CSV, "ejecuta notebooks/fase2_limpieza.ipynb")
+    _require(COMPOUNDS_ALL_CSV, "ejecuta scripts/fase4/verify_flow_b.py o fase2_limpieza.ipynb")
+    _require(CHEMBL_CSV, "ejecuta scripts/fase4/verify_flow_b.py o fase2_limpieza.ipynb")
     _require(ACTIVITIES_CSV, "ejecuta notebooks/fase2_limpieza.ipynb")
     _require(RESULTS_DIR / "clustering_summary.json", "ejecuta notebooks/fase4_modelado.ipynb §2-§3")
     _require(RESULTS_DIR / "stats_tests.csv", "ejecuta notebooks/fase4_modelado.ipynb §3")
 
-    compounds = pd.read_csv(CHEMBL_CSV)
+    compounds_all = pd.read_csv(COMPOUNDS_ALL_CSV)
+    compounds_potency = pd.read_csv(CHEMBL_CSV)
     activities = load_bioactivity(ACTIVITIES_CSV)
     clustering_path = RESULTS_DIR / "clustering_summary.json"
+    funnel_path = RESULTS_DIR / "corpus_funnel.json"
+    censoring_path = RESULTS_DIR / "censoring_report.json"
 
-    _build_correlation_json(compounds, ARTIFACTS_DIR / "correlation_pearson.json")
-    _build_correlation_json(compounds, STATIC_DATA_DIR / "correlation.json")
-    _build_compounds_profile_json(compounds, activities, STATIC_DATA_DIR / "compounds_profile.json")
-    _build_pca_clusters_json(compounds, clustering_path, STATIC_DATA_DIR / "pca_clusters.json")
-    _build_family_stats_json(RESULTS_DIR / "stats_tests.csv", compounds, STATIC_DATA_DIR / "family_stats.json")
+    _build_correlation_json(compounds_all, ARTIFACTS_DIR / "correlation_pearson.json")
+    _build_correlation_json(compounds_all, STATIC_DATA_DIR / "correlation.json")
+    _build_compounds_profile_json(compounds_potency, activities, STATIC_DATA_DIR / "compounds_profile.json")
+    _build_pca_clusters_json(compounds_all, clustering_path, STATIC_DATA_DIR / "pca_clusters.json")
+    _build_family_stats_json(RESULTS_DIR / "stats_tests.csv", compounds_all, STATIC_DATA_DIR / "family_stats.json")
     _build_baseline_honest_json(RESULTS_DIR / "baseline_honest_metrics.csv", ARTIFACTS_DIR / "baseline_honest.json")
-    _write_json(ARTIFACTS_DIR / "pchembl_imputation.json", pchembl_imputation_report(compounds))
+    _write_json(ARTIFACTS_DIR / "pchembl_imputation.json", pchembl_imputation_report(activities))
     _copy_fase4_results()
 
     manifest = {
         "project": "proyecto analisis",
-        "chembl_rows": len(compounds),
+        "chembl_rows_structural": len(compounds_all),
+        "chembl_rows_potency": len(compounds_potency),
         "activity_rows": len(activities),
         "cluster_validity": json.loads(clustering_path.read_text(encoding="utf-8"))
         if clustering_path.is_file()
         else {},
+        "corpus_funnel": json.loads(funnel_path.read_text(encoding="utf-8"))
+        if funnel_path.is_file()
+        else {},
+        "censoring_report": json.loads(censoring_path.read_text(encoding="utf-8"))
+        if censoring_path.is_file()
+        else {},
         "sources": {
-            "compounds": str(CHEMBL_CSV.relative_to(ROOT)),
+            "compounds_all": str(COMPOUNDS_ALL_CSV.relative_to(ROOT)),
+            "compounds_potency": str(CHEMBL_CSV.relative_to(ROOT)),
             "activities": str(ACTIVITIES_CSV.relative_to(ROOT)),
             "clustering": str(clustering_path.relative_to(ROOT)),
             "stats_tests": str((RESULTS_DIR / "stats_tests.csv").relative_to(ROOT)),
@@ -247,8 +281,9 @@ def main() -> int:
 
     print(f"Artefactos en: {ARTIFACTS_DIR}")
     print(f"Static data : {STATIC_DATA_DIR}")
-    print(f"Compuestos  : {manifest['chembl_rows']}")
-    print(f"Mediciones  : {manifest['activity_rows']}")
+    print(f"Compuestos (estructural): {manifest['chembl_rows_structural']}")
+    print(f"Compuestos (potencia)   : {manifest['chembl_rows_potency']}")
+    print(f"Mediciones              : {manifest['activity_rows']}")
 
     if args.bundle:
         _create_bundle()

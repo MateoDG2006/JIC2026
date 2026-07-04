@@ -1,6 +1,9 @@
 {
   "description": "Tipos de actividad ChEMBL y umbral pChEMBL para activity_class",
   "pchembl_active_threshold": 6.0,
+  "min_potency_activities": 3,
+  "binding_types": ["IC50", "Ki", "Kd", "EC50", "AC50", "Potency", "IC90"],
+  "organism_types": ["LD50", "LC50", "MIC", "ED50", "GI50"],
   "narrow": ["IC50", "EC50", "Ki"],
   "expanded": [
     "IC50", "EC50", "Ki", "Kd", "Potency", "Inhibition",

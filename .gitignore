@@ -20,12 +20,12 @@ data/splits/
 data/external/
 !data/external/**/.gitkeep
 
-# JIC — resultados
-outputs/
+# JIC — resultados (solo raíz del repo, no proyecto analisis/outputs/)
+/outputs/
 
-# Visor GNN — corpus JSON generado
-viz/data/*
-!viz/data/.gitkeep
+# Visor GNN — corpus JSON generado (solo raíz viz/)
+/viz/data/*
+!/viz/data/.gitkeep
 
 # Bundle legacy de despliegue
 dashboard/
@@ -37,8 +37,14 @@ proyecto analisis/data/processed/
 proyecto analisis/data/external/*
 !proyecto analisis/data/external/**/.gitkeep
 
-# Proyecto análisis — resultados
-proyecto analisis/outputs/
+# Proyecto análisis — resultados (excepto dashboard para despliegue Render)
+proyecto analisis/outputs/**
+!proyecto analisis/outputs/dashboard/
+!proyecto analisis/outputs/dashboard/**
+
+# Proyecto análisis — JSON estáticos del dashboard (Plotly / FastAPI)
+!proyecto analisis/viz/static/data/
+!proyecto analisis/viz/static/data/**
 
 # ChEMBLdb local (descarga ~5 GB + ~15 GB descomprimido)
 *.db

@@ -47,6 +47,27 @@ def pchembl_active_threshold() -> float:
     return float(_load("standard_types.json")["pchembl_active_threshold"])
 
 
+def binding_types() -> frozenset[str]:
+    return frozenset(_load("standard_types.json")["binding_types"])
+
+
+def organism_types() -> frozenset[str]:
+    return frozenset(_load("standard_types.json")["organism_types"])
+
+
+def min_potency_activities() -> int:
+    return int(_load("standard_types.json").get("min_potency_activities", 3))
+
+
+def reliability_tier(n_activities: int) -> str:
+    """Confiabilidad del agregado de potencia por soporte de mediciones."""
+    if n_activities >= 10:
+        return "alto"
+    if n_activities >= min_potency_activities():
+        return "medio"
+    return "bajo"
+
+
 def units_to_molar() -> dict[str, float]:
     raw = _load("concentration_units.json")["units_to_molar"]
     return {k: float(v) for k, v in raw.items()}

@@ -11,6 +11,7 @@ from viz.config import (
     ARTIFACTS_DIR,
     BUNDLE_DIR,
     CHEMBL_CSV,
+    COMPOUNDS_ALL_CSV,
     STATIC_DATA_DIR,
     resolve_path,
 )
@@ -28,6 +29,12 @@ def _static_json(name: str) -> Path:
 
 
 def load_chembl() -> pd.DataFrame:
+    """Corpus estructural (~147 compuestos) para EDA/PCA."""
+    return load_csv_cached(resolve_path(COMPOUNDS_ALL_CSV, "compounds_all.csv"))
+
+
+def load_compounds_potency() -> pd.DataFrame:
+    """Subconjunto con potencia cuantitativa (pchembl_median_binding)."""
     return load_csv_cached(resolve_path(CHEMBL_CSV, "compounds_features.csv"))
 
 
