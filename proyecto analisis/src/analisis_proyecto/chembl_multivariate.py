@@ -4,21 +4,12 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 from scipy import stats
-from sklearn.cluster import AgglomerativeClustering, KMeans
+from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.metrics import adjusted_rand_score, silhouette_score
 from sklearn.preprocessing import StandardScaler
 
-FEATURE_COLS = [
-    "mw_freebase",
-    "alogp",
-    "psa",
-    "hba",
-    "hbd",
-    "aromatic_rings",
-    "rtb",
-    "num_ro5_violations",
-]
+from src.analisis_proyecto.chembl_preprocessing import FEATURE_COLS
 
 
 def scale_features(df: pd.DataFrame, cols: list[str] = FEATURE_COLS) -> np.ndarray:
@@ -51,12 +42,6 @@ def run_kmeans_silhouette(X: np.ndarray, k_range=range(2, 9)) -> dict:
         "silhouette_by_k": scores,
         "labels": labels_by_k[best_k].tolist(),
     }
-
-
-def hierarchical_clusters(X: np.ndarray, n_clusters: int) -> dict:
-    """Clustering jerárquico (Ward). Retorna labels."""
-    labels = AgglomerativeClustering(n_clusters=n_clusters, linkage="ward").fit_predict(X)
-    return {"labels": labels.tolist()}
 
 
 def cluster_vs_family_ari(labels, family: pd.Series) -> float:

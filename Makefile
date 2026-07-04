@@ -1,8 +1,15 @@
+# JIC2026 — Makefile unificado (GNN-JIC + proyecto analisis)
+# Ejecutar siempre desde la raíz del repositorio.
+# Ayuda: make  |  make help
+
+.DEFAULT_GOAL := help
+
 PYTHON_WSL := python3
 VENV_DIR := .venv
 CONFIG := config/config.yaml
+ANALISIS_DIR := proyecto analisis
+ANALISIS_CONFIG := $(ANALISIS_DIR)/config/config.yaml
 
-# Proyecto requiere Python 3.10–3.12 (deepchem no soporta 3.13+).
 ifeq ($(OS),Windows_NT)
   PYTHON_PS := py -3.10
   VENV_PYTHON := $(CURDIR)/$(VENV_DIR)/Scripts/python.exe
@@ -13,14 +20,119 @@ else
   RM_RF := rm -rf
 endif
 
-# ── Entorno ───────────────────────────────────────────────────────────────
+# ── Rutas compartidas ───────────────────────────────────────────────────────
 
+MODEL := outputs/models/best_gin_model.pt
+PANAMA_CORPUS := data/processed/panama_corpus.pt
+PANAMA_PREDICTIONS := outputs/results/panama_predictions.csv
+GHS_LABELS := data/raw/pubchem_ghs_labels.csv
+
+CHEMBL_COMPOSE := docker compose -f "$(ANALISIS_DIR)/docker/docker-compose.yml"
+CHEMBL_VOLUME := jic2026_chembl_db
+CHEMBL_HOST_DIR := $(ANALISIS_DIR)/data/external/chembl
+CHEMBL_NOTEBOOK := $(ANALISIS_DIR)/notebooks/fase1_adquisicion.ipynb
+
+VIZ_HOST := 127.0.0.1
+VIZ_PORT := 8000
+ANALISIS_VIZ_PORT := 8001
+
+# ═══════════════════════════════════════════════════════════════════════════
+# AYUDA (target por defecto)
+# ═══════════════════════════════════════════════════════════════════════════
+
+.PHONY: help
+help:
+	@echo.
+	@echo   JIC2026 — Makefile unificado
+	@echo   Raiz: $(CURDIR)
+	@echo.
+	@echo   === Entorno (comun) ===
+	@echo   make setup                  Crear .venv e instalar requirements.txt (JIC)
+	@echo   make setup-analisis         Instalar requirements de proyecto analisis/
+	@echo   make install-pyg-ext        Extensiones PyG (torch-scatter, etc.; requiere PyTorch cu124)
+	@echo   make clean                  Eliminar .venv
+	@echo   make check-gin-gpu          Comprobar CUDA / GPU
+	@echo.
+	@echo   === JIC — Datos y baselines (Fases I-II) ===
+	@echo   make prepare-graphs         Tox21 DeepChem -^> data/processed/graphs_*.pt
+	@echo   make eda                    Ejecutar notebook 01_eda_tox21.ipynb
+	@echo   make baselines              Ejecutar notebook 02_baselines_tox21.ipynb
+	@echo   make train-baselines        Entrenar RF / MLP / SMILES2vec (CLI)
+	@echo   make train-baselines-verbose  Idem con logs detallados
+	@echo.
+	@echo   === JIC — GNN-GIN (Fase III) ===
+	@echo   make train-gin              Entrenar GIN (requiere prepare-graphs)
+	@echo   make train-gin-cv           5-fold CV scaffold
+	@echo   make train-gin-verbose      Entrenamiento con logs por epoca
+	@echo   make train-gin-wandb        Entrenamiento + Weights ^& Biases
+	@echo   make train-gin-all          prepare-graphs + train-gin
+	@echo   make train-gin-notebook     Ejecutar notebook 04_gnn_training.ipynb
+	@echo.
+	@echo   === JIC — Visor GNN 3D + XAI (Fase IV, puerto $(VIZ_PORT)) ===
+	@echo   make install-viz            pip install viz/requirements.txt
+	@echo   make build-viz-corpus       Corpus JSON con modelo real (viz/data/)
+	@echo   make build-viz-corpus-demo  Corpus demo sin modelo
+	@echo   make setup-viz              install-viz + corpus demo
+	@echo   make setup-viz-full         install-viz + corpus real
+	@echo   make xai-demo               setup-viz (demo rapido)
+	@echo   make xai-all                train-gin + setup-viz-full
+	@echo   make viz-check              Verificar deps del visor GNN
+	@echo   make viz                    Visor GNN http://$(VIZ_HOST):$(VIZ_PORT)
+	@echo   make viz-lan                Visor en 0.0.0.0 (red local)
+	@echo   make viz-prod               Visor sin auto-reload
+	@echo   make test-viz-gnn           Smoke test app GNN (puerto $(VIZ_PORT))
+	@echo.
+	@echo   === JIC — Panama + reportes (Fase V) ===
+	@echo   make build-panama-corpus    Corpus PubChem + grafos PyG
+	@echo   make build-panama-corpus-fast  Idem sin descarga GHS
+	@echo   make build-panama-corpus-graphs  Rebuild .pt desde CSV existente
+	@echo   make explain-panama         XAI sobre corpus panameno
+	@echo   make validate-ghs           Predicciones vs etiquetas GHS
+	@echo   make generate-panama-report PDF reporte MIDA/MINSA
+	@echo   make panama-predict         Corpus + predicciones
+	@echo   make panama-all             Pipeline Fase V completo
+	@echo.
+	@echo   === Analisis — ChEMBL / datos (Fases 1-2) ===
+	@echo   make chembl-docker-up       Descargar ChEMBLdb al volumen Docker (una vez)
+	@echo   make chembl-docker-down     Bajar contenedores ChEMBL
+	@echo   make chembl-docker-import   Importar BD local al volumen Docker
+	@echo   make chembl-sync-host       Volumen Docker -^> host (~15 GB)
+	@echo   make test-chembl            Verificar SQLite en host
+	@echo   make test-chembl-docker     Verificar SQLite en contenedor
+	@echo   make chembl-extract         CSV bioactividad MIDA (SQLite local)
+	@echo   make chembl-extract-api     Extraccion via REST ChEMBL
+	@echo   make chembl-extract-docker  Extraccion dentro de Docker
+	@echo   make chembl-notebook        Ejecutar fase1_adquisicion.ipynb
+	@echo   make chembl-all             setup-chembl + extract-docker
+	@echo.
+	@echo   === Analisis — Pipeline y dashboard (Fases 3-5, puerto $(ANALISIS_VIZ_PORT)) ===
+	@echo   make analisis-verify        Smoke test Flujo B (Opcion A, 107 compuestos)
+	@echo   make analisis-prepare-dashboard  JSON para dashboard analytics
+	@echo   make analisis-prepare-dashboard-bundle  Idem + bundle cloud
+	@echo   make analisis-test-dashboard     Smoke test viz analytics
+	@echo   make analisis-viz           Dashboard ChEMBL http://127.0.0.1:$(ANALISIS_VIZ_PORT)
+	@echo   make analisis-all           prepare-dashboard + test + verify
+	@echo.
+	@echo   === Pipelines combinados ===
+	@echo   make viz-analytics-all      analisis-prepare-dashboard + analisis-test-dashboard
+	@echo   make viz-jic                panama-predict + analisis-prepare-dashboard + tests
+	@echo.
+	@echo   Fase 6 geodatos: spec en $(ANALISIS_DIR)/docs/fases/fase6_geodatos.md (sin target make)
+	@echo.
+
+# ═══════════════════════════════════════════════════════════════════════════
+# ENTORNO (comun)
+# ═══════════════════════════════════════════════════════════════════════════
+
+.PHONY: setup setup-analisis install-pyg-ext clean check-gin-gpu
 setup:
 	$(PYTHON_PS) -m venv $(VENV_DIR)
 	"$(VENV_PYTHON)" -m pip install --upgrade pip
 	"$(VENV_PYTHON)" -m pip install -r requirements.txt
 
-# Extensiones PyG aceleradas (torch-scatter, etc.) — requiere PyTorch cu124 ya instalado
+setup-analisis:
+	"$(VENV_PYTHON)" -m pip install -r "$(ANALISIS_DIR)/requirements.txt"
+
 install-pyg-ext:
 	"$(VENV_PYTHON)" -m pip install torch_scatter torch_sparse torch_cluster \
 		-f https://data.pyg.org/whl/torch-2.6.0+cu124.html
@@ -32,19 +144,22 @@ else
 	$(RM_RF) $(VENV_DIR)
 endif
 
-# ── Datos (Fase I) ────────────────────────────────────────────────────────
+check-gin-gpu:
+	"$(VENV_PYTHON)" -c "import torch; print('CUDA:', torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU')"
 
+# ═══════════════════════════════════════════════════════════════════════════
+# JIC — Datos y baselines (Fases I-II)
+# ═══════════════════════════════════════════════════════════════════════════
+
+.PHONY: prepare-graphs powershell-extract-data-from-tox21 wsl-extract-data-from-tox21 eda baselines train-baselines train-baselines-verbose
 prepare-graphs:
 	"$(VENV_PYTHON)" scripts/fase1/prepare_tox21_graphs.py
 
 powershell-extract-data-from-tox21: prepare-graphs
-
 wsl-extract-data-from-tox21: prepare-graphs
 
 eda:
 	"$(VENV_PYTHON)" -m jupyter nbconvert --execute --to notebook --inplace notebooks/01_eda_tox21.ipynb
-
-# ── Baselines (Fase II) ───────────────────────────────────────────────────
 
 baselines:
 	"$(VENV_PYTHON)" -m jupyter nbconvert --execute --to notebook --inplace notebooks/02_baselines_tox21.ipynb
@@ -55,9 +170,11 @@ train-baselines:
 train-baselines-verbose:
 	"$(VENV_PYTHON)" scripts/fase2/train_baselines.py -v
 
-# ── GNN-GIN (Fase III) ────────────────────────────────────────────────────
-# Requisito: make prepare-graphs (genera data/processed/graphs_*.pt)
+# ═══════════════════════════════════════════════════════════════════════════
+# JIC — GNN-GIN (Fase III)
+# ═══════════════════════════════════════════════════════════════════════════
 
+.PHONY: train-gin train-gin-cv train-gin-verbose train-gin-wandb train-gin-all train-gin-all-verbose train-gin-notebook
 train-gin:
 	"$(VENV_PYTHON)" scripts/fase3/train_gin.py --config $(CONFIG)
 
@@ -70,29 +187,17 @@ train-gin-verbose:
 train-gin-wandb:
 	"$(VENV_PYTHON)" scripts/fase3/train_gin.py --config $(CONFIG) -v --wandb
 
-# Pipeline completo: grafos + entrenamiento GIN
 train-gin-all: prepare-graphs train-gin
-
 train-gin-all-verbose: prepare-graphs train-gin-verbose
-
-check-gin-gpu:
-	"$(VENV_PYTHON)" -c "import torch; print('CUDA:', torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'CPU')"
 
 train-gin-notebook:
 	"$(VENV_PYTHON)" -m jupyter nbconvert --execute --to notebook --inplace notebooks/04_gnn_training.ipynb
 
-# ── Rutas compartidas (Fases IV–V) ─────────────────────────────────────────
+# ═══════════════════════════════════════════════════════════════════════════
+# JIC — Visor GNN 3D + XAI (Fase IV)
+# ═══════════════════════════════════════════════════════════════════════════
 
-MODEL := outputs/models/best_gin_model.pt
-PANAMA_CORPUS := data/processed/panama_corpus.pt
-PANAMA_PREDICTIONS := outputs/results/panama_predictions.csv
-GHS_LABELS := data/raw/pubchem_ghs_labels.csv
-
-# ── XAI + visor (Fase IV) ─────────────────────────────────────────────────
-# Corpus: predicciones + GNNExplainer + Grad-CAM → viz/data/*.json
-# Requisito corpus real: make train-gin (genera $(MODEL))
-# Sin modelo: make xai-demo  →  make viz
-
+.PHONY: build-viz-corpus build-viz-corpus-demo setup-viz setup-viz-full xai-all xai-demo install-viz viz-check viz viz-serve viz-lan viz-prod test-viz-gnn
 build-viz-corpus:
 	"$(VENV_PYTHON)" scripts/fase4/build_viz_corpus.py
 
@@ -100,15 +205,10 @@ build-viz-corpus-demo:
 	"$(VENV_PYTHON)" scripts/fase4/build_viz_corpus.py --demo
 
 setup-viz: install-viz build-viz-corpus-demo
-
 setup-viz-full: install-viz build-viz-corpus
 
 xai-all: train-gin setup-viz-full
-
 xai-demo: setup-viz
-
-VIZ_HOST := 127.0.0.1
-VIZ_PORT := 8000
 
 install-viz:
 	"$(VENV_PYTHON)" -m pip install -r viz/requirements.txt
@@ -116,88 +216,72 @@ install-viz:
 viz-check:
 	"$(VENV_PYTHON)" scripts/fase4/viz_serve.py --check-only
 
-# Visor unificado: GNN 3D + analytics ChEMBL/Panamá (solo FastAPI)
 viz: viz-check
 	"$(VENV_PYTHON)" scripts/fase4/viz_serve.py --host $(VIZ_HOST) --port $(VIZ_PORT) --reload
 
 viz-serve: viz
 
-# Acceso desde otros dispositivos en la misma red (puerto 8000 por defecto)
 viz-lan: viz-check
 	"$(VENV_PYTHON)" scripts/fase4/viz_serve.py --host 0.0.0.0 --port $(VIZ_PORT) --reload
 
-# Servidor sin auto-reload (mas estable en demos/presentaciones)
 viz-prod: viz-check
 	"$(VENV_PYTHON)" scripts/fase4/viz_serve.py --host $(VIZ_HOST) --port $(VIZ_PORT)
 
-# ── Panamá (Fase V) ────────────────────────────────────────────────────────
-# Corpus desde PubChem → predicciones → validación GHS → reporte MIDA/MINSA
-# Requisito inferencia: make train-gin + make build-panama-corpus
+test-viz-gnn:
+	"$(VENV_PYTHON)" scripts/fase5/test_dashboard.py
 
+# Alias legacy
+test-viz-analytics: test-viz-gnn
+test-dashboard: test-viz-gnn
+
+# ═══════════════════════════════════════════════════════════════════════════
+# JIC — Panama + reportes (Fase V)
+# ═══════════════════════════════════════════════════════════════════════════
+
+.PHONY: build-panama-corpus build-panama-corpus-fast build-panama-corpus-graphs explain-panama validate-ghs generate-panama-report panama-predict panama-all
 build-panama-corpus:
 	"$(VENV_PYTHON)" scripts/fase5/build_panama_corpus.py
 
-# Omite descarga GHS (más rápido; útil para iterar sobre grafos)
 build-panama-corpus-fast:
 	"$(VENV_PYTHON)" scripts/fase5/build_panama_corpus.py --skip-ghs
 
-# Reconstruye panama_corpus.pt desde CSV existente (sin llamar a PubChem)
 build-panama-corpus-graphs:
 	"$(VENV_PYTHON)" scripts/fase5/build_panama_corpus.py --skip-pubchem
 
-# Predicciones multitarea + explicaciones XAI sobre el corpus panameño
 explain-panama:
 	"$(VENV_PYTHON)" scripts/fase5/explain_panama.py --model $(MODEL) --corpus $(PANAMA_CORPUS)
 
-# Correlaciona predicciones del modelo con etiquetas GHS de PubChem
 validate-ghs:
 	"$(VENV_PYTHON)" scripts/fase5/validate_ghs.py \
 		--predictions $(PANAMA_PREDICTIONS) \
 		--ghs $(GHS_LABELS) \
 		--output outputs/reports/ghs_validation.csv
 
-# Reporte interpretado para actores institucionales (MIDA/MINSA)
 generate-panama-report:
 	"$(VENV_PYTHON)" scripts/fase5/generate_report.py \
 		--results outputs/xai/ \
 		--output outputs/reports/
 
-# Corpus + predicciones (sin validación GHS ni reporte PDF)
 panama-predict: build-panama-corpus explain-panama
-
-# Pipeline Fase V completo
 panama-all: build-panama-corpus explain-panama validate-ghs generate-panama-report
 
-# ── ChEMBL local — Flujo A (análisis de datos, corpus MIDA) ───────────────
-# BD persistente en volumen Docker ``jic2026_chembl_db`` (~5 GB descarga + ~15 GB instalada)
-#   make chembl-docker-up        → build + descarga ChEMBLdb al volumen (una vez)
-#   make chembl-docker-import    → copia BD existente en data/external/chembl/ al volumen
-#   make test-chembl-docker      → verifica BD dentro del contenedor
-#   make chembl-extract-docker   → extracción CSV vía contenedor (sin copiar BD al host)
-#   make chembl-sync-host        → copia volumen → data/external/chembl/ (scripts locales)
-#   make test-chembl             → verifica BD en host (requiere chembl-sync-host)
-#   make chembl-extract          → extracción CSV en host (requiere chembl-sync-host)
+# ═══════════════════════════════════════════════════════════════════════════
+# ANALISIS — ChEMBL / datos (Fases 1-2)
+# ═══════════════════════════════════════════════════════════════════════════
 
-CHEMBL_COMPOSE := docker compose -f "proyecto analisis/docker/docker-compose.yml"
-CHEMBL_VOLUME := jic2026_chembl_db
-CHEMBL_HOST_DIR := proyecto analisis/data/external/chembl
-CHEMBL_DB := $(CHEMBL_HOST_DIR)/chembl_37.db
-CHEMBL_NOTEBOOK := proyecto analisis/notebooks/fase1_adquisicion.ipynb
-
+.PHONY: chembl-docker-build chembl-docker-build-app chembl-docker-up chembl-docker-down chembl-docker-import setup-chembl test-chembl test-chembl-docker chembl-sync-host chembl-extract chembl-extract-api chembl-extract-docker chembl-notebook chembl-all
 chembl-docker-build:
 	$(CHEMBL_COMPOSE) build chembl-init
 
 chembl-docker-build-app:
 	$(CHEMBL_COMPOSE) build chembl-app
 
-# Levanta Docker y guarda chembl_37.db en el volumen nombrado (idempotente)
 chembl-docker-up: chembl-docker-build chembl-docker-build-app
 	$(CHEMBL_COMPOSE) --profile setup up --abort-on-container-exit chembl-init
 
 chembl-docker-down:
 	$(CHEMBL_COMPOSE) --profile setup down --remove-orphans
 
-# Migra una BD ya descargada en data/external/chembl/ al volumen Docker
 chembl-docker-import: chembl-docker-build
 	$(CHEMBL_COMPOSE) --profile setup run --rm --entrypoint "" \
 		-v "$(CURDIR)/$(CHEMBL_HOST_DIR):/import:ro" \
@@ -211,7 +295,6 @@ setup-chembl: chembl-docker-up
 test-chembl-docker: chembl-docker-build-app
 	$(CHEMBL_COMPOSE) run --rm chembl-app python scripts/fase1/verify_chembl_db.py
 
-# Copia volumen → host (solo si falta chembl_37.db local; ~15 GB)
 chembl-sync-host: chembl-docker-build-app
 ifeq ($(OS),Windows_NT)
 	if not exist "$(CHEMBL_HOST_DIR)" mkdir "$(CHEMBL_HOST_DIR)"
@@ -221,18 +304,18 @@ endif
 	$(CHEMBL_COMPOSE) run --rm --no-deps --entrypoint "" \
 		-v "$(CURDIR)/$(CHEMBL_HOST_DIR):/host" \
 		chembl-app \
-		sh -c 'if [ ! -f /data/chembl/chembl_37.db ]; then echo "Volumen vacío — ejecuta make chembl-docker-up"; exit 1; fi; \
+		sh -c 'if [ ! -f /data/chembl/chembl_37.db ]; then echo "Volumen vacio — ejecuta make chembl-docker-up"; exit 1; fi; \
 		if [ -f /host/chembl_37.db ]; then echo "Host ya tiene chembl_37.db — omitiendo copia"; \
 		else cp /data/chembl/chembl_37.db /data/chembl/manifest.json /host/ && echo "Copiado a $(CHEMBL_HOST_DIR)/"; fi'
 
 test-chembl: chembl-sync-host
-	"$(VENV_PYTHON)" proyecto analisis/scripts/fase1/verify_chembl_db.py
+	"$(VENV_PYTHON)" "$(ANALISIS_DIR)/scripts/fase1/verify_chembl_db.py"
 
 chembl-extract: test-chembl
-	"$(VENV_PYTHON)" proyecto analisis/scripts/fase1/extract_chembl_local.py --config $(CONFIG)
+	"$(VENV_PYTHON)" "$(ANALISIS_DIR)/scripts/fase1/extract_chembl_local.py" --config "$(ANALISIS_CONFIG)"
 
 chembl-extract-api:
-	"$(VENV_PYTHON)" proyecto analisis/scripts/fase1/extract_chembl_local.py --config $(CONFIG) --backend api
+	"$(VENV_PYTHON)" "$(ANALISIS_DIR)/scripts/fase1/extract_chembl_local.py" --config "$(ANALISIS_CONFIG)" --backend api
 
 chembl-extract-docker: chembl-docker-build-app test-chembl-docker
 	$(CHEMBL_COMPOSE) run --rm chembl-app
@@ -240,42 +323,39 @@ chembl-extract-docker: chembl-docker-build-app test-chembl-docker
 chembl-notebook: test-chembl
 	"$(VENV_PYTHON)" -m jupyter nbconvert --execute --to notebook --inplace "$(CHEMBL_NOTEBOOK)"
 
-test-chembl-flow-b:
-	"$(VENV_PYTHON)" proyecto analisis/scripts/fase4/verify_flow_b.py
-
 chembl-all: setup-chembl chembl-extract-docker
 
-# ── Geodatos Panamá (Flujo D) ───────────────────────────────────────────────
-download-geodata:
-	"$(VENV_PYTHON)" proyecto analisis/scripts/fase6/02_download_geodata.py
+# ═══════════════════════════════════════════════════════════════════════════
+# ANALISIS — Pipeline y dashboard (Fases 3-5)
+# ═══════════════════════════════════════════════════════════════════════════
 
-# ── Analytics integrado en viz/ (FastAPI + Plotly.js) ───────────────────────
-prepare-dashboard:
-	"$(VENV_PYTHON)" "proyecto analisis/scripts/fase5/prepare_dashboard.py"
+.PHONY: analisis-verify analisis-prepare-dashboard analisis-prepare-dashboard-bundle analisis-test-dashboard analisis-viz analisis-all
+analisis-verify test-chembl-flow-b:
+	"$(VENV_PYTHON)" "$(ANALISIS_DIR)/scripts/fase4/verify_flow_b.py"
 
-prepare-dashboard-bundle:
-	"$(VENV_PYTHON)" "proyecto analisis/scripts/fase5/prepare_dashboard.py" --bundle
+analisis-prepare-dashboard prepare-dashboard:
+	"$(VENV_PYTHON)" "$(ANALISIS_DIR)/scripts/fase5/prepare_dashboard.py"
 
-test-viz-analytics:
-	"$(VENV_PYTHON)" scripts/fase5/test_dashboard.py
+analisis-prepare-dashboard-bundle prepare-dashboard-bundle:
+	"$(VENV_PYTHON)" "$(ANALISIS_DIR)/scripts/fase5/prepare_dashboard.py" --bundle
 
-# Alias de compatibilidad
-test-dashboard: test-viz-analytics
+analisis-test-dashboard:
+	"$(VENV_PYTHON)" "$(ANALISIS_DIR)/scripts/fase5/test_dashboard.py"
+
+analisis-viz:
+	"$(VENV_PYTHON)" -m uvicorn viz.app:app --app-dir "$(ANALISIS_DIR)" --host $(VIZ_HOST) --port $(ANALISIS_VIZ_PORT) --reload
+
+analisis-all: analisis-prepare-dashboard analisis-test-dashboard analisis-verify
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Pipelines combinados
+# ═══════════════════════════════════════════════════════════════════════════
+
+.PHONY: viz-analytics-all viz-jic dashboard-serve dashboard-all dashboard-jic
+viz-analytics-all: analisis-prepare-dashboard analisis-test-dashboard
+
+viz-jic: panama-predict analisis-prepare-dashboard test-viz-gnn analisis-test-dashboard
+
 dashboard-serve: viz
 dashboard-all: viz-analytics-all
 dashboard-jic: viz-jic
-
-# Pipeline completo analytics
-viz-analytics-all: download-geodata prepare-dashboard test-viz-analytics
-
-# Pipeline JIC: predicciones GNN + artefactos analytics
-viz-jic: panama-predict prepare-dashboard test-viz-analytics
-
-.PHONY: setup install-pyg-ext clean prepare-graphs powershell-extract-data-from-tox21 wsl-extract-data-from-tox21 eda baselines train-baselines train-baselines-verbose train-gin train-gin-cv train-gin-verbose train-gin-wandb train-gin-all train-gin-all-verbose check-gin-gpu train-gin-notebook build-viz-corpus build-viz-corpus-demo setup-viz setup-viz-full xai-all xai-demo install-viz viz-check viz viz-serve viz-lan viz-prod build-panama-corpus build-panama-corpus-fast build-panama-corpus-graphs explain-panama validate-ghs generate-panama-report panama-predict panama-all panama-notebook chembl-docker-build chembl-docker-build-app chembl-docker-up chembl-docker-down chembl-docker-import setup-chembl test-chembl test-chembl-docker chembl-sync-host chembl-extract chembl-extract-api chembl-extract-docker chembl-notebook test-chembl-flow-b chembl-all download-geodata prepare-dashboard prepare-dashboard-bundle test-viz-analytics test-dashboard dashboard-serve dashboard-all dashboard-jic viz-analytics-all viz-jic
-
-# ── Proyecto análisis (ChEMBL) — visor standalone ───────────────────────────
-analisis-viz:
-	"$(VENV_PYTHON)" -m uvicorn viz.app:app --app-dir "proyecto analisis" --host 127.0.0.1 --port 8001 --reload
-
-analisis-verify:
-	"$(VENV_PYTHON)" "proyecto analisis/scripts/fase4/verify_flow_b.py"

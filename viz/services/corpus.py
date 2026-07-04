@@ -21,7 +21,6 @@ Generado por ``scripts/fase4/build_viz_corpus.py``.
 from __future__ import annotations
 
 import json
-from pathlib import Path
 from typing import Any
 
 from viz.config import CORPUS_DIR

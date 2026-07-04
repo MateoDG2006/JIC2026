@@ -20,7 +20,7 @@ El dashboard unifica dos mundos:
 - **Proyecto JIC (GNN):** Visualizacion 3D de moleculas, explicaciones XAI, predicciones Tox21 y comparativa GNN vs baselines. Estas paginas pertenecen al proyecto hermano (GNN + XAI) y se mantienen tal cual, pero deben quedar **claramente rotuladas como "Proyecto GNN"** para no confundirlas con el analisis descriptivo de este proyecto.
 - **Proyecto de Analisis de Datos (ChEMBL):** EDA de los 107 compuestos, perfil de bioactividad/promiscuidad, PCA y clustering (Fase 4), y un **explorador de compuestos** individual. Ya **no incluye un predictor de pChEMBL**.
 
-**Cambio de fondo respecto a la version anterior:** el dashboard ofrecia una pagina `/chembl/models` con metricas de clasificacion/regresion y un formulario de "prediccion pChEMBL interactiva" basado en `rf_regressor.pkl`. Ese modelo se evaluo con split por compuesto (Fase 4) y dio **R² negativo** (entre -0.25 y -1.13 segun el fold) — no generaliza a compuestos nuevos, porque los 8 descriptores moleculares son constantes por compuesto y el corpus tiene solo 107 moleculas distintas. Mostrar ese formulario como si produjera una prediccion util seria enganoso. **Se retira del dashboard por ese motivo** y se documenta el porque en vez de ocultarlo. El baseline predictivo sigue existiendo, pero vive en su propio anexo (`docs/analisis_proyecto/fases/anexo_baseline_predictivo.md`) como evidencia honesta de la limitacion, no como producto del dashboard.
+**Cambio de fondo respecto a la version anterior:** el dashboard ofrecia una pagina `/chembl/models` con metricas de clasificacion/regresion y un formulario de "prediccion pChEMBL interactiva" basado en `rf_regressor.pkl`. Ese modelo se evaluo con split por compuesto ([Fase 4 §12](fase4_modelado.md#12-bloque-4--baseline-predictivo-honesto-p6)) y dio **R² negativo** (entre -0.25 y -1.13 segun el fold) — no generaliza a compuestos nuevos, porque los 8 descriptores moleculares son constantes por compuesto y el corpus tiene solo 107 moleculas distintas. Mostrar ese formulario como si produjera una prediccion util seria enganoso. **Se retira del dashboard por ese motivo** y se documenta el porque en la Fase 4 (baseline P6), no como producto del dashboard.
 
 En su lugar, el dashboard suma un **Explorador de compuestos**: para cada uno de los 107 compuestos muestra su perfil fisicoquimico, su perfil de bioactividad/promiscuidad y el cluster que le asigno la Fase 4, con su posicion en el PCA. Es puramente descriptivo — no genera ninguna prediccion nueva.
 
@@ -128,7 +128,7 @@ async def health():
 | `/api/analytics/refresh` | POST | Invalidar cache (recarga datos) |
 | `/xai/{filename}` | GET | SVGs de explicaciones XAI (proyecto hermano) |
 
-> Se elimina `POST /api/analytics/predict` (predictor pChEMBL) y el endpoint `/api/analytics/model-evaluation` que exponia metricas de clasificacion/regresion ChEMBL rotas. Si se quiere mostrar el resultado del baseline honesto (anexo P6), debe hacerse en una seccion explicitamente rotulada "limite conocido — no usar como predictor", nunca como funcionalidad principal.
+> Se elimina `POST /api/analytics/predict` (predictor pChEMBL) y el endpoint `/api/analytics/model-evaluation` que exponia metricas de clasificacion/regresion ChEMBL rotas. Si se quiere mostrar el resultado del baseline honesto (Fase 4 §12, P6), debe hacerse en una seccion explicitamente rotulada "limite conocido — no usar como predictor", nunca como funcionalidad principal.
 
 ---
 
@@ -224,7 +224,7 @@ def get_compound_profile(chembl_id: str) -> dict:
     # ... lookup y ensamblado del dict de arriba
 ```
 
-**Por que se retira el predictor y no se repara:** el `RandomForestRegressor` de `rf_regressor.pkl` se entreno sobre 8 descriptores que son constantes dentro de cada compuesto (nunique=1 por `chembl_id`). Con split por fila el modelo parecia funcionar (R² ≈ 0.5-0.6) porque la misma molecula aparecia en train y test. Evaluado honestamente con split por compuesto (Fase 4), el R² en test es **negativo** (entre -0.25 y -1.13 segun el fold): el modelo no aprende una relacion generalizable entre estructura y potencia con esta featurizacion. Ofrecer un formulario de "prediccion" al usuario del dashboard implicaria una capacidad que el modelo no tiene. Esa limitacion es justamente la motivacion del enfoque de grafos moleculares (GNN) del proyecto JIC, y queda documentada en el anexo (`anexo_baseline_predictivo.md`), no en el dashboard de cara al usuario.
+**Por que se retira el predictor y no se repara:** el `RandomForestRegressor` de `rf_regressor.pkl` se entreno sobre 8 descriptores que son constantes dentro de cada compuesto (nunique=1 por `chembl_id`). Con split por fila el modelo parecia funcionar (R² ≈ 0.5-0.6) porque la misma molecula aparecia en train y test. Evaluado honestamente con split por compuesto ([Fase 4 §12](fase4_modelado.md#12-bloque-4--baseline-predictivo-honesto-p6)), el R² en test es **negativo** (entre -0.25 y -1.13 segun el fold): el modelo no aprende una relacion generalizable entre estructura y potencia con esta featurizacion. Ofrecer un formulario de "prediccion" al usuario del dashboard implicaria una capacidad que el modelo no tiene. Esa limitacion es la motivacion del enfoque de grafos moleculares (GNN) del proyecto JIC; queda documentada en la Fase 4, no en el dashboard de cara al usuario.
 
 ---
 
@@ -467,7 +467,7 @@ make test-viz-analytics
 | `make viz` | Servidor unico (GNN + analisis de datos) |
 | `make prepare-dashboard` | Genera JSON derivados en `outputs/dashboard/` |
 | `make test-viz-analytics` | Smoke test del dashboard analitico (incluye `compound-profile`, ya no `predict`) |
-| `make viz-analytics-all` | prepare-dashboard + test (geodata queda fuera mientras la Fase 6 este parqueada) |
+| `make viz-analytics-all` | prepare-dashboard + test (mapa geo: ver spec Fase 6) |
 | `make viz-jic` | panama-predict + prepare-dashboard + test |
 
 Los alias `make dashboard-serve` y `make test-dashboard` redirigen a los targets equivalentes de `viz/` por compatibilidad con documentacion previa.
@@ -566,10 +566,10 @@ Retirada del flujo principal del dashboard hasta contar con un dataset de uso/re
 | El explorador muestra "compuesto no encontrado" | `chembl_id` no existe en `compounds_features.csv` (107 posibles) | Verificar el id contra la lista de `compound_list` |
 | Puerto 8000 ocupado | Otro proceso usa el puerto | `uvicorn viz.app:app --port 8001` |
 | Aparece un formulario de prediccion en algun template viejo | Cache de navegador o template no actualizado | Purgar `viz/templates/eda.html`/`models.html` antiguos, confirmar que `compounds.py` reemplazo a `chembl.py` |
-| Mapa no renderiza | Pagina PARQUEADA — no se mantiene el GeoJSON actualizado | Ver Fase 6; no es un bug a resolver mientras este parqueada |
+| Mapa no renderiza | Fase 6 no implementada — falta dataset geográfico con trazabilidad | Ver [Fase 6 — spec futura](fase6_geodatos.md); `/panama/map` requiere `outputs/dashboard/panama_distritos.geojson` |
 | Cache no actualiza | Checksum identico | `POST /api/analytics/refresh` |
 
 ---
 
 *Fase anterior:* [Fase 4 — Analisis multivariado y contraste de hipotesis](fase4_modelado.md)
-*Siguiente fase:* [Fase 6 — Geodatos de Panama (PARQUEADA)](fase6_geodatos.md)
+*Siguiente fase:* [Fase 6 — Geodatos (spec futura)](fase6_geodatos.md)

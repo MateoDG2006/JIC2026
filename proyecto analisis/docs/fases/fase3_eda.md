@@ -406,7 +406,9 @@ print(corr.to_string())
 
 5. **Anticipacion del clustering (Fase 4).** La combinacion de descriptores no redundantes (evitando colinealidad MW–heavy_atoms detectada en el heatmap) mas la promiscuidad define el espacio en el que la Fase 4 buscara agrupamientos naturales (PCA + K-means/jerarquico) y los contrastara con la taxonomia de familias (ARI).
 
+6. **Anticipacion del baseline honesto (Fase 4 §12, P6).** Las correlaciones debiles descriptor–potencia (P5) y los descriptores constantes por compuesto anticipan que un modelo simple **no generalizara** con split por compuesto. El EDA no entrena ese modelo; la Fase 4 lo ejecuta como control negativo y puente al GNN del proyecto JIC.
+
 ---
 
 *Fase anterior:* [Fase 2 — Limpieza de datos](fase2_limpieza_datos.md)  
-*Siguiente fase:* [Fase 4 — Analisis multivariado y contraste de hipotesis](fase4_modelado.md)
+*Siguiente fase:* [Fase 4 — Analisis multivariado, contraste de hipotesis y baseline P6](fase4_modelado.md)

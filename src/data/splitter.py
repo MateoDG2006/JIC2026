@@ -104,9 +104,3 @@ def save_split_indices(
     if meta:
         payload["meta"] = meta
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-
-
-def load_split_indices(path: str | Path) -> tuple[list[int], list[int], list[int]]:
-    """Carga los índices de split desde un archivo JSON."""
-    data = json.loads(Path(path).read_text(encoding="utf-8"))
-    return data["train_idx"], data["val_idx"], data["test_idx"]

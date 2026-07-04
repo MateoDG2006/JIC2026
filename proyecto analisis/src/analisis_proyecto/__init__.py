@@ -9,7 +9,6 @@ Submódulos:
     chembl_extract       — orquestador de extracción ChEMBL (SQLite o API)
     chembl_local         — backend SQLite con descarga del dump oficial
     chembl_api           — backend REST (fallback si no hay dump local)
-    geodata_panama       — geoBoundaries + estimaciones MAPI por distrito
 """
 
 from src.analisis_proyecto.chembl_preprocessing import (
@@ -19,7 +18,6 @@ from src.analisis_proyecto.chembl_preprocessing import (
     drop_columns_high_nan,
     filter_potential_duplicates,
     get_available_feature_cols,
-    get_feature_matrix,
     impute_median_by_family,
     load_bioactivity,
     missingness_upset_series,
@@ -38,7 +36,6 @@ __all__ = [
     "drop_columns_high_nan",
     "filter_potential_duplicates",
     "get_available_feature_cols",
-    "get_feature_matrix",
     "impute_median_by_family",
     "load_bioactivity",
     "missingness_upset_series",

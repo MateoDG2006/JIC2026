@@ -45,7 +45,7 @@ JIC2026/
 │   ├── config/config.yaml                # ChEMBL + viz analytics
 │   ├── src/analisis_proyecto/            # Pipeline ChEMBL
 │   ├── data/                             # raw / processed / external/chembl
-│   ├── notebooks/                        # Fases 1–7 + anexo baseline
+│   ├── notebooks/                        # Fases 1–7 (baseline P6 en Fase 4)
 │   ├── docs/fases/
 │   ├── outputs/chembl/ + outputs/dashboard/
 │   ├── scripts/                          # CLI por fase
@@ -296,7 +296,7 @@ Si un compuesto del corpus tiene SMILES atómico o GNNExplainer falla, el pipeli
 
 # Parte 2 — Proyecto de Análisis de Datos · ChEMBL × Plaguicidas Panamá
 
-Proyecto **autocontenido** en [`proyecto analisis/`](proyecto%20analisis/). Incluye su propio código (`src/analisis_proyecto/`), datos, notebooks (fases 1–7 + anexo), documentación (`docs/fases/`), scripts CLI, outputs y visor FastAPI de analytics (puerto **8001**).
+Proyecto **autocontenido** en [`proyecto analisis/`](proyecto%20analisis/). Incluye su propio código (`src/analisis_proyecto/`), datos, notebooks (fases 1–7), documentación (`docs/fases/`), scripts CLI, outputs y visor FastAPI de analytics (puerto **8001**).
 
 ```bash
 cd "proyecto analisis"
@@ -434,8 +434,7 @@ Cada compuesto se guarda en `viz/data/{id}.json` con predicciones, importancias 
 |---|---|
 | `make chembl-extract` | Extracción ChEMBL (SQLite o API según config) |
 | `make test-chembl-flow-b` | Verificación end-to-end Flujo B + entrenamiento RF/SVM/SVR |
-| `make prepare-dashboard` | Genera artefactos JSON para el dashboard |
-| `make download-geodata` | Descarga distritos Panamá + tabla INEC |
+| `make prepare-dashboard` | Genera artefactos JSON para el dashboard analytics |
 
 ### Visor web (común)
 

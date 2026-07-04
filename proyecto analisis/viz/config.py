@@ -61,7 +61,7 @@ FEATURE_LABELS: dict[str, str] = {
 
 PREDICTOR_NOTE = (
     "Proyecto descriptivo (Opción A): sin predictor pChEMBL. "
-    "Ver anexo_baseline_predictivo.ipynb para el baseline honesto."
+    "Ver Fase 4 §12 (docs/fases/fase4_modelado.md) y notebooks/fase4_modelado.ipynb §4."
 )
 
 

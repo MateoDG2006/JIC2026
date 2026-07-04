@@ -143,16 +143,6 @@ const MoleculeViewer3D = (function () {
         return true;
     }
 
-    function applyStyle(importance, hexColors) {
-        if (hexColors && hexColors.length) {
-            return applyAtomColors(hexColors, importance);
-        }
-        if (importance && importance.length) {
-            return false; // el caller debe obtener colores del API
-        }
-        return applyDefaultStyle();
-    }
-
     function loadStructure(structure, format, importance, hexColors, containerId = "viewer-3d") {
         if (!structure) {
             showMessage("Sin estructura 3D disponible");
@@ -222,7 +212,6 @@ const MoleculeViewer3D = (function () {
         init,
         loadStructure,
         applyAtomColors,
-        applyStyle,
         applyDefaultStyle,
         highlightAtom,
         toggleStyle,

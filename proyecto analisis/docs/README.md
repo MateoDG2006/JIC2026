@@ -4,7 +4,7 @@ Documentacion del modulo de **ciencia de datos clasica** anadido al repositorio 
 
 **Naturaleza del estudio:** exploratorio + multivariado + inferencial sobre los 107 plaguicidas del corpus panameno en ChEMBL. El proyecto **NO tiene como producto principal un modelo predictivo** — el intento inicial de predecir toxicidad/potencia (clasificacion y regresion con RF/SVM sobre descriptores moleculares) fallo por diseno de datos, no por codigo: 107 compuestos unicos generan 3.608 mediciones/filas, y los descriptores moleculares son constantes dentro de cada compuesto, por lo que un split por fila filtra el mismo compuesto entre train y test (fuga de datos) y las metricas quedan infladas. Con split honesto por compuesto el modelo no generaliza.
 
-**Tesis del reencuadre:** los 107 plaguicidas SI son caracterizables y agrupables por su perfil fisicoquimico y de bioactividad (EDA, clustering, contraste de hipotesis), pero los descriptores moleculares clasicos **no bastan para predecir potencia en compuestos no vistos** — este limite honesto motiva y justifica el enfoque de grafos moleculares (GNN) del proyecto JIC, que aprende representaciones directamente del grafo atomo-enlace en lugar de descriptores tabulares fijos.
+**Tesis del reencuadre:** los 107 plaguicidas SI son caracterizables y agrupables por su perfil fisicoquimico y de bioactividad (EDA, clustering, contraste de hipotesis), pero los descriptores moleculares clasicos **no bastan para predecir potencia en compuestos no vistos** — este limite honesto se cuantifica en la **Fase 4 (P6, §12)** y motiva el enfoque de grafos moleculares (GNN) del proyecto JIC.
 
 La documentacion esta organizada por **fase del proyecto**. Cada fase describe objetivo, pipeline, decisiones tecnicas, trabajo por rol y criterios de exito.
 
@@ -14,16 +14,15 @@ La documentacion esta organizada por **fase del proyecto**. Cada fase describe o
 
 | # | Fase | Objetivo | Flujo |
 |---|---|---|---|
-| 1 | [Adquisicion y extraccion de datos](fases/fase1_adquisicion_datos.md) | Construir dataset tabular desde ChEMBL | Flujo A |
+| 1 | [Adquisicion y extraccion de datos](fases/fase1_adquisicion_datos.md) | Construir dataset tabular desde ChEMBL; documentar limite n=107 | Flujo A |
 | 2 | [Limpieza e ingenieria de datos](fases/fase2_limpieza_datos.md) | Deduplicar, censurar y consolidar en dos tablas: medicion y compuesto | Flujo B (Secciones 0, 2) |
 | 3 | [Analisis exploratorio (EDA)](fases/fase3_eda.md) | Describir distribucion fisicoquimica y de bioactividad a nivel compuesto (107) | Flujo B (Secciones 1, 3) |
-| 4 | [Analisis multivariado y contraste de hipotesis](fases/fase4_modelado.md) | PCA + clustering (silhouette, ARI) + pruebas estadisticas (Kruskal-Wallis, Dunn, tamano de efecto) — SIN clasificacion/regresion como producto | Flujo B (Secciones 4, 5) |
-| 5 | [Integracion y dashboard](fases/fase5_dashboard.md) | Explorador de compuestos (perfil fisicoquimico + dianas + cluster), no "predictor de toxicidad" | Flujo C |
-| 6 | [Geodatos y contexto Panama](fases/fase6_geodatos.md) | **PARQUEADA** — pendiente dataset de uso/registro de plaguicidas por distrito | Flujo D |
-| 7 | [Comunicacion de resultados](fases/fase7_comunicacion.md) | Articulo IEEE + video explicativo, narrativa de caracterizacion + limite que motiva el GNN | Flujo E |
-| Anexo | [Baseline predictivo honesto](fases/anexo_baseline_predictivo.md) (adicional, separado) | Reportar el limite del split por compuesto (R² negativo) como puente honesto hacia el GNN de la JIC | Flujo B (documento propio) |
+| 4 | [Analisis multivariado, contraste de hipotesis y baseline P6](fases/fase4_modelado.md) | PCA + clustering + Kruskal/Dunn **y** baseline predictivo honesto (limite descriptores → puente GNN) | Flujo B (Secciones 4, 5, 12) |
+| 5 | [Integracion y dashboard](fases/fase5_dashboard.md) | Explorador de compuestos (perfil + cluster), sin predictor roto | Flujo C |
+| 6 | [Geodatos y contexto Panama](fases/fase6_geodatos.md) | **Spec futura** — mapa coropletico cuando exista dataset MIDA/INEC | Flujo D |
+| 7 | [Comunicacion de resultados](fases/fase7_comunicacion.md) | Articulo IEEE + video: caracterizacion + limite P6 que motiva el GNN | Flujo E |
 
-Referencia transversal: [Metricas de evaluacion](../../mateo_docs/auditorias/METRICAS_EVALUACION.md) — sigue vigente: explica la fuga de datos por split de filas y por que el R² negativo por compuesto es el resultado honesto, no un error.
+Referencia transversal: [Metricas de evaluacion](../../mateo_docs/auditorias/METRICAS_EVALUACION.md) — explica la fuga por split de filas y por que el R² negativo por compuesto es el resultado honesto.
 
 ---
 
@@ -33,10 +32,10 @@ Referencia transversal: [Metricas de evaluacion](../../mateo_docs/auditorias/MET
 |---|---|---|---|
 | **Ingeniero de Datos** | Pipeline de datos, calidad, infraestructura | 1, 2 | 5 |
 | **Analista de Datos** | EDA, visualizaciones, interpretacion | 3 | 4, 7 |
-| **Cientifico de Datos** | Analisis multivariado, estadistica inferencial, baseline honesto | 4, Anexo | 3, 7 |
-| **ML Engineer** | Despliegue, dashboard, integracion de resultados | 5 | 1, 2, 4, 7 |
+| **Cientifico de Datos** | Multivariado, inferencia, baseline honesto (P6) | 4 | 3, 7 |
+| **ML Engineer** | Dashboard, integracion (sin desplegar predictor P6) | 5 | 1, 2, 4, 7 |
 
-Fase 6 (Geodatos) esta **parqueada**: no tiene rol lider activo hasta contar con un dataset real de uso/registro de plaguicidas por distrito. El codigo existente se conserva referenciado pero se retira del pipeline principal, del indice ejecutable y del articulo.
+Fase 6 (Geodatos) **no esta implementada**: solo [spec futura](fases/fase6_geodatos.md).
 
 ### Matriz de Responsabilidad (RACI)
 
@@ -45,8 +44,7 @@ Fase 6 (Geodatos) esta **parqueada**: no tiene rol lider activo hasta contar con
 | 1. Adquisicion | **R** | I | I | A |
 | 2. Limpieza | **R** | A | I | A |
 | 3. EDA | I | **R** | A | I |
-| 4. Analisis multivariado y contraste de hipotesis | I | A | **R** | A |
-| Anexo. Baseline predictivo honesto | I | I | **R** | A |
+| 4. Multivariado + baseline P6 | I | A | **R** | A |
 | 5. Dashboard | A | A | I | **R** |
 | 6. Geodatos | — PARQUEADA — | — | — | — |
 | 7. Articulo IEEE | A | **R** | **R** | A |
@@ -60,14 +58,13 @@ Fase 6 (Geodatos) esta **parqueada**: no tiene rol lider activo hasta contar con
 
 | Fase | Entrada | Salida principal | Codigo fuente |
 |---|---|---|---|
-| 1 | `pubchem_panama_cids.csv` | `chembl_panama_bioactivity.csv` | `src/analisis_proyecto/chembl_*.py` |
-| 2 | `chembl_panama_bioactivity.csv` | `activities_clean.csv` (medicion, dedup) + `compounds_features.csv` (compuesto, 107 filas) | `chembl_preprocessing.py` |
-| 3 | `compounds_features.csv` + `activities_clean.csv` | Figuras EDA a nivel compuesto (distribuciones, boxplots por familia) + correlacion | `chembl_preprocessing.py` |
-| 4 | `compounds_features.csv` + `activities_clean.csv` | `stats_tests.csv` + `clustering_summary.json` + figuras (PCA, dendrograma, silhouette) | `chembl_preprocessing.py` |
-| Anexo | `compounds_features.csv` | `baseline_honest_metrics.csv` | `chembl_preprocessing.py` |
-| 5 | Todos los artefactos anteriores | Dashboard (explorador de compuestos) en `viz/` | `viz/routes/analytics.py` |
-| 6 (parqueada) | geoBoundaries API + constantes INEC | `panama_geodata.csv` + GeoJSON (no integrado al pipeline activo) | `geodata_panama.py` |
-| 7 | Todo lo anterior (excepto Fase 6) | Articulo PDF + Video MP4 | — |
+| 1 | `pubchem_panama_cids.csv` | `chembl_panama_bioactivity.csv` | `chembl_*.py` |
+| 2 | `chembl_panama_bioactivity.csv` | `activities_clean.csv` + `compounds_features.csv` (107) | `chembl_preprocessing.py` |
+| 3 | `compounds_features.csv` + `activities_clean.csv` | Figuras EDA | `chembl_preprocessing.py` |
+| 4 | `compounds_features.csv` | `stats_tests.csv`, `clustering_summary.json`, `baseline_honest_metrics.csv`, figuras PCA/cluster | `chembl_multivariate.py`, `chembl_baseline.py` |
+| 5 | Artefactos Fases 2–4 | Dashboard en `viz/` (puerto 8001) | `prepare_dashboard.py`, `viz/` |
+| 6 | — spec futura — | GeoJSON (futuro) | ver [fase6_geodatos.md](fases/fase6_geodatos.md) |
+| 7 | Artefactos Fases 2–5 + `baseline_honest_metrics.csv` | Articulo + video | — |
 
 ---
 
@@ -75,21 +72,15 @@ Fase 6 (Geodatos) esta **parqueada**: no tiene rol lider activo hasta contar con
 
 | Modulo | Rol |
 |---|---|
-| `src/analisis_proyecto/chembl_api.py` | Descarga y construccion del dataset (Flujo A, backend REST) |
-| `src/analisis_proyecto/chembl_local.py` | Extraccion SQLite offline (Flujo A, backend SQLite) |
-| `src/analisis_proyecto/chembl_extract.py` | Facade unificada de extraccion (Flujo A) |
-| `src/analisis_proyecto/chembl_preprocessing.py` | Preprocesamiento, EDA, analisis multivariado y baseline honesto (Flujo B) |
-| `src/analisis_proyecto/geodata_panama.py` | Geodatos Panama (Flujo D, parqueado) |
-| `scripts/analisis_proyecto/fase1/extract_chembl_local.py` | CLI extraccion ChEMBL (Fase 1) |
-| `scripts/analisis_proyecto/fase1/verify_chembl_db.py` | Diagnostico ChEMBLdb (Fase 1) |
-| `scripts/analisis_proyecto/fase4/verify_flow_b.py` | Verificacion end-to-end Flujo B (Fase 4) |
-| `scripts/analisis_proyecto/fase5/03_prepare_dashboard_data.py` | Shim al pipeline de dashboard (Fase 5) |
-| `scripts/analisis_proyecto/fase5/test_dashboard.py` | Shim al smoke test del dashboard (Fase 5) |
-| `scripts/analisis_proyecto/fase6/02_download_geodata.py` | CLI geodatos Panama (Fase 6, parqueado) |
-| `scripts/fase5/prepare_dashboard.py` | Genera artefactos JSON para el dashboard |
-| `viz/` | Aplicacion FastAPI unificada (GNN 3D + analytics) |
-
-Funciones clave de `chembl_preprocessing.py` referenciadas en las fases: `filter_potential_duplicates`, `impute_median_by_family`, `train_test_split_by_group`, `evaluate_regression`, `correlation_with_target`, `plot_missingno_report`, `pchembl_imputation_report`, `drop_columns_high_nan`, `summary_statistics`. La funcion `build_compound_features(activities_df) -> pd.DataFrame` (nueva funcion — a implementar) consolida `activities_clean.csv` en `compounds_features.csv`.
+| `src/analisis_proyecto/chembl_api.py` | Descarga REST (Flujo A) |
+| `src/analisis_proyecto/chembl_local.py` | Extraccion SQLite offline |
+| `src/analisis_proyecto/chembl_extract.py` | Facade de extraccion |
+| `src/analisis_proyecto/chembl_preprocessing.py` | Limpieza, EDA, features compuesto |
+| `src/analisis_proyecto/chembl_multivariate.py` | PCA, clustering, Kruskal |
+| `src/analisis_proyecto/chembl_baseline.py` | Baseline honesto P6 (Fase 4 §12) |
+| `scripts/fase4/verify_flow_b.py` | Verificacion end-to-end Flujo B |
+| `scripts/fase5/prepare_dashboard.py` | JSON para dashboard |
+| `viz/` | Dashboard analytics (puerto 8001) |
 
 ---
 
@@ -97,78 +88,30 @@ Funciones clave de `chembl_preprocessing.py` referenciadas en las fases: `filter
 
 | Notebook | Fase | Rol |
 |---|---|---|
-| `notebooks/proyecto analisis de datos/fase1_adquisicion.ipynb` | 1 | Extracción ChEMBL, mapeo MIDA, filtros de calidad |
-| `notebooks/proyecto analisis de datos/fase2_limpieza.ipynb` | 2 | Diagnóstico NaN (missingno + UpSet), dedup, imputación por familia, construcción de `compounds_features.csv` |
-| `notebooks/proyecto analisis de datos/fase3_eda.ipynb` | 3 | Tendencia central y distribuciones a nivel compuesto, promiscuidad, Pearson + Spearman |
-| `notebooks/proyecto analisis de datos/fase4_modelado.ipynb` | 4 | PCA, clustering jerárquico/K-means, Kruskal-Wallis + post-hoc Dunn, tamaño de efecto |
-| `notebooks/proyecto analisis de datos/anexo_baseline_predictivo.ipynb` | Anexo | Baseline honesto con split por compuesto — RF/SVM/SVR como límite, no como logro (nuevo notebook — a implementar) |
-| `notebooks/proyecto analisis de datos/fase5_dashboard.ipynb` | 5 | Artefactos JSON + smoke test FastAPI |
-| `notebooks/proyecto analisis de datos/fase6_geodatos.ipynb` | 6 | geoBoundaries + INEC, mapa coroplético (parqueado, no ejecutado en el pipeline activo) |
-| `notebooks/proyecto analisis de datos/fase7_comunicacion.ipynb` | 7 | Tablas y figuras finales (artículo IEEE, video, slides) |
+| `notebooks/fase1_adquisicion.ipynb` | 1 | Extraccion ChEMBL |
+| `notebooks/fase2_limpieza.ipynb` | 2 | Limpieza, `compounds_features.csv` |
+| `notebooks/fase3_eda.ipynb` | 3 | EDA a nivel compuesto |
+| `notebooks/fase4_modelado.ipynb` | 4 | PCA, clustering, tests, baseline P6 (§4) |
+| `notebooks/fase5_dashboard.ipynb` | 5 | Artefactos + smoke test |
+| `notebooks/fase7_comunicacion.ipynb` | 7 | Tablas y figuras finales |
 
 ---
 
-## Comandos Rapidos por Fase
+## Comandos Rapidos
 
 ```bash
-# Fase 1 — Extraccion
+# Fase 1
 make chembl-extract
-jupyter notebook "notebooks/proyecto analisis de datos/fase1_adquisicion.ipynb"
 
-# Fases 2 + 3 + 4 — Flujo B (limpieza, EDA, analisis multivariado)
-make test-chembl-flow-b
-jupyter notebook "notebooks/proyecto analisis de datos/fase2_limpieza.ipynb"
-jupyter notebook "notebooks/proyecto analisis de datos/fase3_eda.ipynb"
-jupyter notebook "notebooks/proyecto analisis de datos/fase4_modelado.ipynb"
+# Fases 2–4 (incluye baseline P6 en verify)
+make analisis-verify
+jupyter notebook "proyecto analisis/notebooks/fase2_limpieza.ipynb"
+jupyter notebook "proyecto analisis/notebooks/fase3_eda.ipynb"
+jupyter notebook "proyecto analisis/notebooks/fase4_modelado.ipynb"
 
-# Anexo — Baseline predictivo honesto (adicional, separado del analisis principal)
-jupyter notebook "notebooks/proyecto analisis de datos/anexo_baseline_predictivo.ipynb"
-
-# Fase 5 — Dashboard
-make prepare-dashboard
-make viz
-# -> http://127.0.0.1:8000
-
-# Fase 6 — Geodatos (PARQUEADA, no forma parte del pipeline activo)
-make download-geodata
-
-# Pipelines combinados
-make viz-analytics-all    # geodata + prepare-dashboard + test
-make viz-jic              # panama-predict + prepare-dashboard + test
-```
-
----
-
-## Ejecucion completa desde cero
-
-```bash
-cd JIC2026
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-
-# 1) Extraccion ChEMBL
-make chembl-extract
-jupyter notebook "notebooks/proyecto analisis de datos/fase1_adquisicion.ipynb"
-
-# 2-4) Limpieza, EDA y analisis multivariado (notebook por fase)
-make test-chembl-flow-b
-jupyter notebook "notebooks/proyecto analisis de datos/fase2_limpieza.ipynb"
-jupyter notebook "notebooks/proyecto analisis de datos/fase3_eda.ipynb"
-jupyter notebook "notebooks/proyecto analisis de datos/fase4_modelado.ipynb"
-
-# Anexo) Baseline predictivo honesto (adicional, separado, puente hacia el GNN de la JIC)
-jupyter notebook "notebooks/proyecto analisis de datos/anexo_baseline_predictivo.ipynb"
-
-# 5) Dashboard
-make prepare-dashboard
-make viz
-jupyter notebook "notebooks/proyecto analisis de datos/fase5_dashboard.ipynb"
-
-# 6) Geodatos — PARQUEADA, ejecutar solo si se retoma con dataset real de uso/registro por distrito
-jupyter notebook "notebooks/proyecto analisis de datos/fase6_geodatos.ipynb"
-
-# 7) Comunicacion (tablas + figuras para articulo)
-jupyter notebook "notebooks/proyecto analisis de datos/fase7_comunicacion.ipynb"
+# Fase 5
+make analisis-prepare-dashboard
+make analisis-viz    # http://127.0.0.1:8001
 ```
 
 ---

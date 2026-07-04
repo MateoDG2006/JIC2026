@@ -22,7 +22,7 @@ from fastapi.staticfiles import StaticFiles
 from viz.config import STATIC_DIR
 from viz.routes.api import router as api_router
 from viz.routes.views import router as views_router
-from viz.services.dashboard.xai import xai_figures_dir
+from viz.services.dashboard import xai_figures_dir
 
 app = FastAPI(
     title="GNN-Tox Viewer",
@@ -55,9 +55,9 @@ def health_check():
     from viz.services import inference
 
     try:
-        from viz.services.corpus import load_corpus_index
+        from viz.services.corpus import list_compounds
 
-        tox_rows = len(load_corpus_index())
+        tox_rows = len(list_compounds())
     except Exception:
         tox_rows = -1
 

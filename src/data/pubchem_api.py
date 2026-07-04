@@ -106,9 +106,6 @@ FAMILY_HNIDS: dict[str, int] = {
     "Herbicides": 4500088,
 }
 
-# Alias retrocompatible (el parámetro era HID pero el endpoint exige HNID).
-FAMILY_HIDS = FAMILY_HNIDS
-
 # Columnas CSV del corpus panameño (siempre escribir cabecera aunque no haya filas).
 PANAMA_CORPUS_COLUMNS = [
     "name", "CID", "SMILES", "formula", "source", "family",

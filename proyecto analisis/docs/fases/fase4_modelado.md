@@ -7,10 +7,10 @@
 | **Objetivo** | Caracterizar la estructura del corpus (107 compuestos) con reducción de dimensionalidad, clustering y pruebas estadísticas |
 | **Duracion** | 3-4 dias |
 | **Entrada** | `data/processed/compounds_features.csv` (107 filas, nivel COMPUESTO) |
-| **Salidas** | `outputs/chembl/results/stats_tests.csv`, `outputs/chembl/results/clustering_summary.json`, figuras (`pca_scatter.png`, `dendrogram.png`, `cluster_silhouette.png`, `family_boxplots_annotated.png`) |
+| **Salidas** | `outputs/chembl/results/stats_tests.csv`, `outputs/chembl/results/clustering_summary.json`, `outputs/chembl/results/baseline_honest_metrics.csv`, figuras (`pca_scatter.png`, `dendrogram.png`, `cluster_silhouette.png`, `family_boxplots_annotated.png`) |
 | **Rol lider** | Cientifico de Datos |
-| **Notebook** | `notebooks/proyecto analisis de datos/fase4_modelado.ipynb` |
-| **Modulo** | `src/analisis_proyecto/chembl_preprocessing.py` |
+| **Notebook** | `notebooks/fase4_modelado.ipynb` (PCA + clustering + tests + baseline P6 §4) |
+| **Modulos** | `chembl_multivariate.py`, `chembl_preprocessing.py`, `chembl_baseline.py` |
 
 ---
 
@@ -26,11 +26,11 @@ Esta fase responde a tres preguntas de investigación del rediseño:
 
 **Unidad de análisis:** el **compuesto** (107 filas de `compounds_features.csv`), NO la fila/medición. Los 9 descriptores moleculares son constantes dentro de cada compuesto, por lo que el análisis multivariado solo tiene sentido a nivel de compuesto único.
 
-**Salida principal:** una caracterización honesta de la estructura del corpus — no un modelo predictivo. El baseline predictivo se traslada a un anexo separado (ver §2).
+**Salida principal:** una caracterización honesta de la estructura del corpus (P3–P5). El **baseline predictivo honesto (P6)** forma parte de esta misma fase como bloque complementario (§12): cuantifica el límite de los descriptores clásicos y cierra el puente al proyecto GNN.
 
 ---
 
-## 2. Por qué se abandona el modelado supervisado aquí
+## 2. Por qué el modelado supervisado no es el producto principal
 
 La versión anterior de esta fase entrenaba clasificadores (`activity_class`) y regresores (`pchembl_value`) sobre descriptores moleculares. Se elimina como producto de esta fase por tres razones de diseño, no de código:
 
@@ -40,7 +40,7 @@ La versión anterior de esta fase entrenaba clasificadores (`activity_class`) y 
 
 3. **Fuga de datos por split de filas / R² negativo por compuesto.** Los descriptores son idénticos para todas las filas de un mismo compuesto. Un split por filas coloca copias del mismo compuesto en train y test, inflando las métricas (accuracy y R² artificialmente altos). El split honesto —por compuesto— revela que el modelo **no generaliza**: la accuracy de test cae drásticamente y el R² de test es **negativo por compuesto** (peor que predecir la media). Esto no es un bug: los descriptores globales no bastan para ordenar por potencia a compuestos no vistos.
 
-**Dónde vive ahora el baseline predictivo.** El baseline se conserva como ejercicio **adicional y completamente separado**, documentado en el [Anexo — Baseline predictivo honesto](anexo_baseline_predictivo.md). Allí se reporta con split por compuesto y se presenta como **límite** (no como logro): su valor es servir de puente honesto al proyecto JIC, mostrando que los descriptores clásicos no generalizan y motivando el enfoque de grafos moleculares (GNN).
+**Dónde vive el baseline predictivo (P6).** Se ejecuta en el **Bloque 4** de esta fase (§12), con split por compuesto. No es un producto ni un logro de modelado: reporta un **límite** (R² bajo o negativo) que justifica el salto a grafos moleculares (GNN) en el proyecto JIC.
 
 ---
 
@@ -291,31 +291,18 @@ Una fila por variable contrastada:
 | Tarea | Descripcion |
 |---|---|
 | Exponer clusters en dashboard | Añadir la etiqueta de cluster por compuesto al explorador (Fase 5) |
-| Baseline separado | Mantener el baseline predictivo en el anexo, sin mezclarlo con esta fase |
+| Baseline P6 | Ejecutar §12; **no** desplegar predictor en dashboard (Fase 5) |
 
 ---
 
 ## 7. Ejecucion
 
 ```bash
-# Notebook completo (PCA + clustering + tests)
-jupyter notebook "notebooks/proyecto analisis de datos/fase4_modelado.ipynb"
+# Notebook Fase 4 (multivariado + baseline P6)
+jupyter notebook "proyecto analisis/notebooks/fase4_modelado.ipynb"
 
-# Verificacion desde terminal
-python scripts/analisis_proyecto/fase4/verify_flow_b.py
-
-# Ejecutar solo el análisis multivariado
-python -c "
-from src.analisis_proyecto.chembl_preprocessing import (
-    run_pca, run_kmeans_silhouette, hierarchical_clusters,
-    kruskal_by_family, posthoc_dunn, DESCRIPTOR_FEATURES)
-import pandas as pd
-df = pd.read_csv('data/processed/compounds_features.csv')
-X = df[DESCRIPTOR_FEATURES].values
-print('n compuestos:', len(df))
-print(run_pca(X)['explained_variance_ratio'])
-print(run_kmeans_silhouette(X)['k_optimo'])
-"
+# Verificacion end-to-end (desde raiz del monorepo)
+make analisis-verify
 ```
 
 ---
@@ -332,7 +319,8 @@ print(run_kmeans_silhouette(X)['k_optimo'])
 - [ ] **Tabla de tests** (`stats_tests.csv`) con p-valor y **tamaño de efecto (ε²)** por variable
 - [ ] Post-hoc Dunn/Holm ejecutado donde Kruskal-Wallis fue significativo
 - [ ] `family_boxplots_annotated.png` con n por familia anotado
-- [ ] Sin clasificación de `activity_class` ni regresión de `pchembl_value` como producto de esta fase (viven en el anexo)
+- [ ] Sin clasificación de `activity_class` ni regresión de `pchembl_value` como producto del dashboard
+- [ ] Baseline honesto (§12): split por compuesto, métricas en `baseline_honest_metrics.csv`, contraste filas vs compuesto documentado
 
 ---
 
@@ -364,17 +352,85 @@ print(run_kmeans_silhouette(X)['k_optimo'])
 
 ## 11. Distribucion por roles dentro del notebook
 
-El notebook `fase4_modelado.ipynb` se reestructura en torno a los tres bloques del análisis multivariado. Esta tabla cierra la trazabilidad Fase -> sección del notebook -> entregable:
+El notebook `fase4_modelado.ipynb` tiene cuatro bloques: PCA (§1), clustering (§2), tests (§3) y baseline P6 (§4). Trazabilidad Fase → sección → entregable:
 
 | Rol | Secciones del notebook | Entregable |
 |---|---|---|
-| Ingeniero de Datos | 0 (carga de `compounds_features.csv`, verificación 107×9) | Entrada validada |
-| Analista de Datos | Interpretación de PCA, clusters y efectos | Lectura de resultados |
-| Cientifico de Datos | PCA, clustering, tests estadísticos | `stats_tests.csv`, `clustering_summary.json`, figuras |
-| ML Engineer | Etiqueta de cluster al explorador (Fase 5); baseline al anexo | Integración dashboard |
+| Ingeniero de Datos | 0 (carga y validación 107×9) | Entrada validada |
+| Analista de Datos | Interpretación PCA, clusters, efectos, contraste baseline | Lectura de resultados |
+| Cientifico de Datos | §1–§4 | `stats_tests.csv`, `clustering_summary.json`, `baseline_honest_metrics.csv`, figuras |
+| ML Engineer | Etiqueta cluster al explorador (Fase 5); baseline P6 sin despliegue | Integración dashboard |
+
+---
+
+## 12. Bloque 4 — Baseline predictivo honesto (P6)
+
+> **Naturaleza:** experimento de control dentro de la Fase 4, no producto del curso ni del dashboard.
+> Demuestra el **límite intrínseco** de 8–9 descriptores moleculares para predecir potencia en compuestos no vistos y sirve de **puente al proyecto GNN de la JIC**.
+
+### 12.1 Pregunta y respuesta esperada
+
+**P6:** ¿Un modelo simple ordena/predice la potencia mediana (`pchembl_median`) a partir de descriptores, cuando la validación se hace **por compuesto**?
+
+**Respuesta esperada (honesta):** No. Con 107 compuestos y descriptores constantes por molécula, el modelo **no generaliza** (R² bajo o **negativo** en test).
+
+### 12.2 Diseño experimental
+
+| Elemento | Valor |
+|---|---|
+| **Unidad** | Compuesto (107 filas de `compounds_features.csv`) |
+| **Target** | `pchembl_median` |
+| **Features** | 9 descriptores (`FEATURE_COLS` / `DESCRIPTOR_FEATURES`) |
+| **Modelo principal** | `RandomForestRegressor` |
+| **Contraste opcional** | `Ridge` (baseline lineal) |
+| **Validación** | Split por grupo (`train_test_split_by_group`, `group_col="chembl_id"`) + `GroupKFold` |
+| **Módulo** | `src/analisis_proyecto/chembl_baseline.py` → `honest_baseline_compound_level`, `leaky_baseline_row_level` |
+| **Salida** | `outputs/chembl/results/baseline_honest_metrics.csv` |
+| **Ejecución** | Sección §4 de `notebooks/fase4_modelado.ipynb` |
+
+**Regla de honestidad (no negociable):** split por filas **no es válido** aquí — reintroduce fuga porque los descriptores son idénticos para todas las mediciones del mismo compuesto.
+
+### 12.3 Contraste que revela la fuga
+
+| Protocolo | R² (referencia) | ¿Válido? | Por qué |
+|---|---|---|---|
+| Split por **filas** (medición) | Alto (~0.5–0.6) | **No — fuga** | Mismas moléculas en train y test |
+| Split por **compuesto** (P6) | Bajo o **negativo** | **Sí — honesto** | Generalización real a moléculas nuevas |
+
+En el notebook se recalculan ambos protocolos lado a lado. La inflación del split por filas **no es mejora del modelo**: es fuga de datos.
+
+### 12.4 Conclusión y puente al JIC
+
+Con **107 compuestos** y descriptores globales **no hay señal suficiente** para predecir potencia a compuestos no vistos. La potencia depende de la interacción molécula–diana y de la topología estructural fina. Esto **motiva** el enfoque del proyecto JIC: **grafos moleculares + GNN-GIN** entrenados sobre Tox21 (~8 000 compuestos), donde la representación se aprende del grafo átomo–enlace.
+
+### 12.5 Ejecución
+
+```bash
+jupyter notebook "proyecto analisis/notebooks/fase4_modelado.ipynb"
+make analisis-verify   # incluye baseline honesto en verify_flow_b.py
+```
+
+### 12.6 Criterios de éxito (P6)
+
+- [ ] `compounds_features.csv` con **107 filas** (unidad = compuesto)
+- [ ] `RandomForestRegressor` con split por compuesto + `GroupKFold`
+- [ ] R², MAE y RMSE reportados; R² por compuesto **bajo o negativo**
+- [ ] Tabla comparativa: split compuesto (honesto) vs split filas (fuga)
+- [ ] `baseline_honest_metrics.csv` escrito
+- [ ] Puente al GNN/JIC redactado en notebook o informe (Fase 7)
+- [ ] Ningún `chembl_id` compartido entre train y test
+
+### 12.7 Troubleshooting (P6)
+
+| Problema | Causa | Solución |
+|---|---|---|
+| R² negativo por compuesto | Modelo peor que la media | **Esperado** — hallazgo de P6 |
+| R² alto (~0.5–0.6) | Split por filas | Usar `group_col="chembl_id"` |
+| `compounds_features.csv` ausente | Falta Fase 2 | `build_compound_features()` |
+| Varianza alta entre runs | n=107, split único | `GroupKFold` y promediar folds |
 
 ---
 
 *Fase anterior:* [Fase 3 — Analisis exploratorio](fase3_eda.md)  
-*Documento adicional:* [Anexo — Baseline predictivo honesto](anexo_baseline_predictivo.md)  
+*Siguiente fase:* [Fase 5 — Dashboard](fase5_dashboard.md)  
 *Siguiente fase:* [Fase 5 — Dashboard interactivo](fase5_dashboard.md)

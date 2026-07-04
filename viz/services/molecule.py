@@ -39,8 +39,6 @@ def smiles_to_sdf(smiles: str) -> str | None:
         return None
     AllChem.MMFFOptimizeMolecule(mol, maxIters=500)
     mol = Chem.RemoveHs(mol)
-    writer = Chem.SDWriter(StringIO())
-    writer.SetForceV3000(False)
     buf = StringIO()
     writer = Chem.SDWriter(buf)
     writer.write(mol)

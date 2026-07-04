@@ -31,7 +31,7 @@ import torch
 from torch.utils.data import DataLoader, TensorDataset
 
 # Importar la función de extracción del script de preparación
-from scripts.prepare_tox21_graphs import _extract_smiles_y_mask
+from scripts.fase1.prepare_tox21_graphs import _extract_smiles_y_mask
 
 from src.data.dataset import N_TASKS, TASK_NAMES
 from src.evaluation.cross_validation import evaluate_multitask_auc

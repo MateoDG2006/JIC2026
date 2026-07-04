@@ -10,7 +10,6 @@ from __future__ import annotations
 import csv
 import re
 import unicodedata
-from pathlib import Path
 from typing import Any
 
 from viz.config import PANAMA_CIDS_CSV, PANAMA_PROFILE_CSV

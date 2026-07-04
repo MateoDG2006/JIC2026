@@ -8,7 +8,6 @@ Pipeline típico:
     df_clean = impute_median_by_family(df_clean)     # mediana por familia
     X, y, groups = build_supervised_matrix(df_clean, target_col="activity_class")
     X_tr, X_te, y_tr, y_te = train_test_split_by_group(X, y, groups)  # split honesto
-    metrics = evaluate_classification(model, X_tr, X_te, y_tr, y_te)
 
 Constantes importantes:
     FEATURE_COLS              — 8 descriptores RDKit usados para modelar
@@ -24,7 +23,6 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics import accuracy_score, mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 
 # Descriptores moleculares para modelado (sin leakage de ensayo/diana).
@@ -287,26 +285,6 @@ def get_available_feature_cols(df: pd.DataFrame) -> list[str]:
     return [c for c in FEATURE_COLS if c in df.columns]
 
 
-def get_feature_matrix(
-    df: pd.DataFrame,
-    feature_cols: list[str] | None = None,
-) -> tuple[pd.DataFrame, pd.Series, pd.Series]:
-    """
-    Construye X, y_class, y_reg.
-
-    Excluye filas sin activity_class o pchembl_value para los respectivos targets.
-    """
-    cols = feature_cols or get_available_feature_cols(df)
-    missing = [c for c in cols if c not in df.columns]
-    if missing:
-        raise ValueError(f"Faltan columnas de features: {missing}")
-
-    X = df[cols].copy()
-    y_class = df["activity_class"].copy()
-    y_reg = pd.to_numeric(df["pchembl_value"], errors="coerce")
-    return X, y_class, y_reg
-
-
 def train_test_split_rows(
     X: pd.DataFrame,
     y: pd.Series,
@@ -407,38 +385,6 @@ def train_test_split_by_group(
         y.iloc[train_idx],
         y.iloc[test_idx],
     )
-
-
-def evaluate_regression(
-    model,
-    X_train: pd.DataFrame,
-    X_test: pd.DataFrame,
-    y_train: pd.Series,
-    y_test: pd.Series,
-) -> dict[str, float]:
-    """R², MAE y RMSE en train y test."""
-    pred_train = model.predict(X_train)
-    pred_test = model.predict(X_test)
-    return {
-        "r2_train": float(r2_score(y_train, pred_train)),
-        "r2_test": float(r2_score(y_test, pred_test)),
-        "mae_test": float(mean_absolute_error(y_test, pred_test)),
-        "rmse_test": float(np.sqrt(mean_squared_error(y_test, pred_test))),
-    }
-
-
-def evaluate_classification(
-    model,
-    X_train: pd.DataFrame,
-    X_test: pd.DataFrame,
-    y_train: pd.Series,
-    y_test: pd.Series,
-) -> dict[str, float]:
-    """Accuracy en train y test."""
-    return {
-        "accuracy_train": float(accuracy_score(y_train, model.predict(X_train))),
-        "accuracy_test": float(accuracy_score(y_test, model.predict(X_test))),
-    }
 
 
 def correlation_with_target(

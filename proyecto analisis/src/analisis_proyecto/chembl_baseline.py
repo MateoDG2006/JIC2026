@@ -1,4 +1,4 @@
-"""Baseline predictivo honesto (Anexo / P6). Demuestra el límite de los descriptores clásicos."""
+"""Baseline predictivo honesto (Fase 4 / P6). Demuestra el límite de los descriptores clásicos."""
 from __future__ import annotations
 
 import numpy as np
@@ -7,16 +7,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.model_selection import KFold, cross_val_score, train_test_split
 
-FEATURE_COLS = [
-    "mw_freebase",
-    "alogp",
-    "psa",
-    "hba",
-    "hbd",
-    "aromatic_rings",
-    "rtb",
-    "num_ro5_violations",
-]
+from src.analisis_proyecto.chembl_preprocessing import FEATURE_COLS
 
 
 def honest_baseline_compound_level(compounds: pd.DataFrame) -> dict:

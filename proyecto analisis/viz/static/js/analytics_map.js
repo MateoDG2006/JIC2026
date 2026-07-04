@@ -15,7 +15,7 @@ let geojson = null;
 async function loadGeo() {
   if (geojson) return geojson;
   const res = await fetch("/api/analytics/geo");
-  if (!res.ok) throw new Error("Ejecute: make download-geodata");
+  if (!res.ok) throw new Error("GeoJSON no disponible — ver docs/fases/fase6_geodatos.md");
   geojson = await res.json();
   return geojson;
 }

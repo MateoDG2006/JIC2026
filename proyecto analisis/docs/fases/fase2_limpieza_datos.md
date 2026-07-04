@@ -33,7 +33,7 @@ Estas decisiones se aplican aqui y se arrastran a Fase 3 (EDA) y a la Fase 4 (an
 
 | Tema | Decision |
 |---|---|
-| **Unidad de analisis** | **Compuesto (107).** El split por compuesto solo se usa en el anexo del baseline predictivo (no como default) |
+| **Unidad de analisis** | **Compuesto (107).** El split por compuesto se usa en el baseline predictivo de Fase 4 (§12, P6) |
 | De-duplicacion | Aplicar `filter_potential_duplicates` ANTES de construir ambas tablas |
 | Imputacion numerica | A nivel COMPUESTO: mediana por `family` (fallback: mediana global) |
 | Imputacion categorica | Moda global o `"Unknown"` |
@@ -41,7 +41,7 @@ Estas decisiones se aplican aqui y se arrastran a Fase 3 (EDA) y a la Fase 4 (an
 | Valores censurados | Conservar `standard_relation`; segregar `>`/`<` en el analisis de potencia |
 | `activity_class` / `pchembl_value` | **Ya NO son variable objetivo de un modelo.** Se conservan como descriptores de bioactividad |
 
-> **Nota sobre el split (honestidad metodologica):** el split por filas 80/20 queda **descartado como default**. El mismo plaguicida aparecia en train y test con descriptores identicos (solo cambia la diana/ensayo), lo que **infla** las metricas. La unidad de analisis correcta es el compuesto; cualquier evaluacion predictiva usa split por compuesto y vive en el anexo. Esto se documenta en [METRICAS_EVALUACION.md](../../../mateo_docs/auditorias/METRICAS_EVALUACION.md).
+> **Nota sobre el split (honestidad metodologica):** el split por filas 80/20 queda **descartado como default**. El mismo plaguicida aparecia en train y test con descriptores identicos (solo cambia la diana/ensayo), lo que **infla** las metricas. La unidad de analisis correcta es el compuesto; la evaluacion predictiva honesta (P6) se documenta en [Fase 4 §12](fase4_modelado.md#12-bloque-4--baseline-predictivo-honesto-p6). Ver tambien [METRICAS_EVALUACION.md](../../../mateo_docs/auditorias/METRICAS_EVALUACION.md).
 
 ---
 
@@ -322,7 +322,7 @@ dup_report.to_csv("outputs/chembl/results/dedup_report.csv", index=False)
 
 ### ML Engineer
 
-No participa directamente en esta fase. Consume `compounds_features.csv` en el anexo del baseline predictivo (split por compuesto).
+No participa directamente en esta fase. Consume `compounds_features.csv` en el baseline predictivo de Fase 4 (§12, P6).
 
 ---
 
@@ -362,7 +362,7 @@ Uso: P2 (promiscuidad), P4 (endpoints/dianas).
 | Descriptores (constantes) | `mw_freebase`, `alogp`, `psa`, `hba`, `hbd`, `aromatic_rings`, `rtb`, `heavy_atoms`, `num_ro5_violations` |
 | Agregados de bioactividad | `pchembl_median`, `pchembl_std`, `n_activities`, `n_targets`, `n_assay_types`, `n_standard_types`, `pct_active` |
 
-Uso: P1, P3, P5 y P6 (anexo). Es la **unidad principal** del proyecto.
+Uso: P1, P3, P5 y **P6** (baseline honesto, Fase 4 §12). Es la **unidad principal** del proyecto.
 
 ---
 
@@ -443,4 +443,4 @@ assert compounds[desc].isna().sum().sum() == 0
 
 *Fase anterior:* [Fase 1 — Adquisicion de datos](fase1_adquisicion_datos.md)  
 *Siguiente fase:* [Fase 3 — Analisis exploratorio](fase3_eda.md)  
-*Anexo relacionado:* [Baseline predictivo honesto (P6)](anexo_baseline_predictivo.md)
+*Baseline P6:* [Fase 4 §12 — Baseline predictivo honesto](fase4_modelado.md#12-bloque-4--baseline-predictivo-honesto-p6)

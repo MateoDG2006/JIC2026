@@ -13,7 +13,7 @@ proyecto analisis/
 │   ├── processed/           # activities_clean + compounds_features (107)
 │   └── external/chembl/     # chembl_37.db (SQLite local)
 ├── src/analisis_proyecto/   # Pipeline Python
-├── notebooks/               # Fases 1–7 + anexo baseline
+├── notebooks/               # Fases 1–7 (baseline P6 en fase4 + notebook dedicado)
 ├── docs/                    # Documentación por fase
 ├── outputs/chembl/          # Figuras, modelos legacy, resultados
 ├── outputs/dashboard/       # JSON para viz analytics
@@ -24,24 +24,31 @@ proyecto analisis/
 
 ## Inicio rápido
 
+Todos los comandos se ejecutan desde la **raíz del monorepo** (`JIC2026/`):
+
 ```bash
-cd "proyecto analisis"
-pip install -r requirements.txt
+make help              # listado de comandos JIC + analisis
+make setup             # entorno JIC
+make setup-analisis    # deps adicionales del subproyecto
 
-# Verificación pipeline Opción A
-python scripts/fase4/verify_flow_b.py
+# Analisis — pipeline
+make chembl-extract
+make analisis-verify
+jupyter notebook "proyecto analisis/notebooks/fase2_limpieza.ipynb"
 
-# Notebooks (orden)
-jupyter notebook notebooks/fase2_limpieza.ipynb
+# Analisis — dashboard (puerto 8001)
+make analisis-prepare-dashboard
+make analisis-viz
 
-# Visor analytics
-python viz/app.py
+# JIC — visor GNN (puerto 8000)
+make setup-viz
+make viz
 ```
 
 ## Unidad de análisis
 
 **107 compuestos** (`compounds_features.csv`), no filas de medición.
-El baseline predictivo está en `notebooks/anexo_baseline_predictivo.ipynb`.
+El baseline predictivo honesto (P6) está en la **§4** de [`notebooks/fase4_modelado.ipynb`](notebooks/fase4_modelado.ipynb) y documentado en [Fase 4 §12](docs/fases/fase4_modelado.md#12-bloque-4--baseline-predictivo-honesto-p6).
 
 ## Proyecto hermano
 

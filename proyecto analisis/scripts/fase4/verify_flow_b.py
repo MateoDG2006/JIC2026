@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Verificación end-to-end del pipeline Opción A (análisis descriptivo + multivariado).
 
-Reproduce Fases 2–4 y el anexo baseline:
+Reproduce Fases 2–4 incluyendo baseline P6 (Fase 4 §12):
 
     1. load_bioactivity + filter_potential_duplicates
     2. drop_columns_high_nan + impute_median_by_family
