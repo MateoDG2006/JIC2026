@@ -1,0 +1,33 @@
+# Configuración — Proyecto Análisis de Datos (ChEMBL Panamá)
+
+chembl:
+  backend: sqlite
+  version: "37"
+  db_path: data/external/chembl/chembl_37.db
+  ftp_url: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest/chembl_37_sqlite.tar.gz
+  pchembl_active_threshold: 6.0
+  corpus_mode: full
+  standard_types:
+    - IC50
+    - EC50
+    - Ki
+    - Kd
+    - Potency
+    - Inhibition
+    - AC50
+    - LC50
+    - GI50
+    - MIC
+    - LD50
+    - ED50
+    - IC90
+  quality_filters:
+    impute_pchembl: true
+    require_exact_relation: true
+    exclude_validity_comment: true
+
+viz:
+  host: 127.0.0.1
+  port: 8001
+  artifacts_dir: outputs/dashboard
+  bundle_dir: outputs/dashboard/bundle

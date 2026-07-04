@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\mateo\\\\Desktop\\\\JIC2026\" -Recurse | Where-Object {$_.PSIsContainer -eq $false} | Select-Object FullName, Length, LastWriteTime | Format-Table -AutoSize)",
+      "PowerShell($items = Get-ChildItem -Path \"C:\\\\Users\\\\mateo\\\\Desktop\\\\JIC2026\" -Recurse -Force; $files = $items | Where-Object {-not $_.PSIsContainer}; $dirs = $items | Where-Object {$_.PSIsContainer}; Write-Host \"Directory Summary:\"; Write-Host \"  Total Directories: $\\($dirs.Count\\)\"; Write-Host \"  Total Files: $\\($files.Count\\)\"; Write-Host \"\"; Write-Host \"Files by Type:\"; $files | Group-Object Extension | Select-Object @{Name=\"Extension\"; Expression={if\\($_.Name -eq \"\"\\){\".no-extension\"} else {$_.Name}}}, @{Name=\"Count\"; Expression={$_.Count}} | Sort-Object Extension | Format-Table -AutoSize)",
+      "Bash(Get-Content *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\mateo\\\\Desktop\\\\JIC2026\" -Recurse -Force)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Sort-Object)",
+      "mcp__visualize__show_widget"
+    ]
+  }
+}

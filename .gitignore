@@ -1,0 +1,46 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.pt
+.ipynb_checkpoints/
+wandb/
+.venv/
+venv/
+mateo_docs/
+
+# ── Datos y artefactos generados (demasiado peso para git) ──────────────────
+
+# JIC — datos
+data/raw/*
+!data/raw/.gitkeep
+data/processed/
+data/splits/
+data/external/
+!data/external/**/.gitkeep
+
+# JIC — resultados
+outputs/
+
+# Visor GNN — corpus JSON generado
+viz/data/*
+!viz/data/.gitkeep
+
+# Bundle legacy de despliegue
+dashboard/
+
+# Proyecto análisis — datos
+proyecto analisis/data/raw/*
+!proyecto analisis/data/raw/.gitkeep
+proyecto analisis/data/processed/
+proyecto analisis/data/external/*
+!proyecto analisis/data/external/**/.gitkeep
+
+# Proyecto análisis — resultados
+proyecto analisis/outputs/
+
+# ChEMBLdb local (descarga ~5 GB + ~15 GB descomprimido)
+*.db
+data/external/chembl/*.tar.gz
+proyecto analisis/data/external/chembl/*.tar.gz

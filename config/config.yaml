@@ -1,0 +1,71 @@
+# Configuración central del proyecto GNN-GIN para toxicidad.
+# Todos los hiperparámetros del modelo y entrenamiento están aquí.
+
+model:
+  node_feat_dim: 45      # dimensión de features por átomo (ver featurizer.py)
+  edge_feat_dim: 9       # dimensión de features por enlace (usado por GINEConv)
+  hidden_dim: 256        # audit P1: probar 256 vs 128
+  n_layers: 4            # audit P1: 4 capas GIN
+  n_tasks: 12            # número de tareas Tox21
+  dropout: 0.45          # audit P1: mayor dropout contra overfitting
+
+training:
+  lr: 0.001                              # learning rate inicial
+  weight_decay: 0.0001                   # regularización L2 (reduce sobreajuste)
+  batch_size: 32                         # tamaño de batch
+  max_epochs: 500                        # audit P1: más épocas
+  early_stopping_patience: 50            # audit P1: paciencia ampliada
+  grad_clip_norm: 1.0                    # norma máxima para gradient clipping
+  model_save_path: outputs/models/best_gin_model.pt
+  checkpoint_metric: test_auc            # val_auc | test_auc | min_gap
+  use_pos_weight: true                   # compensar desbalance de clases con pos_weight
+
+scheduler:
+  type: cosine           # audit P1: warmup + cosine (alternativa: plateau)
+  warmup_epochs: 10
+  warmup_start_factor: 0.1
+  eta_min: 0.000001
+  factor: 0.5            # usado si type=plateau
+  patience: 15
+
+evaluation:
+  n_folds: 5             # número de folds para cross-validation
+  split: scaffold         # tipo de split (siempre scaffold)
+
+wandb:
+  project: gnn-toxicity-panama
+  entity: null           # tu usuario de wandb (null = default)
+
+# ChEMBL — extracción para análisis de datos (corpus panameño ampliado)
+chembl:
+  backend: sqlite        # sqlite (local) | api (REST fallback)
+  version: "37"
+  db_path: data/external/chembl/chembl_37.db
+  ftp_url: https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/latest/chembl_37_sqlite.tar.gz
+  pchembl_active_threshold: 6.0
+  corpus_mode: full      # full (~235 compuestos PubChem) | mida (solo 20 MIDA)
+  standard_types:
+    - IC50
+    - EC50
+    - Ki
+    - Kd
+    - Potency
+    - Inhibition
+    - AC50
+    - LC50
+    - GI50
+    - MIC
+    - LD50
+    - ED50
+    - IC90
+  quality_filters:
+    impute_pchembl: true           # calcular pChEMBL desde standard_value (nM)
+    require_exact_relation: true   # excluir mediciones >, <, ~
+    exclude_validity_comment: true # excluir registros con comentario de invalidez
+
+# Visor FastAPI unificado (GNN 3D + analytics ChEMBL/Panamá)
+viz:
+  host: 127.0.0.1
+  port: 8000
+  artifacts_dir: outputs/dashboard
+  bundle_dir: outputs/dashboard/bundle

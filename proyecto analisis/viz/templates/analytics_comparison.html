@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Comparativa modelos — GNN-Tox{% endblock %}
+
+{% block head %}
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Comparativa de modelos — Tox21</h1>
+    <p class="lead">Baselines vs GNN-GIN (AUC-ROC promedio)</p>
+</section>
+
+<div id="loading-overlay" class="loading-overlay" hidden>
+    <div class="spinner"></div>
+    <p>Cargando comparativa…</p>
+</div>
+
+<section class="card">
+    <div id="comparison-note" class="hint mb-2"></div>
+    <div id="chart-comparison" class="chart-panel"></div>
+</section>
+
+<section class="card">
+    <h2>Métricas ChEMBL — split por compuesto (honesto)</h2>
+    <div id="metrics-table" class="hint"></div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/analytics_comparison.js"></script>
+{% endblock %}

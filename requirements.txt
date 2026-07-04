@@ -1,0 +1,25 @@
+# Requiere Python >=3.10,<3.13 (deepchem no publica wheels para 3.13+)
+
+# ── Core científico ──────────────────────────────────────────────────────────
+numpy>=1.24
+pandas>=2.0
+scikit-learn>=1.3
+PyYAML>=6.0
+requests>=2.31
+
+# ── Deep learning + GNN (pipeline Tox21 / GIN) ───────────────────────────────
+torch>=2.0
+torch-geometric>=2.4
+
+# ── Química computacional ────────────────────────────────────────────────────
+rdkit>=2023.9.1
+deepchem>=2.7
+
+# ── Logging y visualización base ─────────────────────────────────────────────
+wandb>=0.16
+matplotlib>=3.7
+seaborn>=0.13
+captum>=0.7
+
+# ── Tests ────────────────────────────────────────────────────────────────────
+pytest>=7.4
