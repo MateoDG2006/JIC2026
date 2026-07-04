@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" width="320" height="180" role="img" aria-hidden="true">
+  <rect width="320" height="180" rx="12" fill="rgba(59,130,246,0.12)" stroke="rgba(96,165,250,0.45)" stroke-width="1.5"/>
+  <path d="M40 90h50l-20 30H60L40 90z" fill="rgba(59,130,246,0.35)" stroke="#3b82f6"/>
+  <path d="M100 75h80l-15 30H115L100 75z" fill="rgba(59,130,246,0.45)" stroke="#3b82f6"/>
+  <path d="M190 60h70l-10 35H200L190 60z" fill="rgba(34,197,94,0.35)" stroke="#22c55e"/>
+  <circle cx="265" cy="95" r="8" fill="#22c55e"/>
+  <text x="160" y="165" text-anchor="middle" fill="#cbd5e1" font-family="Segoe UI,sans-serif" font-size="11">Pipeline de datos</text>
+</svg>

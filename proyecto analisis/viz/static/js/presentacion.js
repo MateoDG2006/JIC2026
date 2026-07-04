@@ -236,15 +236,25 @@ async function initBaseline() {
   } catch (e) { fail("plot-baseline", e.message); }
 }
 
-// Mapa índice de diapositiva -> inicializador
+// Mapa índice de diapositiva -> inicializador (0-based; 5 diapositivas de fase antes de equipo)
 const SLIDE_INIT = {
-  3: initFunnel,      // slide 4 (0-indexed)
-  4: initEda,         // slide 5
-  5: initCorrBig,     // slide 6
-  6: initKruskal,     // slide 7
-  7: initPca,         // slide 8
-  8: initBaseline,    // slide 9
+  9: initFunnel,      // slide 10 — embudo corpus
+  10: initEda,        // slide 11 — EDA interactivo
+  11: initCorrBig,    // slide 12 — correlación
+  12: initKruskal,    // slide 13 — Kruskal
+  13: initPca,        // slide 14 — PCA
+  14: initBaseline,   // slide 15 — baseline
 };
+
+/** Reinicia animaciones CSS del pipeline al entrar en una diapositiva de fase. */
+function replayPipelineAnimations(slide) {
+  if (!slide.classList.contains("slide-phase")) return;
+  slide.querySelectorAll(".pipe-node").forEach((el) => {
+    el.style.animation = "none";
+    void el.offsetWidth;
+    el.style.animation = "";
+  });
+}
 
 // ============================================================================
 //  Motor de navegación del deck
@@ -275,6 +285,9 @@ const SLIDE_INIT = {
 
   function go(idx) {
     idx = Math.max(0, Math.min(total - 1, idx));
+    if (typeof window.closeAllPhaseDetails === "function") {
+      window.closeAllPhaseDetails();
+    }
     slides[current].classList.remove("active");
     dots[current].classList.remove("active");
     current = idx;
@@ -282,6 +295,8 @@ const SLIDE_INIT = {
     dots[current].classList.add("active");
     counter.textContent = `${current + 1} / ${total}`;
     progress.style.width = `${((current + 1) / total) * 100}%`;
+
+    replayPipelineAnimations(slides[current]);
 
     if (SLIDE_INIT[current] && !initDone.has(current)) {
       initDone.add(current);
@@ -301,6 +316,16 @@ const SLIDE_INIT = {
   document.addEventListener("keydown", (e) => {
     const tag = (e.target.tagName || "").toLowerCase();
     if (tag === "input" || tag === "select" || tag === "textarea") return;
+    if (e.key === "Escape") {
+      if (window.isPipeModalOpen?.()) {
+        e.preventDefault();
+        window.closeAllPhaseDetails?.();
+        return;
+      }
+    }
+    if (window.isPipeModalOpen?.()) {
+      if (["ArrowRight", "PageDown", " ", "ArrowLeft", "PageUp"].includes(e.key)) return;
+    }
     if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); go(current + 1); }
     else if (["ArrowLeft", "PageUp"].includes(e.key)) { e.preventDefault(); go(current - 1); }
     else if (e.key === "Home") { e.preventDefault(); go(0); }
@@ -314,6 +339,7 @@ const SLIDE_INIT = {
   window.addEventListener("resize", () => resizePlots(slides[current]));
 
   // Arranque (respeta el hash #n si viene en la URL)
+  if (typeof window.initPipePhases === "function") window.initPipePhases();
   const start = parseInt((location.hash || "").replace("#", ""), 10);
   go(Number.isFinite(start) && start >= 1 ? start - 1 : 0);
 })();

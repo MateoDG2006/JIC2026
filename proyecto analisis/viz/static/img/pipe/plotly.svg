@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" width="320" height="180" role="img" aria-hidden="true">
+  <rect width="320" height="180" rx="12" fill="rgba(59,130,246,0.12)" stroke="rgba(96,165,250,0.45)" stroke-width="1.5"/>
+  <rect x="55" y="50" width="210" height="75" rx="6" fill="none" stroke="#3D4FC7" stroke-width="2.5"/>
+  <polyline points="75,105 105,80 135,95 165,65 195,75 225,55" fill="none" stroke="#3D4FC7" stroke-width="2.5"/>
+  <circle cx="105" cy="80" r="4" fill="#3D4FC7"/><circle cx="165" cy="65" r="4" fill="#3D4FC7"/>
+  <text x="160" y="155" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Segoe UI,sans-serif">Plotly.js · gráficos interactivos</text>
+</svg>
