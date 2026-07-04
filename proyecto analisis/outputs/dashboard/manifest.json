@@ -30,9 +30,7 @@
       "num_ro5_violations"
     ],
     "features_dropped_reason": "near-zero variance (nunique < 3)",
-    "cluster_validity_note": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-    "corpus_structural_n": 147,
-    "corpus_potency_n": 89
+    "cluster_validity_note": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)"
   },
   "corpus_funnel": {
     "raw_compounds": 147,

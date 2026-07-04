@@ -197,19 +197,28 @@ def _copy_fase4_results() -> None:
             shutil.copy2(src, ARTIFACTS_DIR / name)
 
 
+_DEPLOYMENT_CSVS = (
+    (COMPOUNDS_ALL_CSV, "compounds_all.csv"),
+    (CHEMBL_CSV, "compounds_features.csv"),
+    (ACTIVITIES_CSV, "activities_clean.csv"),
+)
+
+
+def _copy_deployment_csvs(dest: Path) -> None:
+    """Copia CSVs de corpus para despliegue (Render / git)."""
+    dest.mkdir(parents=True, exist_ok=True)
+    for src, name in _DEPLOYMENT_CSVS:
+        if src.is_file():
+            shutil.copy2(src, dest / name)
+
+
 def _create_bundle() -> None:
     print("\n=== Bundle de despliegue (outputs/dashboard/bundle/) ===")
     if BUNDLE_DIR.exists():
         shutil.rmtree(BUNDLE_DIR)
     BUNDLE_DIR.mkdir(parents=True)
 
-    for src, name in (
-        (COMPOUNDS_ALL_CSV, "compounds_all.csv"),
-        (CHEMBL_CSV, "compounds_features.csv"),
-        (ACTIVITIES_CSV, "activities_clean.csv"),
-    ):
-        if src.is_file():
-            shutil.copy2(src, BUNDLE_DIR / name)
+    _copy_deployment_csvs(BUNDLE_DIR)
 
     for name in ARTIFACTS_DIR.glob("*.json"):
         shutil.copy2(name, BUNDLE_DIR / name.name)
@@ -253,6 +262,7 @@ def main() -> int:
     _build_baseline_honest_json(RESULTS_DIR / "baseline_honest_metrics.csv", ARTIFACTS_DIR / "baseline_honest.json")
     _write_json(ARTIFACTS_DIR / "pchembl_imputation.json", pchembl_imputation_report(activities))
     _copy_fase4_results()
+    _copy_deployment_csvs(ARTIFACTS_DIR)
 
     manifest = {
         "project": "proyecto analisis",

@@ -47,28 +47,36 @@ def _load_yaml() -> dict[str, Any]:
 
 
 def use_bundle() -> bool:
+    """Indica si el despliegue usa artefactos empaquetados (sin data/processed/)."""
+    import os
+
     cfg = _load_yaml().get("viz", {})
     explicit = cfg.get("use_bundle")
     if explicit is True:
         return True
     if explicit is False:
         return False
-    return not COMPOUNDS_ALL_CSV.is_file() and (BUNDLE_DIR / "compounds_all.csv").is_file()
+    if os.environ.get("RENDER") or os.environ.get("USE_BUNDLE", "").lower() in ("1", "true", "yes"):
+        return True
+    if COMPOUNDS_ALL_CSV.is_file():
+        return False
+    return (ARTIFACTS_DIR / "compounds_all.csv").is_file() or (
+        BUNDLE_DIR / "compounds_all.csv"
+    ).is_file()
 
 
 def resolve_path(canonical: Path, bundle_name: str) -> Path:
-    if use_bundle():
-        bundle_path = BUNDLE_DIR / bundle_name
-        if bundle_path.is_file():
-            return bundle_path
+    """Primera ruta existente: processed → outputs/dashboard → bundle."""
+    for path in (canonical, ARTIFACTS_DIR / bundle_name, BUNDLE_DIR / bundle_name):
+        if path.is_file():
+            return path
     return canonical
 
 
 def resolve_dir(canonical: Path, bundle_subdir: str) -> Path:
-    if use_bundle():
-        bundle_path = BUNDLE_DIR / bundle_subdir
-        if bundle_path.is_dir():
-            return bundle_path
+    for path in (canonical, ARTIFACTS_DIR / bundle_subdir, BUNDLE_DIR / bundle_subdir):
+        if path.is_dir():
+            return path
     return canonical
 
 
