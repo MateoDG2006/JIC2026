@@ -28,6 +28,7 @@ PANAMA_PREDICTIONS := outputs/results/panama_predictions.csv
 GHS_LABELS := data/raw/pubchem_ghs_labels.csv
 
 CHEMBL_COMPOSE := docker compose -f "$(ANALISIS_DIR)/docker/docker-compose.yml"
+CHEMBL_VOLUME := jic2026_chembl_db
 CHEMBL_NOTEBOOK := $(ANALISIS_DIR)/notebooks/fase1_adquisicion.ipynb
 
 VIZ_HOST := 127.0.0.1
@@ -262,14 +263,18 @@ panama-all: build-panama-corpus explain-panama validate-ghs generate-panama-repo
 # ANALISIS — ChEMBL / datos (Fases 1-2)
 # ═══════════════════════════════════════════════════════════════════════════
 
-.PHONY: setup-chembl chembl-server-up chembl-server-down test-chembl chembl-extract chembl-notebook chembl-all
+.PHONY: chembl-volume setup-chembl chembl-server-up chembl-server-down test-chembl chembl-extract chembl-notebook chembl-all
 
-setup-chembl:
+# Volumen nombrado (~30 GB tras setup). Idempotente: ignora error si ya existe.
+chembl-volume:
+	-docker volume create $(CHEMBL_VOLUME)
+
+setup-chembl: chembl-volume
 	$(CHEMBL_COMPOSE) build chembl-init
 	$(CHEMBL_COMPOSE) --profile setup up --abort-on-container-exit chembl-init
 	$(MAKE) chembl-server-up
 
-chembl-server-up:
+chembl-server-up: chembl-volume
 	$(CHEMBL_COMPOSE) build chembl-server
 	$(CHEMBL_COMPOSE) up -d chembl-server
 

@@ -23,5 +23,4 @@ services:
 
 volumes:
   chembl_data:
-    external: true
     name: jic2026_chembl_db
