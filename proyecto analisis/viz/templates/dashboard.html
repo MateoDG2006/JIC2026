@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Análisis ChEMBL / Plaguicidas MIDA</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body.spa{margin:0}
+        /* ── Navbar horizontal fija, por delante de todo ── */
+        .spa-nav{position:sticky;top:0;z-index:2000;display:flex;align-items:center;gap:.4rem;
+            background:#141c2b;border-bottom:1px solid rgba(140,150,170,.22);padding:.55rem 1.2rem;
+            box-shadow:0 2px 10px rgba(0,0,0,.35);flex-wrap:wrap}
+        .spa-brand{font-weight:800;font-size:1.05rem;color:#7ea2ff;margin-right:1.2rem;white-space:nowrap}
+        .spa-nav .links{display:flex;gap:.3rem;flex:1;flex-wrap:wrap}
+        .spa-navbtn{background:none;border:none;color:#c8d2e0;font-size:.92rem;padding:.55rem .9rem;
+            border-radius:8px;cursor:pointer;transition:background .15s,color .15s;white-space:nowrap}
+        .spa-navbtn:hover{background:rgba(90,120,200,.14)}
+        .spa-navbtn.active{background:rgba(90,120,200,.28);color:#fff;font-weight:700}
+        .spa-pres{background:#6f8fe0;color:#0f1826;font-weight:700;text-decoration:none;
+            padding:.55rem 1.1rem;border-radius:8px;white-space:nowrap;transition:background .15s}
+        .spa-pres:hover{background:#8aa6f0}
+        .spa-header{padding:1.2rem 2rem .6rem}
+        .spa-header h1{margin:0;font-size:1.5rem}
+        .spa-header p{margin:.3rem 0 0;opacity:.7}
+        .spa-content{padding:.6rem 2rem 3rem;position:relative;overflow:visible}
+        .view{display:none;animation:fadeIn .35s ease;position:relative;overflow:visible;z-index:1}
+        .view.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+        .side-by-side{display:grid;grid-template-columns:1.4fr 1fr;gap:1.2rem;align-items:start;overflow:visible}
+        @media(max-width:900px){.side-by-side{grid-template-columns:1fr}}
+        .chart-grid2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;overflow:visible}
+        @media(max-width:1100px){.chart-grid2{grid-template-columns:1fr}}
+        .chart-panel{background:#1a2332;border-radius:10px;padding:.6rem;min-height:340px}
+        .eda-controls{display:flex;flex-wrap:wrap;gap:.8rem;align-items:end;margin-bottom:1rem;position:relative;z-index:50}
+        .eda-controls.priority-front{z-index:6000}
+        .eda-controls label{display:flex;flex-direction:column;font-size:.8rem;color:rgba(232,237,244,.85);gap:.25rem}
+        .eda-controls select,.eda-controls input{background:#0f1826;border:1px solid rgba(140,150,170,.3);color:#e8edf4;padding:.45rem .6rem;border-radius:6px}
+        .eda-controls select{min-width:180px;max-width:320px}
+        .eda-controls label .combo,
+        .eda-controls label .combo *{opacity:1}
+        .placeholder{text-align:center;padding:3rem 1rem;opacity:.75;border:2px dashed rgba(140,150,170,.25);border-radius:12px}
+        .fit-box{font-size:.85rem;line-height:1.7}
+        .fit-box .tag{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:.4rem;vertical-align:middle}
+        .phase-intro{background:rgba(90,120,200,.10);border-left:4px solid #5a78c8;padding:.9rem 1.2rem;border-radius:8px;margin:1rem 0;line-height:1.55}
+        .card{background:#161f2e;border:1px solid rgba(140,150,170,.15);border-radius:12px;padding:1.2rem 1.4rem;margin:1.2rem 0;position:relative;overflow:visible}
+        .card h2{margin-top:.2rem}
+        .table-scroll{overflow-x:auto;margin:.4rem 0}
+        .table-scroll-y{max-height:360px;overflow:auto;border:1px solid rgba(140,150,170,.18);border-radius:10px}
+        table.data-table{border-collapse:collapse;width:100%;font-size:.84rem}
+        table.data-table th,table.data-table td{border:1px solid rgba(140,150,170,.28);padding:.4rem .6rem;text-align:left;white-space:nowrap}
+        table.data-table th{background:rgba(90,120,200,.16);font-weight:700;vertical-align:top}
+        table.data-table th .col-code{display:block;font-weight:400;font-size:.68rem;opacity:.55;font-family:monospace}
+        table.data-table tr:nth-child(even) td{background:rgba(140,150,170,.05)}
+        table.data-table td.cens{color:#d9534f;font-weight:700}
+        .mono{font-family:monospace}.muted{opacity:.6}
+        .pill{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .55rem;border-radius:999px;font-size:.74rem;font-weight:700;border:1px solid transparent}
+        .pill.good{background:rgba(74,158,109,.18);border-color:rgba(74,158,109,.35);color:#9ad7b1}
+        .pill.warn{background:rgba(217,154,60,.16);border-color:rgba(217,154,60,.3);color:#f5c87a}
+        .pill.neutral{background:rgba(126,162,255,.14);border-color:rgba(126,162,255,.25);color:#b8c9ff}
+        details.glossary{margin:1rem 0;border:1px solid rgba(140,150,170,.28);border-radius:8px;padding:.3rem .6rem}
+        details.glossary summary{cursor:pointer;font-weight:700;padding:.5rem;user-select:none}
+        .metric-row{display:flex;flex-wrap:wrap;gap:1rem;margin:1rem 0}
+        .metric-tile{flex:1;min-width:130px;background:rgba(90,120,200,.10);border-radius:10px;padding:1rem 1.2rem;border:1px solid rgba(140,150,170,.18)}
+        .metric-tile .val{font-size:1.8rem;font-weight:800;line-height:1}
+        .metric-tile .lbl{font-size:.78rem;opacity:.75;margin-top:.35rem}
+        .val.good{color:#4a9e6d}.val.bad{color:#d9534f}.val.warn{color:#d99a3c}
+        .funnel-bars .fb{margin:.5rem 0}
+        .funnel-bars .fb .fl{font-size:.85rem;opacity:.85}
+        .funnel-bars .fb .track{background:rgba(140,150,170,.10);border-radius:6px;margin-top:.15rem}
+        .funnel-bars .fb .bar{height:30px;border-radius:6px;background:linear-gradient(90deg,#5a78c8,#4a9e6d);display:flex;align-items:center;justify-content:flex-end;padding-right:.6rem;color:#fff;font-weight:700;box-sizing:border-box}
+        .pred-result{margin-top:1rem;padding:1.2rem;border-radius:10px;background:rgba(90,120,200,.10);border:1px solid rgba(140,150,170,.2)}
+        .pred-result .big{font-size:2.2rem;font-weight:800}
+        .warn-box{background:rgba(217,150,60,.12);border-left:4px solid #d99a3c;padding:.8rem 1.1rem;border-radius:8px;margin-top:1rem;line-height:1.55}
+        .combo{position:relative;min-width:260px;max-width:420px;isolation:isolate;z-index:60;overflow:visible}
+        .combo.open{z-index:5000}
+        .combo-shell{display:flex;align-items:center;background:#0f1826;border:1px solid rgba(140,150,170,.3);border-radius:8px;overflow:hidden;opacity:1}
+        .combo-shell:focus-within{border-color:#7ea2ff;box-shadow:0 0 0 2px rgba(126,162,255,.18)}
+        .combo-input{flex:1;background:#0f1826;border:none;color:#e8edf4;padding:.55rem .7rem;outline:none;opacity:1}
+        .combo-toggle{background:#0f1826;border:none;border-left:1px solid rgba(140,150,170,.18);color:#b8c4d8;padding:.55rem .75rem;cursor:pointer;opacity:1}
+        .combo-panel{position:absolute;top:calc(100% + 6px);left:0;right:0;max-height:260px;overflow:auto;background:#111a28;border:1px solid rgba(140,150,170,.24);border-radius:10px;box-shadow:0 12px 28px rgba(0,0,0,.32);z-index:99999;opacity:1}
+        .combo-panel.hidden{display:none}
+        .combo-option{display:flex;justify-content:space-between;gap:.75rem;width:100%;text-align:left;background:#111a28;border:none;color:#e8edf4;padding:.7rem .8rem;cursor:pointer;border-bottom:1px solid rgba(140,150,170,.08);opacity:1}
+        .combo-option:hover{background:rgba(90,120,200,.16)}
+        .combo-option-main{font-weight:600}
+        .combo-option-meta{display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;font-size:.74rem;color:#b8c4d8}
+        .combo-empty{padding:.8rem;color:#93a1b7;font-size:.85rem}
+        .section-stack{display:grid;gap:1rem}
+        #pred-inputs{position:relative;z-index:1}
+    </style>
+</head>
+<body class="spa">
+    <nav class="spa-nav">
+        <span class="spa-brand">ChEMBL Analytics</span>
+        <div class="links">
+            <button class="spa-navbtn active" data-view="adquisicion">1 · Adquisición</button>
+            <button class="spa-navbtn" data-view="limpieza">2 · Limpieza</button>
+            <button class="spa-navbtn" data-view="exploracion">3 · Exploración</button>
+            <button class="spa-navbtn" data-view="multivariado">4 · Multivariado</button>
+            <button class="spa-navbtn" data-view="modelado">5 · Modelado</button>
+        </div>
+        <a class="spa-pres" href="/presentacion">Presentación</a>
+    </nav>
+
+    <header class="spa-header">
+        <h1 id="view-title">Adquisición y extracción</h1>
+        <p id="view-sub">De 235 candidatos de PubChem a un corpus trazable de bioactividad</p>
+    </header>
+
+    <div class="spa-content">
+        <!-- ── 1 · ADQUISICIÓN ── -->
+        <section class="view active" data-view="adquisicion">
+            <div class="phase-intro">
+                <strong>¿Qué hace esta fase?</strong> Partimos de 20 ingredientes activos del MIDA, los expandimos con
+                PubChem a <strong>235 candidatos</strong> y los cruzamos contra <strong>ChEMBL</strong> para bajar sus
+                descriptores y experimentos. La mayoría no tiene datos útiles: el corpus se reduce en un embudo.
+            </div>
+            <div class="card"><h2>Embudo del corpus</h2><div class="metric-row" id="acq-metrics"></div></div>
+            <div class="card">
+                <h2>Resolución PubChem → ChEMBL</h2>
+                <div class="side-by-side">
+                    <div class="funnel-bars" id="acq-funnel"></div>
+                    <div id="acq-resolution"></div>
+                </div>
+                <p class="muted" id="acq-funnel-note"></p>
+            </div>
+            <div class="card">
+                <h2>Visor de la base de datos real</h2>
+                <p>Escribí o elegí un compuesto y se consultan <strong>todas sus mediciones reales</strong> con las
+                   columnas originales de ChEMBL. Datos reales, no simulados.</p>
+                <div class="eda-controls">
+                    <label>Compuesto (nombre o ChEMBL ID)
+                        <div id="db-query-combo"></div>
+                    </label>
+                    <label>Registros a mostrar
+                        <input id="db-limit" type="number" min="1" step="1" value="10" style="width:100px">
+                    </label>
+                    <button class="btn btn-primary" id="db-search">Consultar</button>
+                    <span class="muted" id="db-count"></span>
+                </div>
+                <div id="db-result"></div>
+                <div id="db-glossary"></div>
+            </div>
+        </section>
+
+        <!-- ── 2 · LIMPIEZA ── -->
+        <section class="view" data-view="limpieza"><div id="clean-body" class="section-stack"></div></section>
+
+        <!-- ── 3 · EXPLORACIÓN ── -->
+        <section class="view" data-view="exploracion">
+            <div class="phase-intro">
+                Análisis exploratorio a nivel <strong>compuesto</strong>. Todas las variables usan su
+                <strong>nombre corto en español</strong>. Elegí variables y filtros; los gráficos se recalculan.
+            </div>
+            <div class="card">
+                <div class="eda-controls">
+                    <label>Variable a describir <select id="eda-variable"></select></label>
+                    <label>Familia <select id="eda-family"><option value="ALL">Todas</option></select></label>
+                </div>
+                <div class="chart-grid2">
+                    <div class="chart-panel" id="chart-hist"></div>
+                    <div class="chart-panel" id="chart-box"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Correlación entre descriptores (Pearson)</h2>
+                <p class="muted">El valor de cada correlación aparece sobre su celda. Azul = positiva, rojo = negativa.</p>
+                <div class="chart-panel" id="chart-corr" style="min-height:460px"></div>
+            </div>
+            <div class="card">
+                <h2>Comparación de dos variables + regresión</h2>
+                <div class="eda-controls">
+                    <label>Correlaciones más fuertes <select id="corr-rank-select" style="min-width:280px"></select></label>
+                    <label>Eje X <select id="xy-x"></select></label>
+                    <label>Eje Y <select id="xy-y"></select></label>
+                </div>
+                <div class="side-by-side">
+                    <div class="chart-panel" id="chart-xy"></div>
+                    <div class="fit-box" id="xy-fits"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 4 · MULTIVARIADO ── -->
+        <section class="view" data-view="multivariado">
+            <div class="phase-intro">
+                Agrupamos con <strong>K-means sobre los 7 descriptores estandarizados</strong> y usamos <strong>PCA solo para proyectar</strong>
+                la nube en 2D. Luego contrastamos familias con <strong>Kruskal-Wallis</strong>. Cada métrica está explicada al pie.
+            </div>
+            <div class="card">
+                <h2>PCA + clustering</h2>
+                <div class="metric-row" id="mv-metrics"></div>
+                <div class="eda-controls">
+                    <label>Cantidad de clusters (k)
+                        <select id="mv-k-select"></select>
+                    </label>
+                    <span class="muted" id="mv-k-note"></span>
+                </div>
+                <div class="chart-panel" id="chart-pca" style="min-height:420px"></div>
+                <div class="chart-grid2">
+                    <div class="chart-panel" id="chart-elbow"></div>
+                    <div class="chart-panel" id="chart-knee"></div>
+                </div>
+                <div id="mv-metric-gloss"></div>
+            </div>
+            <div class="card">
+                <h2>Diferencias entre familias (Kruskal-Wallis)</h2>
+                <p class="muted">Barra = tamaño de efecto ε² (cuánto difieren las familias). Verde = significativo (p ajustado &lt; 0.05).</p>
+                <div class="chart-panel" id="chart-kruskal"></div>
+                <div id="mv-kruskal-table"></div>
+            </div>
+        </section>
+
+        <!-- ── 5 · MODELADO ── -->
+        <section class="view" data-view="modelado">
+            <div class="phase-intro">
+                Un <strong>Random Forest</strong> intenta predecir la potencia (pChEMBL) desde los descriptores.
+                Mostramos <strong>qué chance real tiene de acertar</strong> con tres esquemas de validación, y podés probarlo.
+            </div>
+            <div class="card">
+                <h2>¿Qué tan confiable es el modelo?</h2>
+                <div class="metric-row" id="model-metrics"></div>
+                <div id="model-metric-gloss"></div>
+            </div>
+            <div class="card">
+                <h2>Probá el predictor</h2>
+                <p>Autocompletá con un compuesto real o ingresá los descriptores a mano, y el modelo predice su potencia.</p>
+                <div class="eda-controls priority-front">
+                    <label>Autocompletar con compuesto
+                        <div id="pred-compound-combo"></div>
+                    </label>
+                    <button class="btn btn-primary" id="pred-fill">Cargar</button>
+                </div>
+                <div class="eda-controls" id="pred-inputs"></div>
+                <button class="btn btn-primary" id="pred-run">Predecir potencia</button>
+                <div id="pred-result"></div>
+            </div>
+        </section>
+    </div>
+
+    <script src="/static/js/analytics_common.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

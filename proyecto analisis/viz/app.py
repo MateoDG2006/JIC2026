@@ -24,7 +24,7 @@ app.include_router(analytics_router)
 
 @app.get("/")
 def home():
-    return RedirectResponse(url="/eda")
+    return RedirectResponse(url="/dashboard")
 
 
 @app.get("/health")

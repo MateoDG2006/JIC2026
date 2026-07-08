@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Fase 1 — Adquisición · ChEMBL Analytics{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Fase 1 · Adquisición y extracción de datos</h1>
+    <p class="lead">De 235 candidatos de PubChem a un corpus trazable de bioactividad en ChEMBL</p>
+</section>
+
+<div class="phase-intro">
+    <strong>¿Qué hace esta fase?</strong> Partimos de 20 ingredientes activos del MIDA, los expandimos con PubChem
+    a <strong>235 candidatos</strong> (por familia química), y los cruzamos contra <strong>ChEMBL</strong> para bajar
+    sus <em>descriptores</em> (peso, lipofilia…) y sus <em>experimentos</em> de bioactividad. La mayoría de candidatos
+    no tiene datos útiles: el corpus se reduce en un embudo hasta los compuestos con potencia medible.
+</div>
+
+<section class="card">
+    <h2>Embudo del corpus</h2>
+    <div class="metric-row" id="acq-metrics"></div>
+    <div class="funnel-bars" id="acq-funnel"></div>
+    <p class="muted" id="acq-funnel-note"></p>
+</section>
+
+<section class="card">
+    <h2>Resolución PubChem → ChEMBL</h2>
+    <p>ChEMBL usa su propio identificador. Cada candidato se resuelve por una cascada de métodos, del más fiable
+       (estructura SMILES) al más débil (nombre/sinónimo). Los que no se encuentran no están en ChEMBL.</p>
+    <div id="acq-resolution"></div>
+</section>
+
+<section class="card">
+    <h2>Muestra de datos crudos extraídos</h2>
+    <p><strong>Cada fila es un experimento (una medición).</strong> Fijate cómo el mismo compuesto
+       (<span class="mono">Atrazine</span>) aparece muchas veces, con distinta diana, distinto tipo de ensayo y
+       distinto valor. Así llega el dato desde ChEMBL. Pasá el mouse sobre cada encabezado para ver qué significa.</p>
+    <div id="acq-sample"></div>
+    <div id="acq-glossary"></div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/analytics_acquisition.js"></script>
+{% endblock %}

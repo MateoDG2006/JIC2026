@@ -16,8 +16,8 @@
     {
       "name": "analisis-viz",
       "runtimeExecutable": "C:/Users/mateo/Desktop/PROYECTOS/JIC2026/.venv/Scripts/python.exe",
-      "runtimeArgs": ["-m", "uvicorn", "viz.app:app", "--app-dir", "proyecto analisis", "--host", "127.0.0.1", "--port", "8001"],
-      "port": 8001
+      "runtimeArgs": ["-m", "uvicorn", "viz.app:app", "--app-dir", "proyecto analisis", "--host", "127.0.0.1", "--port", "8021"],
+      "port": 8021
     }
   ]
 }

@@ -5,13 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ChEMBL Analytics{% endblock %}</title>
     <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        /* Componentes compartidos del dashboard (tablas, glosario, métricas) */
+        .phase-intro{background:rgba(90,120,200,.10);border-left:4px solid #5a78c8;padding:.9rem 1.2rem;border-radius:8px;margin:1rem 0;line-height:1.55}
+        .table-scroll{overflow-x:auto;margin:.4rem 0}
+        table.data-table{border-collapse:collapse;width:100%;font-size:.86rem}
+        table.data-table th,table.data-table td{border:1px solid rgba(140,150,170,.30);padding:.45rem .65rem;text-align:left;white-space:nowrap}
+        table.data-table th{background:rgba(90,120,200,.16);font-weight:700;vertical-align:top}
+        table.data-table th .col-code{display:block;font-weight:400;font-size:.7rem;opacity:.6;font-family:monospace}
+        table.data-table tr:nth-child(even) td{background:rgba(140,150,170,.05)}
+        table.data-table td.cens{color:#d9534f;font-weight:700}
+        .mono{font-family:monospace}.muted{opacity:.6}
+        details.glossary{margin:1rem 0;border:1px solid rgba(140,150,170,.30);border-radius:8px;padding:.3rem .6rem}
+        details.glossary summary{cursor:pointer;font-weight:700;padding:.5rem;user-select:none}
+        details.glossary[open] summary{border-bottom:1px solid rgba(140,150,170,.30);margin-bottom:.5rem}
+        .metric-row{display:flex;flex-wrap:wrap;gap:1rem;margin:1rem 0}
+        .metric-tile{flex:1;min-width:150px;background:rgba(90,120,200,.10);border-radius:10px;padding:1rem 1.2rem;border:1px solid rgba(140,150,170,.20)}
+        .metric-tile .val{font-size:1.9rem;font-weight:800;line-height:1}
+        .metric-tile .lbl{font-size:.8rem;opacity:.75;margin-top:.35rem}
+        .metric-tile .lbl small{display:block;opacity:.7;font-weight:400;margin-top:.2rem}
+        .val.good{color:#4a9e6d}.val.bad{color:#d9534f}.val.warn{color:#d99a3c}
+        .funnel-bars{margin:1rem 0}
+        .funnel-bars .fb{display:flex;align-items:center;gap:.8rem;margin:.35rem 0}
+        .funnel-bars .fb .bar{height:34px;border-radius:6px;background:linear-gradient(90deg,#5a78c8,#4a9e6d);display:flex;align-items:center;justify-content:flex-end;padding-right:.6rem;color:#fff;font-weight:700;min-width:40px}
+        .funnel-bars .fb .fl{width:280px;font-size:.9rem}
+    </style>
     {% block head %}{% endblock %}
 </head>
 <body>
     <nav class="navbar">
         <a href="/eda" class="nav-brand">ChEMBL Analytics</a>
         <div class="nav-links">
-            <a href="/eda" class="nav-link{% if active_nav == 'eda' %} active{% endif %}">Exploración</a>
+            <a href="/adquisicion" class="nav-link{% if active_nav == 'adquisicion' %} active{% endif %}">1 · Adquisición</a>
+            <a href="/eda" class="nav-link{% if active_nav == 'eda' %} active{% endif %}">3 · Exploración</a>
             <a href="/presentacion" class="nav-link{% if active_nav == 'presentacion' %} active{% endif %}">Presentación</a>
         </div>
     </nav>
@@ -21,6 +47,7 @@
     <footer class="footer">
         <p>Proyecto Análisis de Datos — bioactividad ChEMBL / plaguicidas MIDA</p>
     </footer>
+    <script src="/static/js/analytics_common.js"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
