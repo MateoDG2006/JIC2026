@@ -19,7 +19,7 @@
     <section class="slide slide-cover active">
         <p class="eyebrow">Proyecto Final · Análisis de Datos y Toma de Decisiones en Computación</p>
         <h1>Caracterización multivariada de la bioactividad de plaguicidas registrados en Panamá</h1>
-        <p class="lead">y el <span class="accent">límite honesto</span> de predecir la potencia con descriptores moleculares clásicos.</p>
+        <p class="lead">y las <span class="accent">limitaciones</span> de predecir la potencia con descriptores moleculares clásicos.</p>
         <div class="badge-row">
             <span class="tech-badge">Python 3.10–3.12</span>
             <span class="tech-badge">ChEMBL v37</span>
@@ -30,24 +30,233 @@
         <div class="cover-authors">
             <div class="team-placeholders">
                 <strong>Mateo Del Giudice</strong> · <strong>Ian Nieto</strong> · <strong>Tomas Vezga</strong> · <strong>Alejandro Vargas</strong><br>
-                <span class="cover-inst">Facultad de Ingeniería de Sistemas Computacionales (FISC) — Universidad Tecnológica de Panamá</span><br>
+                <span class="cover-inst">Grupo 4 · Facultad de Ingeniería de Sistemas Computacionales (FISC) — Universidad Tecnológica de Panamá</span><br>
                 <span class="cover-inst">Facilitador: José Carlos Rangel Ortiz, Ph.D. · Análisis de Datos y Toma de Decisiones en Computación</span>
             </div>
         </div>
         <p class="deck-hint">Navega con <kbd>→</kbd> <kbd>←</kbd> o la <kbd>barra espaciadora</kbd> · <kbd>F</kbd> pantalla completa</p>
     </section>
 
-    <!-- 2 · PREGUNTA DE INVESTIGACIÓN ------------------------------------- -->
+    <!-- 2 · EQUIPO Y ROLES ------------------------------------------------ -->
+    <section class="slide">
+        <p class="eyebrow">Organización · Roles del proyecto final</p>
+        <h2 class="slide-title">Cuatro roles, un producto integrado</h2>
+        <p class="lead">Según el enunciado del curso, cada integrante desarrolla y sustenta un rol específico. Los entregables de uno alimentan el trabajo de los demás.</p>
+        <div class="team-grid">
+            <article class="team-card">
+                <h3>Mateo Del Giudice</h3>
+                <p class="team-role">Ingeniero de Datos</p>
+                <ul>
+                    <li>Pipeline ChEMBL: servidor Docker, extracción y trazabilidad PubChem → ChEMBL.</li>
+                    <li>Limpieza, deduplicación e imputación de faltantes (Fases 1–2).</li>
+                    <li>Entregables: CSVs procesados, notebook de procedimientos § adquisición y limpieza.</li>
+                </ul>
+            </article>
+            <article class="team-card">
+                <h3>Ian Nieto</h3>
+                <p class="team-role">Analista de Datos</p>
+                <ul>
+                    <li>EDA a nivel compuesto: tendencia central, distribuciones y visualizaciones (Fase 3).</li>
+                    <li>Missingno, UpSetPlot y gráficas de categorías agrupadas por familia química.</li>
+                    <li>Análisis de correlación (Pearson y Spearman) entre descriptores moleculares.</li>
+                </ul>
+            </article>
+            <article class="team-card">
+                <h3>Tomas Vezga</h3>
+                <p class="team-role">Científico de Datos</p>
+                <ul>
+                    <li>PCA, clustering y pruebas Kruskal–Wallis con corrección FDR (Fase 4).</li>
+                    <li>Baseline Random Forest con validación por compuesto, sin fuga de datos (P6).</li>
+                    <li>Conclusión relativa al rol en el informe IEEE y sustentación oral.</li>
+                </ul>
+            </article>
+            <article class="team-card">
+                <h3>Alejandro Vargas</h3>
+                <p class="team-role">Ingeniero de ML</p>
+                <ul>
+                    <li>Integración de resultados en dashboard interactivo (FastAPI + Plotly.js).</li>
+                    <li>Despliegue público en Render con artefactos precomputados (Fase 5).</li>
+                    <li>Documentación del proceso de publicación para el informe y el video explicativo.</li>
+                </ul>
+            </article>
+        </div>
+    </section>
+
+    <!-- 3 · CAMPOS Y TECNOLOGÍAS ------------------------------------------ -->
+    <section class="slide">
+        <p class="eyebrow">Campos del proyecto · Stack tecnológico</p>
+        <h2 class="slide-title">Ciencia de datos aplicada a cheminformática regulatoria</h2>
+        <p class="lead">Stack alineado con los entregables del curso: notebooks reproducibles, dashboard web interactivo e informe IEEE.</p>
+        <div class="stack-grid">
+            <div class="stack-col"><h4>Lenguaje y datos</h4><ul><li>Python 3.10–3.12</li><li>pandas · NumPy</li><li>ChEMBL v37 (SQLite)</li><li>PubChem (corpus MIDA)</li></ul></div>
+            <div class="stack-col"><h4>Cheminformática</h4><ul><li>RDKit — 8 descriptores</li><li>SMILES canónico</li><li>Regla de Lipinski (Ro5)</li></ul></div>
+            <div class="stack-col"><h4>Modelado y estadística</h4><ul><li>scikit-learn (Random Forest)</li><li>SciPy · statsmodels (FDR)</li><li>scikit-posthocs (Dunn)</li></ul></div>
+            <div class="stack-col"><h4>Visualización</h4><ul><li>Matplotlib · seaborn</li><li>missingno · UpSetPlot</li><li>Plotly.js (interactivo)</li></ul></div>
+            <div class="stack-col"><h4>Infraestructura</h4><ul><li>Docker (servidor ChEMBL)</li><li>FastAPI + Jinja2</li><li>uvicorn · despliegue Render</li></ul></div>
+        </div>
+    </section>
+
+    <!-- 4 · PREGUNTA DE INVESTIGACIÓN ------------------------------------- -->
     <section class="slide">
         <p class="eyebrow">El problema · Pregunta de investigación</p>
-        <h2 class="slide-title">¿Los descriptores clásicos de una molécula explican y predicen su toxicidad?</h2>
+        <h2 class="slide-title">¿Los descriptores clásicos de una molécula explican y predicen su bioactividad?</h2>
         <p class="lead">Panamá usa plaguicidas intensivamente en su agricultura de exportación. ChEMBL contiene millones de mediciones experimentales de bioactividad ligadas a estructuras químicas: ¿basta la <span class="accent">tabla de descriptores fisicoquímicos</span> para caracterizarlos y predecir su potencia sobre compuestos <em>no vistos</em>?</p>
         <div class="q-grid">
             <div class="mini-card"><span class="tag">P1 · Correlación</span><h4>¿Cómo se organiza el espacio fisicoquímico?</h4><p>Relaciones entre peso, lipofilia, polaridad, enlaces de H y aromaticidad.</p></div>
             <div class="mini-card"><span class="tag">P3 · Agrupamiento</span><h4>¿Forman clusters naturales?</h4><p>¿Los agrupamientos coinciden con las familias químicas conocidas?</p></div>
             <div class="mini-card"><span class="tag">P4 · Diferencias</span><h4>¿Difieren las familias?</h4><p>¿La potencia y las propiedades cambian entre familias de plaguicidas?</p></div>
-            <div class="mini-card"><span class="tag">P6 · Predicción</span><h4>¿Se puede predecir la potencia?</h4><p>Bajo validación honesta por compuesto, no por filas.</p></div>
+            <div class="mini-card"><span class="tag">P6 · Predicción</span><h4>¿Se puede predecir la potencia?</h4><p>Bajo validación por compuesto, no por filas.</p></div>
         </div>
+    </section>
+
+    <!-- C1 · CONCEPTO — ChEMBL vs PubChem --------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Conceptos clave · Para entender el proyecto (sin química)</p>
+        <h2 class="slide-title">¿Qué es PubChem y qué es ChEMBL?</h2>
+        <p class="lead">El proyecto combina <strong>dos bases de datos públicas y mundiales</strong> de química. Ninguna es "de Panamá": son repositorios gratuitos que usa toda la ciencia.</p>
+        <div class="card-grid">
+            <div class="mini-card"><span class="tag">PubChem · identidad</span><h4>El catálogo de las moléculas</h4><p>Dice <strong>qué molécula es</strong>: nombre, estructura (SMILES), fórmula y a qué familia pertenece. Analogía: la <em>guía telefónica</em> de los compuestos.</p></div>
+            <div class="mini-card"><span class="tag">ChEMBL · experimentos</span><h4>El cuaderno de laboratorio</h4><p>Dice <strong>qué hizo</strong> cada molécula en pruebas biológicas, más propiedades ya calculadas. Analogía: el <em>historial clínico</em> de la molécula.</p></div>
+        </div>
+        <div class="callout">En este proyecto: <strong>PubChem</strong> aporta la identidad y arma la lista de candidatos; <strong>ChEMBL</strong> aporta los descriptores (números) y los experimentos (la actividad).</div>
+    </section>
+
+    <!-- C1b · CONCEPTO — SMILES ------------------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Conceptos clave · Cómo se escribe una molécula</p>
+        <h2 class="slide-title">¿Qué es un SMILES?</h2>
+        <p class="lead">Un <strong>SMILES</strong> (<em>Simplified Molecular-Input Line-Entry System</em>) escribe la estructura de una molécula como una <strong>cadena de texto</strong> que la computadora entiende — una "receta" de átomos y enlaces. Es el idioma con el que PubChem y ChEMBL guardan las estructuras.</p>
+        <div class="card-grid">
+            <div class="mini-card"><span class="tag">Átomos</span><h4>Letras = elementos</h4><p><span class="mono">C</span> carbono · <span class="mono">O</span> oxígeno · <span class="mono">N</span> nitrógeno · <span class="mono">Cl</span> cloro · <span class="mono">P</span> fósforo. Los hidrógenos se sobreentienden.</p></div>
+            <div class="mini-card"><span class="tag">Enlaces</span><h4>Símbolos = uniones</h4><p><span class="mono">-</span> simple · <span class="mono">=</span> doble · <span class="mono">#</span> triple. Los paréntesis <span class="mono">( )</span> marcan ramificaciones.</p></div>
+            <div class="mini-card"><span class="tag">Anillos</span><h4>Números = cierres de anillo</h4><p>Un número abre y cierra un anillo. Minúsculas = aromático. <span class="mono">c1ccccc1</span> es un anillo de benceno.</p></div>
+        </div>
+        <div class="callout"><em>Ejemplo:</em> el Clorpirifos es <span class="mono">CCOP(=S)(OCC)Oc1nc(Cl)c(Cl)cc1Cl</span> — se ve el grupo fosforotioato <span class="mono">P(=S)</span> y un anillo con tres cloros. <strong>Canonicalizar</strong> = escribir siempre el mismo SMILES para la misma molécula, para poder compararlas y deduplicarlas.</div>
+    </section>
+
+    <!-- C2 · CONCEPTO — MIDA compuestos y familias ------------------------ -->
+    <section class="slide">
+        <p class="eyebrow">Conceptos clave · El punto de partida</p>
+        <h2 class="slide-title">¿Qué es el MIDA y qué plaguicidas estudiamos?</h2>
+        <p class="lead">El <strong>MIDA</strong> (Ministerio de Desarrollo Agropecuario de Panamá) registra los plaguicidas de uso legal. Partimos de <strong>20 ingredientes activos</strong>, agrupados en <strong>6 familias químicas</strong> — como especies dentro de un género: comparten un "rasgo" estructural y un modo de actuar.</p>
+        <div class="card-grid">
+            <div class="mini-card"><span class="tag">Insecticida</span><h4>Organofosforados</h4><p>Clorpirifos · Malatión · Dimetoato. Atacan el sistema nervioso del insecto.</p></div>
+            <div class="mini-card"><span class="tag">Insecticida</span><h4>Carbamatos</h4><p>Carbaril · Metomilo · Aldicarb. Mismo blanco nervioso, mecanismo reversible.</p></div>
+            <div class="mini-card"><span class="tag">Herbicida</span><h4>Triazinas</h4><p>Atrazina · Simazina. Bloquean la fotosíntesis de las malezas.</p></div>
+            <div class="mini-card"><span class="tag">Fungicida</span><h4>Azoles</h4><p>Tebuconazol · Propiconazol · Difenoconazol. Frenan el crecimiento del hongo.</p></div>
+            <div class="mini-card"><span class="tag">Insecticida</span><h4>Piretroides</h4><p>Cipermetrina · Deltametrina · Lambda-cialotrina. Tóxicos para el sistema nervioso.</p></div>
+            <div class="mini-card"><span class="tag">Herbicida</span><h4>Herbicidas varios</h4><p>Glifosato · Paraquat · 2,4-D. Los más usados en agricultura de exportación.</p></div>
+        </div>
+    </section>
+
+    <!-- C3 · CONCEPTO — Espacio fisicoquímico y columnas ------------------ -->
+    <section class="slide">
+        <p class="eyebrow">Conceptos clave · Cómo describimos una molécula</p>
+        <h2 class="slide-title">El "espacio fisicoquímico": una molécula como un puñado de números</h2>
+        <p class="lead">En vez de la estructura completa, resumimos cada molécula en ~8 <strong>números medibles</strong> (descriptores). Cada molécula es un <strong>"punto"</strong> en ese espacio; las parecidas quedan cerca. Con eso agrupamos y comparamos.</p>
+        <div class="card-grid">
+            <div class="mini-card"><span class="tag mono">mw_freebase</span><h4>Peso molecular (Da)</h4><p>Qué tan <strong>grande y pesada</strong> es. <em>Ej:</em> Glifosato ≈ <span class="mono">169 Da</span> (chica) vs Deltametrina ≈ <span class="mono">505 Da</span> (grande).</p></div>
+            <div class="mini-card"><span class="tag mono">alogp</span><h4>Lipofilia (LogP)</h4><p>Qué tan <strong>"grasosa" vs "acuosa"</strong>. <em>Ej:</em> Glifosato LogP <span class="mono">&lt; 0</span> (ama el agua) vs piretroides LogP <span class="mono">~6</span> (se acumulan en grasa).</p></div>
+            <div class="mini-card"><span class="tag mono">psa</span><h4>Área polar — PSA (Å²)</h4><p>Superficie que <strong>interactúa con el agua</strong>. <em>Ej:</em> más PSA = más difícil <strong>cruzar membranas</strong> (peor absorción).</p></div>
+            <div class="mini-card"><span class="tag mono">hba</span><h4>Aceptores de H</h4><p>Cuántos puentes de hidrógeno puede <strong>aceptar</strong> (los O y N de la molécula). <em>Ej:</em> más hba = más soluble en agua.</p></div>
+            <div class="mini-card"><span class="tag mono">hbd</span><h4>Donores de H</h4><p>Cuántos puentes de hidrógeno puede <strong>donar</strong> (grupos –OH, –NH). <em>Ej:</em> más hbd = más "agarre" a proteínas.</p></div>
+            <div class="mini-card"><span class="tag mono">aromatic_rings</span><h4>Anillos aromáticos</h4><p>Hexágonos estables tipo <strong>benceno</strong>. <em>Ej:</em> el anillo triazina de la Atrazina; dan rigidez y estabilidad.</p></div>
+            <div class="mini-card"><span class="tag mono">rtb</span><h4>Enlaces rotables</h4><p>Qué tan <strong>flexible</strong> es. <em>Ej:</em> la cadena del Malatión tiene muchos (flexible); un anillo cerrado, pocos (rígido).</p></div>
+        </div>
+        <div class="callout">Estas <strong>7 variables</strong> son las que entran al PCA y clustering: agrupar moléculas por parecido <em>sin mirar la estructura</em>, solo sus coordenadas. Se extraen 2 más — <span class="mono">heavy_atoms</span> (nº de átomos pesados, colineal con el peso) y <span class="mono">num_ro5_violations</span> (violaciones de la regla de Lipinski, casi siempre 0) — que se excluyen del modelado por redundancia y baja varianza.</div>
+    </section>
+
+    <!-- C4 · CONCEPTO — Qué es la actividad ------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Conceptos clave · El corazón de ChEMBL</p>
+        <h2 class="slide-title">¿Qué es la "actividad" de una molécula?</h2>
+        <p class="lead">La actividad <strong>no es una propiedad fija</strong> como el peso. Es una <strong>relación</strong>: qué tan fuerte una molécula interactúa con una <strong>diana biológica</strong> específica (una proteína del cuerpo).</p>
+        <div class="card-grid">
+            <div class="mini-card"><span class="tag">Analogía</span><h4>Llave y cerradura</h4><p>La molécula (llave) <strong>encaja o no</strong> en la diana (cerradura). "Tener actividad" = abre al menos una cerradura.</p></div>
+            <div class="mini-card"><span class="tag accent">Clave</span><h4>Siempre "contra qué"</h4><p>La misma molécula puede ser <strong>potente contra una diana e inerte contra otra</strong>. No se pregunta "¿es activa?", sino "¿activa contra qué?".</p></div>
+            <div class="mini-card"><span class="tag bad">No confundir</span><h4>No es reactividad ni propiedad fija</h4><p>Reactividad = química pura (oxidarse, arder). Actividad = <strong>fuerza de unión a un blanco biológico</strong>, medida en un experimento.</p></div>
+        </div>
+    </section>
+
+    <!-- C4b · CONCEPTO — Dianas biológicas -------------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Conceptos clave · Contra qué actúa</p>
+        <h2 class="slide-title">¿Qué son las dianas biológicas (targets)?</h2>
+        <p class="lead">La <strong>diana</strong> es la "cerradura" biológica sobre la que actúa la molécula. ChEMBL registra la diana de <em>cada</em> experimento. En nuestro corpus hay <strong>1.060 dianas distintas</strong>, de varios tipos (números = mediciones de cada tipo):</p>
+        <div class="card-grid">
+            <div class="mini-card"><span class="tag good">4.683</span><h4>SINGLE PROTEIN</h4><p>Una <strong>proteína específica</strong> (una enzima, un receptor). El caso más preciso: sabemos exactamente qué se mide.</p></div>
+            <div class="mini-card"><span class="tag">2.762</span><h4>ORGANISM</h4><p>Un <strong>organismo entero</strong> (un hongo, un insecto, un microbio). Mide el efecto global, no sobre una proteína puntual.</p></div>
+            <div class="mini-card"><span class="tag">1.013</span><h4>CELL-LINE</h4><p>Una <strong>línea de células</strong> cultivadas. Punto intermedio entre proteína y organismo.</p></div>
+            <div class="mini-card"><span class="tag warn">917</span><h4>UNCHECKED</h4><p>Diana <strong>no verificada</strong> por ChEMBL. Se conserva, pero con menos confianza.</p></div>
+            <div class="mini-card"><span class="tag">158 + 126</span><h4>PROTEIN FAMILY / COMPLEX</h4><p>Grupos o complejos de varias proteínas, no una sola.</p></div>
+            <div class="mini-card"><span class="tag">otras</span><h4>ADMET · TISSUE · …</h4><p>Tejidos, propiedades farmacocinéticas, interacciones proteína-proteína, etc.</p></div>
+        </div>
+        <div class="callout">Un mismo plaguicida se prueba contra <strong>muchas dianas distintas</strong> — por eso su "actividad" no es un número único, sino un <strong>perfil</strong> a lo largo de todas ellas.</div>
+    </section>
+
+    <!-- C5 · CONCEPTO — Experimentos y potencia --------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Conceptos clave · Los experimentos</p>
+        <h2 class="slide-title">¿Qué experimentos hay en ChEMBL y qué es la potencia?</h2>
+        <p class="lead">Cada medición es un experimento: se expone la diana a <strong>distintas concentraciones</strong> de la molécula y se mide a cuál aparece el efecto. Hay ~13 tipos que miden <strong>cosas distintas</strong>.</p>
+        <div class="card-grid">
+            <div class="mini-card"><span class="tag good">Concentración · potencia</span><h4>IC50 · EC50 · AC50</h4>
+                <p><strong>IC50</strong> <em>(Inhibitory Concentration 50%)</em> — concentración que <strong>inhibe el 50%</strong> de la diana. <em>Ej:</em> Clorpirifos ≈ <span class="mono">50 nM</span> sobre acetilcolinesterasa → basta poquísimo → muy potente.</p>
+                <p><strong>EC50</strong> <em>(Effective Concentration)</em> — 50% del <strong>efecto máximo</strong> (activadores). <strong>AC50</strong> <em>(Activity Concentration)</em> — 50% de actividad (cribados tipo Tox21).</p>
+                <p class="deck-hint">El "50" = la mitad. Menos concentración → más potente.</p></div>
+            <div class="mini-card"><span class="tag good">Afinidad de unión</span><h4>Ki · Kd</h4>
+                <p><strong>Ki</strong> <em>(constante de inhibición)</em> — qué tan fuerte se une un inhibidor, <strong>sin depender</strong> de las condiciones del ensayo: la medida más "limpia".</p>
+                <p><strong>Kd</strong> <em>(constante de disociación)</em> — qué tan fácil se <strong>separa</strong> el complejo molécula-diana. <em>Ej:</em> <span class="mono">Kd = 1 nM</span> → se pega fortísimo; <span class="mono">10 µM</span> → débil. <strong>Valor bajo = más afinidad.</strong></p></div>
+            <div class="mini-card"><span class="tag bad">Otra cosa (no comparable)</span><h4>LD50 · Inhibition</h4>
+                <p><strong>LD50</strong> <em>(Lethal Dose 50%)</em> — dosis que causa efecto letal al <strong>50% de los organismos</strong>, in vivo. <em>Ej:</em> <span class="mono">250 mg/kg</span> oral en rata. Mide efecto en el organismo, no unión a una diana.</p>
+                <p><strong>Inhibition</strong> — <strong>% de bloqueo</strong> a UNA concentración fija: es un porcentaje, no una concentración.</p>
+                <p class="deck-hint">Ninguna es comparable con IC50/Ki: miden fenómenos distintos.</p></div>
+        </div>
+        <div class="callout"><strong>Potencia</strong> = qué tan <strong>poca</strong> concentración se necesita para el efecto. Por eso NO se mezclan todos los experimentos: una Ki, una IC50 y una LD50 miden fenómenos diferentes.</div>
+    </section>
+
+    <!-- C6 · CONCEPTO — Cómo se calcula la potencia (pChEMBL) ------------- -->
+    <section class="slide">
+        <p class="eyebrow">Conceptos clave · La escala de potencia</p>
+        <h2 class="slide-title">¿Cómo se calcula la potencia? La escala pChEMBL</h2>
+        <p class="lead">Las concentraciones van de <em>nanomolar</em> a <em>milimolar</em> (muchísimos órdenes de magnitud). Para poder compararlas se usa <span class="mono">pChEMBL = −log10(concentración en molar)</span>. <strong>Más alto = más potente.</strong></p>
+        <div class="callout"><em>Ejemplo trabajado:</em> Clorpirifos con <span class="mono">IC50 = 50 nM = 5×10⁻⁸ M</span> → pChEMBL = <span class="mono">−log10(5×10⁻⁸) ≈ 7.3</span>. Como 7.3 &gt; 6, es <strong>Activo</strong> y bastante potente.</div>
+        <div class="stat-row">
+            <div class="stat-tile"><div class="val good">9</div><div class="lbl">1 nM — muy potente</div></div>
+            <div class="stat-tile"><div class="val accent">6</div><div class="lbl">1 µM — límite "activo"</div></div>
+            <div class="stat-tile"><div class="val bad">3</div><div class="lbl">1 mM — débil</div></div>
+        </div>
+        <div class="callout"><strong>¿Qué dianas entran en la mediana? Todas.</strong> La potencia de un compuesto es la <strong>mediana</strong> de sus mediciones sobre <em>cualquier</em> diana — no se elige un blanco específico. Solo se exige que el experimento sea de <strong>unión</strong> (IC50/Ki/Kd/EC50/AC50/Potency), <strong>no censurado</strong> (<span class="mono">=</span>) y con pChEMBL, y que haya <strong>≥3</strong> por compuesto. En el corpus eso son <strong>631 dianas distintas</strong>; cada compuesto toca en mediana <strong>~6</strong> (hasta 135). Por eso es un "promedio de afinidad" sobre muchas dianas, no la potencia contra un único blanco — una limitación a tener presente.</div>
+        <div class="callout">El umbral <strong>pChEMBL = 6 (1 µM)</strong> separa "Activo" de "Inactivo". Es una <strong>convención</strong> de la química medicinal, no una ley de la naturaleza. El signo negativo del logaritmo hace que <em>menos concentración</em> (más potente) dé <em>número más alto</em>.</div>
+    </section>
+
+    <!-- C7 · CONCEPTO — Tabla de datos crudos ----------------------------- -->
+    <section class="slide">
+        <p class="eyebrow">Conceptos clave · Así se ven los datos crudos</p>
+        <h2 class="slide-title">Un vistazo a la tabla real: una fila = un experimento</h2>
+        <p class="lead">Cada fila es <strong>una medición</strong>. Fijate cómo la misma molécula (<span class="mono">Atrazine · CHEMBL15063</span>) aparece <strong>muchas veces</strong>, con distinta diana, distinto tipo de experimento y distinto valor. Así llega el dato desde ChEMBL, antes de limpiar.</p>
+        <style>
+            .raw-tbl-wrap{overflow-x:auto;margin:.5rem 0 1rem}
+            table.raw-tbl{border-collapse:collapse;width:100%;font-size:.82rem}
+            table.raw-tbl th,table.raw-tbl td{border:1px solid rgba(150,160,180,.35);padding:.4rem .6rem;text-align:left;white-space:nowrap}
+            table.raw-tbl th{background:rgba(90,120,200,.18);font-weight:700}
+            table.raw-tbl td.mono,table.raw-tbl th{font-variant-numeric:tabular-nums}
+            table.raw-tbl tr:nth-child(even) td{background:rgba(150,160,180,.06)}
+            table.raw-tbl td.cens{color:#e08b8b;font-weight:700}
+        </style>
+        <div class="raw-tbl-wrap">
+        <table class="raw-tbl">
+            <thead><tr><th>compound</th><th>chembl_id</th><th>standard_type</th><th>rel</th><th>value</th><th>units</th><th>pchembl</th><th>target_name</th><th>target_type</th></tr></thead>
+            <tbody>
+                <tr><td>Atrazine</td><td>CHEMBL15063</td><td>IC50</td><td>=</td><td>930</td><td>nM</td><td>6.03</td><td>Unchecked</td><td>UNCHECKED</td></tr>
+                <tr><td>Atrazine</td><td>CHEMBL15063</td><td>EC50</td><td class="cens">&gt;</td><td>112219</td><td>nM</td><td>5.06</td><td>Luciferin 4-monooxygenase</td><td>SINGLE PROTEIN</td></tr>
+                <tr><td>Atrazine</td><td>CHEMBL15063</td><td>Potency</td><td>=</td><td>15849</td><td>nM</td><td>4.80</td><td>Nuclear receptor ROR-gamma</td><td>SINGLE PROTEIN</td></tr>
+                <tr><td>Atrazine</td><td>CHEMBL15063</td><td>Potency</td><td>=</td><td>7943</td><td>nM</td><td>5.10</td><td>Lymphoblastoid cell</td><td>CELL-LINE</td></tr>
+                <tr><td>Atrazine</td><td>CHEMBL15063</td><td>Potency</td><td>=</td><td>89125</td><td>nM</td><td>5.06</td><td>DNA polymerase iota</td><td>SINGLE PROTEIN</td></tr>
+            </tbody>
+        </table>
+        </div>
+        <div class="callout">Cada fila trae además los <strong>descriptores de la molécula</strong> (peso, LogP…), <strong>idénticos</strong> en todas las filas de Atrazine — por eso la unidad de análisis es el <strong>compuesto</strong>, no la fila. La fila con <span class="mono cens">&gt;</span> es un valor <strong>censurado</strong>: se conserva, pero se excluye del cálculo de potencia.</div>
     </section>
 
     <!-- 3 · FASE 1 — ADQUISICIÓN ------------------------------------------ -->
@@ -109,7 +318,7 @@
                 <button type="button" class="phase-overview-btn">Ver desglose completo</button>
             </div>
             <p class="eyebrow">Pipeline · Multivariado y contraste de hipótesis</p>
-            <h2 class="slide-title">Estructura del corpus y límite predictivo honesto</h2>
+            <h2 class="slide-title">Estructura del corpus y limitaciones predictivas</h2>
             <span class="phase-role-tag">Tomas Vezga · Científico de Datos · <code>fase4_modelado.ipynb</code></span>
         </div>
         <div class="pipe-layout">
@@ -135,66 +344,6 @@
         </div>
     </section>
 
-    <!-- 8 · EQUIPO Y ROLES ------------------------------------------------ -->
-    <section class="slide">
-        <p class="eyebrow">Organización · Roles del proyecto final</p>
-        <h2 class="slide-title">Cuatro roles, un producto integrado</h2>
-        <p class="lead">Según el enunciado del curso, cada integrante desarrolla y sustenta un rol específico. Los entregables de uno alimentan el trabajo de los demás.</p>
-        <div class="team-grid">
-            <article class="team-card">
-                <h3>Mateo Del Giudice</h3>
-                <p class="team-role">Ingeniero de Datos</p>
-                <ul>
-                    <li>Pipeline ChEMBL: servidor Docker, extracción y trazabilidad PubChem → ChEMBL.</li>
-                    <li>Limpieza, deduplicación e imputación de faltantes (Fases 1–2).</li>
-                    <li>Entregables: CSVs procesados, notebook de procedimientos § adquisición y limpieza.</li>
-                </ul>
-            </article>
-            <article class="team-card">
-                <h3>Ian Nieto</h3>
-                <p class="team-role">Analista de Datos</p>
-                <ul>
-                    <li>EDA a nivel compuesto: tendencia central, distribuciones y visualizaciones (Fase 3).</li>
-                    <li>Missingno, UpSetPlot y gráficas de categorías agrupadas por familia química.</li>
-                    <li>Análisis de correlación (Pearson y Spearman) entre descriptores moleculares.</li>
-                </ul>
-            </article>
-            <article class="team-card">
-                <h3>Tomas Vezga</h3>
-                <p class="team-role">Científico de Datos</p>
-                <ul>
-                    <li>PCA, clustering y pruebas Kruskal–Wallis con corrección FDR (Fase 4).</li>
-                    <li>Baseline Random Forest con validación honesta por compuesto (P6).</li>
-                    <li>Conclusión relativa al rol en el informe IEEE y sustentación oral.</li>
-                </ul>
-            </article>
-            <article class="team-card">
-                <h3>Alejandro Vargas</h3>
-                <p class="team-role">Ingeniero de ML</p>
-                <ul>
-                    <li>Integración de resultados en dashboard interactivo (FastAPI + Plotly.js).</li>
-                    <li>Despliegue público en Render con artefactos precomputados (Fase 5).</li>
-                    <li>Documentación del proceso de publicación para el informe y el video explicativo.</li>
-                </ul>
-            </article>
-        </div>
-    </section>
-
-    <!-- 5 · CAMPOS Y TECNOLOGÍAS ------------------------------------------ -->
-    <section class="slide">
-        <p class="eyebrow">Campos del proyecto · Stack tecnológico</p>
-        <h2 class="slide-title">Ciencia de datos aplicada a cheminformática regulatoria</h2>
-        <p class="lead">Stack alineado con los entregables del curso: notebooks reproducibles, dashboard web interactivo e informe IEEE.</p>
-        <div class="stack-grid">
-            <div class="stack-col"><h4>Lenguaje y datos</h4><ul><li>Python 3.10–3.12</li><li>pandas · NumPy</li><li>ChEMBL v37 (SQLite)</li><li>PubChem (corpus MIDA)</li></ul></div>
-            <div class="stack-col"><h4>Cheminformática</h4><ul><li>RDKit — 8 descriptores</li><li>SMILES canónico</li><li>Regla de Lipinski (Ro5)</li></ul></div>
-            <div class="stack-col"><h4>Modelado y estadística</h4><ul><li>scikit-learn (Random Forest)</li><li>SciPy · statsmodels (FDR)</li><li>scikit-posthocs (Dunn)</li></ul></div>
-            <div class="stack-col"><h4>Visualización</h4><ul><li>Matplotlib · seaborn</li><li>missingno · UpSetPlot</li><li>Plotly.js (interactivo)</li></ul></div>
-            <div class="stack-col"><h4>Infraestructura</h4><ul><li>Docker (servidor ChEMBL)</li><li>FastAPI + Jinja2</li><li>uvicorn · despliegue Render</li></ul></div>
-            <div class="stack-col"><h4>Geodatos (futuro)</h4><ul><li>GeoPandas</li><li>geoBoundaries ADM2</li><li>INEC / portal MAPI</li></ul></div>
-        </div>
-    </section>
-
     <!-- 4 · PIPELINE / PROCESO -------------------------------------------- -->
     <section class="slide">
         <p class="eyebrow">Proceso · Pipeline de datos (Fases 1–5)</p>
@@ -204,16 +353,17 @@
                 <p class="lead">La <strong>unidad de análisis es el compuesto</strong>, no la medición. Una cascada de emparejamiento resuelve cada plaguicida a su ID de ChEMBL, y un filtro de calidad separa los <em>endpoints</em> de unión molecular de las dosis a nivel de organismo.</p>
                 <div class="funnel">
                     <div class="funnel-step s1"><span>Candidatos PubChem (MIDA + HID72)</span><span class="n">235</span></div>
-                    <div class="funnel-step s2"><span>Resueltos a ChEMBL</span><span class="n">171</span></div>
-                    <div class="funnel-step s3"><span>Mediciones limpias</span><span class="n">9 752</span></div>
-                    <div class="funnel-step s4"><span>Compuestos estructurales (descriptores)</span><span class="n">147</span></div>
-                    <div class="funnel-step s5"><span>Con potencia de unión (≥3 med.)</span><span class="n">89</span></div>
+                    <div class="funnel-step s2"><span>Resueltos a ChEMBL</span><span class="n">172</span></div>
+                    <div class="funnel-step s3"><span>Mediciones limpias</span><span class="n">10 095</span></div>
+                    <div class="funnel-step s4"><span>Compuestos estructurales (descriptores)</span><span class="n">151</span></div>
+                    <div class="funnel-step s5"><span>Con potencia de unión (≥3 med.)</span><span class="n">94</span></div>
                 </div>
                 <div class="stat-row">
                     <div class="stat-tile"><div class="val">7</div><div class="lbl">Familias químicas</div></div>
-                    <div class="stat-tile"><div class="val">1 015</div><div class="lbl">Dianas proteicas</div></div>
-                    <div class="stat-tile"><div class="val">37.4%</div><div class="lbl">Mediciones censuradas</div></div>
+                    <div class="stat-tile"><div class="val">1 060</div><div class="lbl">Dianas proteicas</div></div>
+                    <div class="stat-tile"><div class="val">36.5%</div><div class="lbl">Mediciones censuradas</div></div>
                 </div>
+                <div class="callout">Auditoría de trazabilidad: <strong>11 de 20 IDs</strong> del registro curado MIDA apuntaban a la molécula equivocada (p. ej. <span class="mono">Deltamethrin→Methoxsalen</span>). Se verificaron y corrigieron <strong>por estructura (InChIKey)</strong> y se re-extrajo todo el corpus.</div>
             </div>
             <div class="plot plot-lg" id="plot-funnel"></div>
         </div>
@@ -251,9 +401,9 @@
             <div class="notes">
                 <p class="lead">Se calcularon dos matrices — <strong>Pearson</strong> (lineal) y <strong>Spearman</strong> (por rangos). Su concordancia indica relaciones monótonas estables.</p>
                 <ul>
-                    <li>Área polar ↔ donores de H: <span class="mono accent">psa–hbd = 0.81</span></li>
-                    <li>Área polar ↔ aceptores de H: <span class="mono accent">psa–hba = 0.78</span></li>
-                    <li>Lipofilia inversa a polaridad: <span class="mono bad">alogp–hbd = −0.57</span></li>
+                    <li>Área polar ↔ donores de H: <span class="mono accent">psa–hbd = 0.78</span></li>
+                    <li>Área polar ↔ aceptores de H: <span class="mono accent">psa–hba = 0.75</span></li>
+                    <li>Lipofilia inversa a polaridad: <span class="mono bad">alogp–hbd = −0.63</span></li>
                 </ul>
                 <p>Consecuencia clave: hay <strong>colinealidad</strong> (polaridad vs. lipofilia) que condiciona el modelado posterior.</p>
             </div>
@@ -267,9 +417,9 @@
         <h2 class="slide-title">Las familias sí difieren estadísticamente</h2>
         <div class="split">
             <div class="notes">
-                <p class="lead"><strong>Kruskal–Wallis</strong> con corrección de <strong>Benjamini–Hochberg</strong> (FDR) sobre 132 compuestos y 6 grupos. Diferencias significativas en <span class="good">6 de 7</span> descriptores.</p>
+                <p class="lead"><strong>Kruskal–Wallis</strong> con corrección de <strong>Benjamini–Hochberg</strong> (FDR) sobre 150 compuestos y 6 grupos. Diferencias significativas en <span class="good">6 de 7</span> descriptores.</p>
                 <ul>
-                    <li>Efecto más fuerte: lipofilia <span class="mono">alogp</span> — ε² = <span class="accent">0.203</span>, p<sub>adj</sub> = 8.0×10⁻⁵</li>
+                    <li>Efecto más fuerte: lipofilia <span class="mono">alogp</span> — ε² = <span class="accent">0.125</span>, p<sub>adj</sub> = 2.4×10⁻³</li>
                     <li>Le siguen peso molecular, enlaces rotables y donores de H.</li>
                     <li>La potencia mediana <em>no</em> separa familias una vez controlada la heterogeneidad de endpoints.</li>
                 </ul>
@@ -287,9 +437,9 @@
             <div class="notes">
                 <p class="lead">PCA sobre 7 descriptores estandarizados. Las familias se <strong>solapan</strong>: no hay fronteras nítidas en el espacio fisicoquímico.</p>
                 <div class="stat-row">
-                    <div class="stat-tile"><div class="val">78.2%</div><div class="lbl">Varianza en 2 componentes</div></div>
+                    <div class="stat-tile"><div class="val">80.4%</div><div class="lbl">Varianza en 2 componentes</div></div>
                     <div class="stat-tile"><div class="val">0.36</div><div class="lbl">Silueta (K-means, k=2)</div></div>
-                    <div class="stat-tile"><div class="val bad">0.018</div><div class="lbl">ARI clusters vs. familias</div></div>
+                    <div class="stat-tile"><div class="val bad">0.008</div><div class="lbl">ARI clusters vs. familias</div></div>
                 </div>
                 <p>Un <strong>ARI ≈ 0</strong> significa que la partición es exploratoria, no una clasificación química.</p>
             </div>
@@ -299,15 +449,15 @@
 
     <!-- 9 · HALLAZGO CENTRAL ---------------------------------------------- -->
     <section class="slide">
-        <p class="eyebrow">Hallazgo central · Baseline honesto (P6)</p>
+        <p class="eyebrow">Hallazgo central · Baseline predictivo (P6)</p>
         <h2 class="slide-title">El mismo modelo, conclusiones opuestas según la validación</h2>
         <div class="split">
             <div class="notes">
                 <p class="lead">Un <strong>Random Forest</strong> (300 árboles) sobre los mismos 8 descriptores y el mismo objetivo, evaluado con tres esquemas de validación cruzada:</p>
                 <ul>
-                    <li><span class="good">Por filas (con fuga):</span> R² = <span class="mono">0.44</span> — parece aceptable.</li>
-                    <li><span class="warn">Por grupos (honesto):</span> R² = <span class="mono">−0.23</span> — peor que la media.</li>
-                    <li><span class="bad">Por compuesto:</span> R² = <span class="mono">−0.52</span> — sin poder predictivo.</li>
+                    <li><span class="good">Por filas (con fuga):</span> R² = <span class="mono">0.45</span> — parece aceptable.</li>
+                    <li><span class="warn">Por grupos (sin fuga):</span> R² = <span class="mono">−0.53</span> — peor que la media.</li>
+                    <li><span class="bad">Por compuesto:</span> R² = <span class="mono">−0.33</span> — sin poder predictivo.</li>
                 </ul>
                 <div class="callout">Como los descriptores son <strong>constantes por compuesto</strong>, partir por filas coloca la misma molécula en train y test. El R² positivo es un <strong>espejismo por fuga de datos</strong>.</div>
             </div>
@@ -321,11 +471,11 @@
         <h2 class="slide-title">Los descriptores diferencian, pero no predicen lo no visto</h2>
         <div class="card-grid">
             <div class="mini-card"><span class="tag">P1 / P4 ✓</span><h4>Sí diferencian familias</h4><p>Colinealidad polaridad–lipofilia; 6/7 descriptores significativos.</p></div>
-            <div class="mini-card"><span class="tag">P3 ✗</span><h4>No reconstruyen taxonomía</h4><p>ARI = 0.018 — sin agrupamientos naturales por familia.</p></div>
-            <div class="mini-card"><span class="tag">P6 ✗</span><h4>No predicen potencia</h4><p>R² &lt; 0 bajo validación honesta por compuesto.</p></div>
+            <div class="mini-card"><span class="tag">P3 ✗</span><h4>No reconstruyen taxonomía</h4><p>ARI = 0.008 — sin agrupamientos naturales por familia.</p></div>
+            <div class="mini-card"><span class="tag">P6 ✗</span><h4>No predicen potencia</h4><p>R² &lt; 0 bajo validación por compuesto.</p></div>
             <div class="mini-card"><span class="tag">Aporte</span><h4>Fuga de datos demostrada</h4><p>La validación por grupos es indispensable con features constantes por entidad.</p></div>
         </div>
-        <div class="callout good-callout">Este límite justifica el <strong>proyecto hermano GNN-GIN</strong>: redes neuronales sobre el <em>grafo molecular</em> (no descriptores tabulares), evaluadas con <em>scaffold split</em>, superan la limitación representacional aquí evidenciada.</div>
+        <div class="callout good-callout">Esta limitación justifica el <strong>proyecto hermano GNN-GIN</strong>: redes neuronales sobre el <em>grafo molecular</em> (no descriptores tabulares), evaluadas con <em>scaffold split</em>, superan la limitación representacional aquí evidenciada.</div>
     </section>
 
     <!-- 11 · DASHBOARD Y DISPONIBILIDAD ----------------------------------- -->
@@ -339,7 +489,7 @@
                     <li>Página <span class="mono">/eda</span>: 4 gráficos + selector de variable, familia y rango de MW.</li>
                     <li>Extracción reproducible de ChEMBL v37 vía <strong>Docker/FastAPI</strong>.</li>
                     <li>Despliegue continuo en <strong>Render</strong> (<span class="mono">uvicorn viz.app:app</span>) ante cada push.</li>
-                    <li>Trabajo futuro: mapa de distritos (GeoPandas + INEC) y panel completo de modelos.</li>
+                    <li>Trabajo futuro: panel completo de modelos y comparación con el proyecto GNN.</li>
                 </ul>
                 <p class="deck-hint">Código, notebooks (Fases 1–5), datos procesados y artefactos se entregan junto al informe IEEE.</p>
             </div>

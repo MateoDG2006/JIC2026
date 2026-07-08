@@ -1,17 +1,16 @@
 {
-  "raw_compounds": 147,
-  "with_eq_pchembl": 131,
-  "with_potency_binding_min_support": 89,
-  "dropped_no_quantitative": 58,
+  "raw_compounds": 151,
+  "with_eq_pchembl": 136,
+  "with_potency_binding_min_support": 94,
+  "dropped_no_quantitative": 57,
   "dropped_by_family": {
     "Azole_fungicides": 4,
     "Carbamates": 11,
-    "Herbicides": 10,
+    "Herbicides": 11,
     "Organophosphates": 17,
-    "Pyrethroids": 3,
-    "Triazines": 8,
-    "mixed": 5
+    "Pyrethroids": 6,
+    "Triazines": 8
   },
-  "n_mixed_endpoint_class": 43,
+  "n_mixed_endpoint_class": 48,
   "selection_bias_note": "El subconjunto con potencia excluye compuestos solo-censurados/inactivos \u2192 potencia sesgada al alza."
 }

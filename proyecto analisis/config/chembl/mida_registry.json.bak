@@ -1,0 +1,25 @@
+{
+  "description": "20 ingredientes activos MIDA — mapeo curado a ChEMBL ID y familia química",
+  "entries": [
+    {"name": "Chlorpyrifos", "chembl_id": "CHEMBL463210", "family": "Organophosphates"},
+    {"name": "Malathion", "chembl_id": "CHEMBL1200468", "family": "Organophosphates"},
+    {"name": "Dimethoate", "chembl_id": "CHEMBL1569524", "family": "Organophosphates"},
+    {"name": "Methyl parathion", "chembl_id": "CHEMBL346516", "family": "Organophosphates"},
+    {"name": "Carbaryl", "chembl_id": "CHEMBL46917", "family": "Carbamates"},
+    {"name": "Methomyl", "chembl_id": "CHEMBL552761", "family": "Carbamates"},
+    {"name": "Aldicarb", "chembl_id": "CHEMBL91732", "family": "Carbamates"},
+    {"name": "Atrazine", "chembl_id": "CHEMBL15063", "family": "Triazines"},
+    {"name": "Simazine", "chembl_id": "CHEMBL5775", "family": "Triazines"},
+    {"name": "Tebuconazole", "chembl_id": "CHEMBL8937", "family": "Azole_fungicides"},
+    {"name": "Propiconazole", "chembl_id": "CHEMBL174240", "family": "Azole_fungicides"},
+    {"name": "Difenoconazole", "chembl_id": "CHEMBL91495", "family": "Azole_fungicides"},
+    {"name": "Cypermethrin", "chembl_id": "CHEMBL3033792", "family": "Pyrethroids"},
+    {"name": "Deltamethrin", "chembl_id": "CHEMBL416", "family": "Pyrethroids"},
+    {"name": "Lambda-cyhalothrin", "chembl_id": "CHEMBL64147", "family": "Pyrethroids"},
+    {"name": "Glyphosate", "chembl_id": "CHEMBL9571438", "family": "Herbicides"},
+    {"name": "Paraquat", "chembl_id": "CHEMBL13958", "family": "Herbicides"},
+    {"name": "2,4-D", "chembl_id": "CHEMBL7715", "family": "Herbicides"},
+    {"name": "Mancozeb", "chembl_id": "CHEMBL1200543", "family": "Fungicides"},
+    {"name": "Chlorothalonil", "chembl_id": "CHEMBL468167", "family": "Fungicides"}
+  ]
+}

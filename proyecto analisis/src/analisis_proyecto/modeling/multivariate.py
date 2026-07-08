@@ -1,6 +1,7 @@
 """Reducción de dimensionalidad, clustering y pruebas estadísticas (Fase 4)."""
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 
 import numpy as np
@@ -16,6 +17,30 @@ from src.analisis_proyecto.core.constants import multivariate_feature_columns
 from src.analisis_proyecto.preprocessing.pipeline import FEATURE_COLS
 
 MULTIVARIATE_FEATURE_COLS: list[str] = multivariate_feature_columns()
+
+
+def _elbow_k(k_values: list[int], inertias: list[float]) -> int:
+    """Método del codo: k con mayor cambio de curvatura (2ª diferencia de inercia)."""
+    if len(k_values) < 3:
+        return k_values[0]
+    second_diff = np.diff(np.array(inertias, dtype=float), 2)
+    idx = int(np.argmin(second_diff)) + 1
+    return k_values[idx]
+
+
+def _knee_k(k_values: list[int], inertias: list[float]) -> int:
+    """Método de la rodilla (Kneedle): máxima distancia a la recta en la curva de inercia."""
+    if len(k_values) < 2:
+        return k_values[0]
+    x = np.array(k_values, dtype=float)
+    y = np.array(inertias, dtype=float)
+    x_norm = (x - x.min()) / (x.max() - x.min() + 1e-12)
+    y_norm = (y - y.max()) / (y.min() - y.max() + 1e-12)
+    line = y_norm[0] + (y_norm[-1] - y_norm[0]) * (x_norm - x_norm[0]) / (
+        x_norm[-1] - x_norm[0] + 1e-12
+    )
+    knee_idx = int(np.argmax(y_norm - line))
+    return k_values[knee_idx]
 
 
 def drop_degenerate(
@@ -46,18 +71,33 @@ def run_pca(X: np.ndarray, n_components: int = 2) -> dict:
     }
 
 
-def run_kmeans_silhouette(X: np.ndarray, k_range=range(2, 9)) -> dict:
-    """K-means para varios k; elige el de mayor silhouette."""
+def run_kmeans_silhouette(
+    X: np.ndarray, k_range: int | Iterable[int] = range(2, 9)
+) -> dict:
+    """K-means para varios k; selecciona k por codo, rodilla y silhouette."""
+    k_values = [k_range] if isinstance(k_range, int) else list(k_range)
     scores: dict[int, float] = {}
+    inertias: dict[int, float] = {}
     labels_by_k: dict[int, np.ndarray] = {}
-    for k in k_range:
+    for k in k_values:
         km = KMeans(n_clusters=k, random_state=42, n_init=10).fit(X)
         scores[k] = float(silhouette_score(X, km.labels_))
+        inertias[k] = float(km.inertia_)
         labels_by_k[k] = km.labels_
-    best_k = max(scores, key=scores.get)
+
+    inertia_list = [inertias[k] for k in k_values]
+    k_silhouette = max(scores, key=scores.get)
+    k_elbow = _elbow_k(k_values, inertia_list) if len(k_values) > 1 else k_values[0]
+    k_knee = _knee_k(k_values, inertia_list) if len(k_values) > 1 else k_values[0]
+    best_k = k_knee
+
     return {
         "best_k": int(best_k),
+        "k_silhouette": int(k_silhouette),
+        "k_elbow": int(k_elbow),
+        "k_knee": int(k_knee),
         "silhouette_by_k": scores,
+        "inertia_by_k": inertias,
         "labels": labels_by_k[best_k].tolist(),
     }
 
@@ -199,7 +239,11 @@ class MultivariateAnalyzer:
 
         summary = {
             "best_k": km["best_k"],
+            "k_silhouette": km["k_silhouette"],
+            "k_elbow": km["k_elbow"],
+            "k_knee": km["k_knee"],
             "silhouette_by_k": km["silhouette_by_k"],
+            "inertia_by_k": km["inertia_by_k"],
             "silhouette_best": km["silhouette_by_k"][km["best_k"]],
             "ari_vs_family": ari,
             "pca_var_explained": sum(pca["explained_variance_ratio"]),

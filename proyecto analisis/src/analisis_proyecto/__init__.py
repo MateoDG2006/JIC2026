@@ -5,7 +5,6 @@ Subpaquetes:
   acquisition/   — Fase 1: extracción ChEMBL vía chembl-server
   preprocessing/ — Fases 2–3: limpieza, features, EDA
   modeling/      — Fase 4: PCA, clustering, baseline P6
-  geodata/       — Fase 6: contexto geográfico (futuro)
 """
 
 from src.analisis_proyecto.acquisition.extract import ChemblExtractor

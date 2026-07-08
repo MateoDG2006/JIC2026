@@ -10,7 +10,7 @@ proyecto analisis/
 ├── config/config.yaml       # ChEMBL + viz analytics
 ├── data/
 │   ├── raw/                 # Extracción ChEMBL + geodatos
-│   └── processed/           # activities_clean + compounds_features (107)
+│   └── processed/           # activities_clean (10.095) + compounds_all (151) + compounds_features (94)
 ├── src/analisis_proyecto/   # Pipeline Python (core/, acquisition/, preprocessing/, modeling/)
 ├── notebooks/               # Fases 1–7
 ├── docs/                    # Documentación por fase
@@ -45,7 +45,7 @@ make viz
 
 ## Unidad de análisis
 
-**107 compuestos** (`compounds_features.csv`), no filas de medición.
+**151 compuestos estructurales** (`compounds_all.csv`), de los cuales **94 tienen potencia útil** (`compounds_features.csv`) — la unidad es el compuesto, no la fila de medición.
 El baseline predictivo honesto (P6) está en la **§4** de [`notebooks/fase4_modelado.ipynb`](notebooks/fase4_modelado.ipynb) y documentado en [Fase 4 §12](docs/fases/fase4_modelado.md#12-bloque-4--baseline-predictivo-honesto-p6).
 
 ## Proyecto hermano

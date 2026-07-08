@@ -4,1344 +4,1380 @@
       "chembl_id": "CHEMBL100476",
       "compound_name": "CID_745",
       "family": "Organophosphates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 4.828746797834225,
-      "pc2": -1.9640364745313659
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 4.643617861289572,
+      "pc2": -2.3659631988374246
     },
     {
       "chembl_id": "CHEMBL101",
       "compound_name": "CID_4781",
       "family": "Herbicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.21350940229498877,
-      "pc2": 3.3789457733400328
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.5017137970764451,
+      "pc2": 3.185278732607373
     },
     {
       "chembl_id": "CHEMBL103009",
       "compound_name": "CID_4965",
       "family": "Herbicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.7790632567383534,
-      "pc2": 1.8523693834547974
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.6228888265627381,
+      "pc2": 1.7960530304449485
     },
     {
       "chembl_id": "CHEMBL1046",
       "compound_name": "CID_564",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.04573573779987186,
-      "pc2": -0.3532966140699404
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.0277195013918912,
+      "pc2": -0.39875014917899243
     },
     {
       "chembl_id": "CHEMBL104943",
       "compound_name": "CID_700",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.0942513195411352,
-      "pc2": -1.4050963161879717
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.2226125154709562,
+      "pc2": -1.339106408330981
     },
     {
       "chembl_id": "CHEMBL113",
       "compound_name": "CID_2519",
       "family": "Herbicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.31515149904065193,
-      "pc2": 0.7803087948700538
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.3953894793921293,
+      "pc2": 0.6586340115248714
     },
     {
       "chembl_id": "CHEMBL1157",
       "compound_name": "CID_196",
       "family": "Azole_fungicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.24309848142146717,
-      "pc2": -0.3113438006487237
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.2284015543790812,
+      "pc2": -0.386558624043813
     },
     {
       "chembl_id": "CHEMBL1160571",
       "compound_name": "CID_1023",
       "family": "Pyrethroids",
       "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.301639905834507,
-      "pc2": -1.7635997820146236
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.1189348332288407,
+      "pc2": -1.9697730698421712
     },
     {
       "chembl_id": "CHEMBL1160819",
       "compound_name": "CID_222",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.153619364974906,
-      "pc2": -0.8894449750394497
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.225778711787842,
+      "pc2": -0.7726661896057032
     },
     {
       "chembl_id": "CHEMBL1161632",
       "compound_name": "CID_767",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.4266478659275916,
-      "pc2": -1.0926394208359096
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.536558384565833,
+      "pc2": -1.0642111600274506
     },
     {
       "chembl_id": "CHEMBL1161998",
       "compound_name": "CID_668",
       "family": "Organophosphates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.375293566110595,
-      "pc2": -1.4408648887026596
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.252426014680034,
+      "pc2": -1.5868395107936977
     },
     {
       "chembl_id": "CHEMBL116455",
       "compound_name": "CID_1133",
       "family": "Herbicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.1278310075240423,
-      "pc2": -0.859152206018842
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.2169686564491082,
+      "pc2": -0.8273533580507619
     },
     {
       "chembl_id": "CHEMBL116736",
       "compound_name": "CID_284",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.986612277074153,
-      "pc2": -0.9501648243250027
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.0716275472285535,
+      "pc2": -0.8347928236513487
     },
     {
       "chembl_id": "CHEMBL1187",
       "compound_name": "CID_1004",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.712066394053633,
-      "pc2": -1.7452118524004865
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.8995814786213161,
+      "pc2": -1.7570067273938637
     },
     {
       "chembl_id": "CHEMBL11909",
       "compound_name": "CID_191",
       "family": "Triazines",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 3.7734571072758287,
-      "pc2": -0.6372902360914308
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 3.706698065791741,
+      "pc2": -1.078111761152696
     },
     {
       "chembl_id": "CHEMBL1191361",
       "compound_name": "CID_787",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.4034442768830064,
-      "pc2": -1.450339958035061
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.5350087730593298,
+      "pc2": -1.3856351517688525
     },
     {
       "chembl_id": "CHEMBL12",
       "compound_name": "CID_3016",
       "family": "Herbicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.667177417655349,
-      "pc2": 2.815599678867308
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.4539807924261834,
+      "pc2": 2.6639022481495775
     },
     {
       "chembl_id": "CHEMBL1200468",
       "compound_name": "Malathion",
-      "family": "mixed",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 2.5364945923942037,
-      "pc2": 1.8142647538445489
+      "family": "Organophosphates",
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 2.7634203928937047,
+      "pc2": 1.5270231439612107
     },
     {
       "chembl_id": "CHEMBL1200739",
       "compound_name": "CID_402",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -3.0305991562159975,
-      "pc2": -0.3762723243980969
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -3.0642901410663,
+      "pc2": -0.1532681501730391
     },
     {
       "chembl_id": "CHEMBL1200921",
       "compound_name": "CID_727",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.1435900011733504,
-      "pc2": 1.880249941973948
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.0387933595527303,
+      "pc2": 1.8715726250808142
     },
     {
       "chembl_id": "CHEMBL1201220",
       "compound_name": "CID_2140",
       "family": "Herbicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 2.6511984194513745,
-      "pc2": 2.4623130573228087
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 2.7460382519209148,
+      "pc2": 1.9798399148024366
     },
     {
       "chembl_id": "CHEMBL1213475",
       "compound_name": "CID_825",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.0023765354134853037,
-      "pc2": -1.5804014328690084
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.1654865041247422,
+      "pc2": -1.633237066936891
     },
     {
       "chembl_id": "CHEMBL1222498",
       "compound_name": "CID_4933",
       "family": "Herbicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.9950255748375859,
-      "pc2": 1.8148693063494152
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.865854091391698,
+      "pc2": 1.7185699383476907
     },
     {
       "chembl_id": "CHEMBL1230762",
       "compound_name": "CID_96",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.9586299881878793,
-      "pc2": -0.5489792385714924
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.9960551984093513,
+      "pc2": -0.5220925763186784
     },
     {
       "chembl_id": "CHEMBL1231178",
       "compound_name": "CID_255",
       "family": "Organophosphates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 3.3157912640729528,
-      "pc2": 2.515518543060782
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 3.5754473567496103,
+      "pc2": 2.0099484079644916
     },
     {
       "chembl_id": "CHEMBL1231461",
       "compound_name": "CID_260",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.8611610298278594,
-      "pc2": -0.02599434046034804
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.875268167344236,
+      "pc2": 0.1605408201654922
     },
     {
       "chembl_id": "CHEMBL1231821",
       "compound_name": "CID_313",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -3.0345805044540364,
-      "pc2": -0.25758732240137533
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -3.0579357948673493,
+      "pc2": -0.045962879097071446
     },
     {
       "chembl_id": "CHEMBL1232274",
       "compound_name": "CID_673",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.1104915952920438,
-      "pc2": -0.6159626332544934
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.1587402881366171,
+      "pc2": -0.552522081449812
     },
     {
       "chembl_id": "CHEMBL1232328",
       "compound_name": "CID_655",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.3338694792287593,
-      "pc2": 0.3923177314859574
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.28727051948293936,
+      "pc2": 0.35060557367645667
     },
     {
       "chembl_id": "CHEMBL1233",
       "compound_name": "CID_2576",
       "family": "Herbicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.6964745169649789,
-      "pc2": 0.6671017449895308
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.7735972603619514,
+      "pc2": 0.4225982993411291
     },
     {
       "chembl_id": "CHEMBL125278",
       "compound_name": "CID_277",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.33115184377701,
-      "pc2": -1.3403172892511752
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.4619084906782074,
+      "pc2": -1.3011166899971403
     },
     {
       "chembl_id": "CHEMBL1255",
       "compound_name": "CID_712",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.574785238972268,
-      "pc2": -0.5820668117760218
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.6140128668517892,
+      "pc2": -0.40105575159056156
     },
     {
       "chembl_id": "CHEMBL1261",
       "compound_name": "CID_311",
       "family": "Azole_fungicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 2.255912710238891,
-      "pc2": -1.6825004554284342
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 2.10647300384465,
+      "pc2": -1.9160838458897773
     },
     {
       "chembl_id": "CHEMBL1356279",
       "compound_name": "CID_4610",
       "family": "Herbicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.0396084763457967,
-      "pc2": -0.8524591238983866
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.1362657899135142,
+      "pc2": -0.862777911176121
     },
     {
       "chembl_id": "CHEMBL13766",
       "compound_name": "CID_460",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.2205547906478067,
-      "pc2": 0.693913160651408
-    },
-    {
-      "chembl_id": "CHEMBL13958",
-      "compound_name": "Paraquat",
-      "family": "mixed",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.1947173125085045,
-      "pc2": 1.0159965007027234
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.168943675429947,
+      "pc2": 0.6775748879190463
     },
     {
       "chembl_id": "CHEMBL14060",
       "compound_name": "CID_996",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.880736800323178,
-      "pc2": 0.5437294738283376
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.8514480764652954,
+      "pc2": 0.5806999630439645
     },
     {
       "chembl_id": "CHEMBL14090",
       "compound_name": "CID_300",
       "family": "Azole_fungicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.6385290885568091,
-      "pc2": -0.4718478770457422
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.6858463022246881,
+      "pc2": -0.39756480114204973
     },
     {
       "chembl_id": "CHEMBL14173",
       "compound_name": "CID_227",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.4589130177319287,
-      "pc2": 0.12875234389633475
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.46623544796957456,
+      "pc2": 0.0357356963295423
     },
     {
       "chembl_id": "CHEMBL14193",
       "compound_name": "CID_126",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.121015913532687,
-      "pc2": 0.5717551237052477
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.07770100548163,
+      "pc2": 0.5499199969882362
     },
     {
       "chembl_id": "CHEMBL14227",
       "compound_name": "CID_264",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.5109700445857417,
-      "pc2": -0.22736388260806967
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.5271889163855612,
+      "pc2": -0.16811477868024738
     },
     {
       "chembl_id": "CHEMBL14245",
       "compound_name": "CID_263",
       "family": "Azole_fungicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.7792224511145212,
-      "pc2": -0.21913321032370237
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.7961970463462646,
+      "pc2": -0.12224522519398977
     },
     {
       "chembl_id": "CHEMBL14253",
       "compound_name": "CID_180",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.4952354248076736,
-      "pc2": -0.1964953027445545
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.506459492067948,
+      "pc2": -0.053925474286604685
     },
     {
       "chembl_id": "CHEMBL1432",
       "compound_name": "CID_19",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.30644894014002866,
-      "pc2": -0.21333755089369297
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.26071174233608635,
+      "pc2": -0.38615043532371085
     },
     {
       "chembl_id": "CHEMBL14343",
       "compound_name": "CID_229",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.9675399029696292,
-      "pc2": -2.43660364052838
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.7201316720970242,
+      "pc2": -2.566216562248645
     },
     {
       "chembl_id": "CHEMBL144103",
       "compound_name": "CID_61",
       "family": "Triazines",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 3.733095886019693,
-      "pc2": -1.8348698878644985
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 3.5615042007654663,
+      "pc2": -2.215835062050145
     },
     {
       "chembl_id": "CHEMBL146554",
       "compound_name": "CID_49",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.9126730422290475,
-      "pc2": -0.4055375222626323
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.9406664286183671,
+      "pc2": -0.3932123274541021
     },
     {
       "chembl_id": "CHEMBL14687",
       "compound_name": "CID_1031",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.9971256647518933,
-      "pc2": -0.48411124645375503
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.041496889901265,
+      "pc2": -0.3687754553038902
     },
     {
       "chembl_id": "CHEMBL14688",
       "compound_name": "CID_887",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.2548646836029325,
-      "pc2": -0.9419341520406354
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.340635677189257,
+      "pc2": -0.7889232701650912
     },
     {
       "chembl_id": "CHEMBL15063",
       "compound_name": "Atrazine",
-      "family": "mixed",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.0835712364024712,
-      "pc2": 0.9664021919835698
+      "family": "Triazines",
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.173349012116998,
+      "pc2": 0.7397070621396414
     },
     {
       "chembl_id": "CHEMBL15088",
       "compound_name": "CID_1065",
       "family": "Pyrethroids",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.9412817832508497,
-      "pc2": 2.8625477577467984
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.1725603984827524,
+      "pc2": 2.5944559318092923
     },
     {
       "chembl_id": "CHEMBL1517425",
       "compound_name": "CID_1988",
       "family": "Herbicides",
       "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.07590370010727793,
-      "pc2": 2.5110618908593767
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.1512361534374593,
+      "pc2": 2.405266548256004
     },
     {
       "chembl_id": "CHEMBL1527083",
       "compound_name": "CID_253",
       "family": "Azole_fungicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.1932256993590742,
-      "pc2": -0.1861656748872613
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.1577717416924669,
+      "pc2": -0.3679350486790264
     },
     {
       "chembl_id": "CHEMBL1547",
       "compound_name": "CID_1130",
       "family": "Pyrethroids",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.7035191022669598,
-      "pc2": 1.2896054979446852
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.8082656147573177,
+      "pc2": 1.0286592212219805
     },
     {
       "chembl_id": "CHEMBL1565192",
       "compound_name": "CID_66",
       "family": "Azole_fungicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.6587082590638211,
-      "pc2": 1.2771282902581467
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.580415758854051,
+      "pc2": 1.2398538943754274
     },
     {
       "chembl_id": "CHEMBL1569524",
       "compound_name": "Dimethoate",
-      "family": "mixed",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.6974702627684684,
-      "pc2": 0.5572459935466559
+      "family": "Organophosphates",
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.7667219718599438,
+      "pc2": 0.4351994116954008
     },
     {
       "chembl_id": "CHEMBL15768",
       "compound_name": "CID_2537",
       "family": "Herbicides",
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.1361156478649446,
+      "pc2": 0.8500409537414705
+    },
+    {
+      "chembl_id": "CHEMBL1593566",
+      "compound_name": "Deltamethrin",
+      "family": "Pyrethroids",
       "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.192179919815458,
-      "pc2": 0.8092655856032945
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 2.2153496002775763,
+      "pc2": 4.638243977997977
     },
     {
       "chembl_id": "CHEMBL15972",
       "compound_name": "CID_240",
       "family": "Herbicides",
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.8739557665740207,
+      "pc2": 1.0586394103566115
+    },
+    {
+      "chembl_id": "CHEMBL1605837",
+      "compound_name": "Simazine",
+      "family": "Triazines",
       "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.961188053807203,
-      "pc2": 0.9958017490676706
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.1195515726113872,
+      "pc2": 0.5661244414545555
     },
     {
       "chembl_id": "CHEMBL16081",
       "compound_name": "CID_178",
       "family": "Azole_fungicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.8513616472183971,
-      "pc2": -1.005076643204899
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.9432217180626972,
+      "pc2": -0.8981506970021674
     },
     {
       "chembl_id": "CHEMBL1620698",
       "compound_name": "CID_85",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.03284900827928562,
-      "pc2": -0.6447167551924848
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.09488546696748315,
+      "pc2": -0.65980258245372
     },
     {
       "chembl_id": "CHEMBL162789",
       "compound_name": "CID_144",
       "family": "Azole_fungicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.6652675441374352,
-      "pc2": 0.4192616987315817
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.661024678591254,
+      "pc2": 0.12365168321146898
     },
     {
       "chembl_id": "CHEMBL16720",
       "compound_name": "CID_224",
       "family": "Organophosphates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 5.543045866532566,
-      "pc2": -0.6632366326650182
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 5.473349428026556,
+      "pc2": -1.2734052044145705
     },
     {
       "chembl_id": "CHEMBL1686",
       "compound_name": "CID_51",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.5779754484319156,
-      "pc2": -0.9014631743984306
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.5143490952492459,
+      "pc2": -0.9902596783507523
     },
     {
       "chembl_id": "CHEMBL170365",
       "compound_name": "CID_177",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.535030631267094,
-      "pc2": -0.3893007622406529
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.5602569315735586,
+      "pc2": -0.22750809497169047
     },
     {
       "chembl_id": "CHEMBL171246",
       "compound_name": "CID_58",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.9586299881878793,
-      "pc2": -0.5489792385714924
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.9960551984093513,
+      "pc2": -0.5220925763186784
     },
     {
       "chembl_id": "CHEMBL172513",
       "compound_name": "CID_288",
       "family": "Azole_fungicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.03917766921269898,
-      "pc2": -0.8532875357414503
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.020289667812439658,
+      "pc2": -0.8242103302215754
     },
     {
       "chembl_id": "CHEMBL1772",
       "compound_name": "CID_127",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.2950935479948459,
-      "pc2": 0.31000538271664085
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.2848593478730273,
+      "pc2": 0.2190619239662125
     },
     {
       "chembl_id": "CHEMBL1794676",
       "compound_name": "CID_45",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.46160885352230324,
-      "pc2": -1.7878000152276474
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.29697142712544145,
+      "pc2": -1.8680295946526897
     },
     {
       "chembl_id": "CHEMBL180002",
       "compound_name": "CID_106",
       "family": "Carbamates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 2.033834869157444,
-      "pc2": -1.8556992252224516
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.8629407363730672,
+      "pc2": -2.0755145630497442
     },
     {
       "chembl_id": "CHEMBL1880349",
       "compound_name": "CID_40",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.1854837153612479,
-      "pc2": -2.171586194437598
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.9654730198794053,
+      "pc2": -2.3196513680725293
     },
     {
       "chembl_id": "CHEMBL1894994",
       "compound_name": "CID_3289",
       "family": "Herbicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.35864855641078724,
-      "pc2": 2.4254686495501603
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.6173534437458589,
+      "pc2": 2.274640614647223
     },
     {
       "chembl_id": "CHEMBL191244",
       "compound_name": "CID_34",
       "family": "Herbicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.9067814950855884,
-      "pc2": -0.46361720476137486
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.9548544321853916,
+      "pc2": -0.3516952476557921
     },
     {
       "chembl_id": "CHEMBL2133249",
       "compound_name": "CID_1982",
       "family": "Pyrethroids",
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.034915593148881575,
+      "pc2": 0.17187981892246323
+    },
+    {
+      "chembl_id": "CHEMBL2251732",
+      "compound_name": "Lambda-cyhalothrin",
+      "family": "Pyrethroids",
       "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.0025294393201692857,
-      "pc2": 0.27166038566543
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.98505536948164,
+      "pc2": 4.460683004292032
     },
     {
       "chembl_id": "CHEMBL24231",
       "compound_name": "CID_378",
       "family": "Organophosphates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.3016626722618043,
-      "pc2": 0.3869360411386278
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.3378968579533594,
+      "pc2": 0.12808483559772513
     },
     {
       "chembl_id": "CHEMBL2447922",
       "compound_name": "CID_504",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.510912752958572,
-      "pc2": -1.0133217045130507
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.6038583982223154,
+      "pc2": -0.9281743936257116
     },
     {
       "chembl_id": "CHEMBL2448182",
       "compound_name": "CID_2680",
       "family": "Herbicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.8732537380788898,
-      "pc2": 1.514961099340046
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 2.0040235314507373,
+      "pc2": 1.2105456175030305
     },
     {
       "chembl_id": "CHEMBL266158",
       "compound_name": "CID_1049",
       "family": "Herbicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.283299030722782,
-      "pc2": 0.6923001064613497
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.2247752536577354,
+      "pc2": 0.787324029394953
     },
     {
       "chembl_id": "CHEMBL266160",
       "compound_name": "CID_713",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.8911568536778176,
-      "pc2": -1.1978821027009972
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.997019157568308,
+      "pc2": -1.0717333176872532
     },
     {
       "chembl_id": "CHEMBL275626",
       "compound_name": "CID_527",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.3170868188754756,
-      "pc2": -0.1242833161498709
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.314915583791178,
+      "pc2": 0.01905709920442467
     },
     {
       "chembl_id": "CHEMBL277500",
       "compound_name": "CID_241",
       "family": "Azole_fungicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.720908940597693,
-      "pc2": 0.9677760991907602
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.6477028375576857,
+      "pc2": 1.08941937641234
     },
     {
       "chembl_id": "CHEMBL280428",
       "compound_name": "CID_637",
       "family": "Organophosphates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 2.2746574661838093,
-      "pc2": -0.827471875960339
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 2.1972202955604123,
+      "pc2": -1.109223192706668
     },
     {
       "chembl_id": "CHEMBL281435",
       "compound_name": "CID_9",
       "family": "Carbamates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 4.0779677196950495,
-      "pc2": -3.5072194459040773
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 3.7121812449698637,
+      "pc2": -3.9122787401420682
     },
     {
       "chembl_id": "CHEMBL283800",
       "compound_name": "CID_586",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.18997156149375174,
-      "pc2": -1.593080586186618
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.03188848926262581,
+      "pc2": -1.658497603774422
     },
     {
       "chembl_id": "CHEMBL284116",
       "compound_name": "CID_138",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.17220807459174678,
-      "pc2": -0.6183140601607223
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.21762184639048987,
+      "pc2": -0.6453153433551077
     },
     {
       "chembl_id": "CHEMBL286398",
       "compound_name": "CID_1030",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.1248244542304477,
-      "pc2": -1.1655545327210621
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.2369444780351424,
+      "pc2": -1.1105858074506363
     },
     {
       "chembl_id": "CHEMBL288114",
       "compound_name": "CID_370",
       "family": "Azole_fungicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.1466210804145447,
-      "pc2": -0.6373841762561157
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.0569665034284768,
+      "pc2": -0.894869848692086
     },
     {
       "chembl_id": "CHEMBL296272",
       "compound_name": "CID_314",
       "family": "Carbamates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 4.917028158966195,
-      "pc2": -1.538348130496736
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 4.7685792403376865,
+      "pc2": -2.0494850506076823
     },
     {
       "chembl_id": "CHEMBL297569",
       "compound_name": "CID_239",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.608095699374984,
-      "pc2": -1.1483489523422863
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.7083045419552519,
+      "pc2": -1.138445731707338
     },
     {
       "chembl_id": "CHEMBL30037",
       "compound_name": "CID_205",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.3040007176058817,
-      "pc2": -1.6369867791134949
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.15004530941648161,
+      "pc2": -1.706673463168998
     },
     {
       "chembl_id": "CHEMBL307931",
       "compound_name": "CID_470",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.5525582634410593,
-      "pc2": -1.611471706528893
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.4097601239904294,
+      "pc2": -1.6885939058070127
     },
     {
       "chembl_id": "CHEMBL308408",
       "compound_name": "CID_849",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.8348825394755102,
-      "pc2": -0.7061526871056032
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.9162414764852541,
+      "pc2": -0.7178440941050591
+    },
+    {
+      "chembl_id": "CHEMBL3085419",
+      "compound_name": "Methomyl",
+      "family": "Carbamates",
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.4913781769512602,
+      "pc2": -0.0771481539331552
     },
     {
       "chembl_id": "CHEMBL3187944",
       "compound_name": "CID_307",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.6949252618155468,
-      "pc2": 1.3116765396504617
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.5788815081565943,
+      "pc2": 1.3503894746153238
     },
     {
       "chembl_id": "CHEMBL325109",
       "compound_name": "CID_2780",
       "family": "Herbicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.8534599227499842,
-      "pc2": 2.787394061893819
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 2.0641590844758353,
+      "pc2": 2.427287911244195
     },
     {
       "chembl_id": "CHEMBL3337531",
       "compound_name": "CID_102",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.7962133926595671,
-      "pc2": 0.1731413951828194
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.8030319806532092,
+      "pc2": 0.12696415033523542
     },
     {
       "chembl_id": "CHEMBL346516",
       "compound_name": "Methyl parathion",
-      "family": "mixed",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.2444120865533985,
-      "pc2": 1.9909047511872768
+      "family": "Organophosphates",
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.4596387879759296,
+      "pc2": 1.7393737217572074
     },
     {
       "chembl_id": "CHEMBL35",
       "compound_name": "CID_3440",
       "family": "Herbicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 2.943032633187325,
-      "pc2": 1.5344236940918663
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 3.0602104766042073,
+      "pc2": 1.095929666574338
     },
     {
       "chembl_id": "CHEMBL366563",
       "compound_name": "CID_595",
       "family": "Carbamates",
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 3.1200431877380392,
+      "pc2": -1.4564228165251798
+    },
+    {
+      "chembl_id": "CHEMBL367623",
+      "compound_name": "2,4-D",
+      "family": "Herbicides",
       "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 3.2073623581240422,
-      "pc2": -1.1473931181426391
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.18376182525249632,
+      "pc2": 1.3772811305868107
     },
     {
       "chembl_id": "CHEMBL371654",
       "compound_name": "CID_949",
       "family": "Herbicides",
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.9860260773664224,
+      "pc2": 1.2911972695515828
+    },
+    {
+      "chembl_id": "CHEMBL373204",
+      "compound_name": "Cypermethrin",
+      "family": "Pyrethroids",
       "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.0855779334507694,
-      "pc2": 1.220351300255244
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.849859174555014,
+      "pc2": 4.2283946419652425
     },
     {
       "chembl_id": "CHEMBL37537",
       "compound_name": "CID_72",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.30644894014002866,
-      "pc2": -0.21333755089369297
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.26071174233608635,
+      "pc2": -0.38615043532371085
     },
     {
       "chembl_id": "CHEMBL39879",
       "compound_name": "CID_1474",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.2316112126786003,
-      "pc2": 1.9912061028801296
-    },
-    {
-      "chembl_id": "CHEMBL416",
-      "compound_name": "Deltamethrin",
-      "family": "mixed",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.020767808539105436,
-      "pc2": 2.8513844405263145
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.0616353988036804,
+      "pc2": 1.9417657818323468
     },
     {
       "chembl_id": "CHEMBL424",
       "compound_name": "CID_338",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.5332830758845295,
-      "pc2": 0.20718309281249842
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.5354293523073491,
+      "pc2": 0.11937595148605683
     },
     {
       "chembl_id": "CHEMBL441343",
       "compound_name": "CID_135",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.5332830758845295,
-      "pc2": 0.20718309281249842
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.5354293523073491,
+      "pc2": 0.11937595148605683
     },
     {
       "chembl_id": "CHEMBL445304",
       "compound_name": "CID_86",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.3812591225425872,
-      "pc2": -0.2952942814660879
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.3300193131228161,
+      "pc2": -0.472983717038833
     },
     {
       "chembl_id": "CHEMBL457299",
       "compound_name": "CID_174",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.1646196606898682,
-      "pc2": -1.3583599922171605
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.2907419175407533,
+      "pc2": -1.284168428135722
     },
     {
       "chembl_id": "CHEMBL461",
       "compound_name": "CID_464",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.1275748388787518,
-      "pc2": 0.2559361902842404
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.1348828573616325,
+      "pc2": 0.15629514385017787
     },
     {
       "chembl_id": "CHEMBL463210",
       "compound_name": "Chlorpyrifos",
-      "family": "mixed",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.0533463057730084,
-      "pc2": 3.35478224924065
+      "family": "Organophosphates",
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.361046216276315,
+      "pc2": 3.066319410034747
+    },
+    {
+      "chembl_id": "CHEMBL466426",
+      "compound_name": "Difenoconazole",
+      "family": "Azole_fungicides",
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 2.377876440669334,
+      "pc2": 4.1940802017362655
     },
     {
       "chembl_id": "CHEMBL468167",
       "compound_name": "Chlorothalonil",
-      "family": "mixed",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.9733010462762433,
-      "pc2": 2.286465008817163
+      "family": "Fungicides",
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.8004935530309505,
+      "pc2": 2.1170928094548147
     },
     {
       "chembl_id": "CHEMBL46917",
       "compound_name": "Carbaryl",
-      "family": "mixed",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.6462649877770691,
-      "pc2": 1.9707044280952062
+      "family": "Carbamates",
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.5002676903425436,
+      "pc2": 1.837526658410971
     },
     {
       "chembl_id": "CHEMBL46931",
       "compound_name": "CID_335",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.837420599864094,
-      "pc2": 0.7083270800745857
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.7967413053680426,
+      "pc2": 0.7287383712601879
     },
     {
       "chembl_id": "CHEMBL47181",
       "compound_name": "CID_529",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.8732215050956467,
-      "pc2": -1.3925370610751149
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.7449175746547659,
+      "pc2": -1.5253314248838543
     },
     {
       "chembl_id": "CHEMBL473159",
       "compound_name": "CID_359",
       "family": "Azole_fungicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.20083264402410386,
-      "pc2": -0.3008377952402763
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.2590522207294691,
+      "pc2": -0.4335458371341784
     },
     {
       "chembl_id": "CHEMBL4870693",
       "compound_name": "CID_43",
       "family": "Triazines",
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.7876126184628232,
+      "pc2": -1.374934170366674
+    },
+    {
+      "chembl_id": "CHEMBL487186",
+      "compound_name": "Tebuconazole",
+      "family": "Azole_fungicides",
       "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.8974558795512941,
-      "pc2": -1.2578045330068126
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.3597085811954484,
+      "pc2": 2.6249660662741423
     },
     {
       "chembl_id": "CHEMBL50300",
       "compound_name": "CID_546",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.2664785536283921,
-      "pc2": -1.4592207197452571
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.11973427304264071,
+      "pc2": -1.5476075523906925
     },
     {
       "chembl_id": "CHEMBL539",
       "compound_name": "CID_176",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.946857669368979,
-      "pc2": -0.7573987747896336
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.0178716119503233,
+      "pc2": -0.6612451670324778
     },
     {
       "chembl_id": "CHEMBL53929",
       "compound_name": "CID_4581",
       "family": "Herbicides",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.3569178591529449,
-      "pc2": -0.23007908080858486
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.31305885143285267,
+      "pc2": -0.3689375363343213
     },
     {
       "chembl_id": "CHEMBL54",
       "compound_name": "CID_3559",
       "family": "Herbicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.1431982167352372,
-      "pc2": 3.674624773630339
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.4403336752377585,
+      "pc2": 3.3766830969654578
     },
     {
       "chembl_id": "CHEMBL545",
       "compound_name": "CID_702",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.2150694771435115,
-      "pc2": -0.7491286925445371
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.286838237683646,
+      "pc2": -0.6153406494800054
     },
     {
       "chembl_id": "CHEMBL54943",
       "compound_name": "CID_594",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.03278235653775441,
-      "pc2": -1.3223143701661781
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.09894549473080712,
+      "pc2": -1.3775364962166516
     },
     {
-      "chembl_id": "CHEMBL552761",
-      "compound_name": "Methomyl",
-      "family": "mixed",
+      "chembl_id": "CHEMBL560579",
+      "compound_name": "Propiconazole",
+      "family": "Azole_fungicides",
       "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.4945572767226325,
-      "pc2": 0.00035348344394245455
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.5054368926469708,
+      "pc2": 3.1445368319547216
     },
     {
       "chembl_id": "CHEMBL572964",
       "compound_name": "CID_1118",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.7824651389037613,
-      "pc2": -1.344867491790399
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.9132150002886662,
+      "pc2": -1.3569534322566164
     },
     {
       "chembl_id": "CHEMBL576",
       "compound_name": "CID_1110",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.1927485446075235,
-      "pc2": -0.8413392828695583
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.2622396369583004,
+      "pc2": -0.8796540483298285
     },
     {
       "chembl_id": "CHEMBL58343",
       "compound_name": "CID_199",
       "family": "Triazines",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.5381774435467407,
-      "pc2": -1.4171570439574555
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.4100624189463405,
+      "pc2": -1.4839611751886193
     },
     {
       "chembl_id": "CHEMBL596011",
       "compound_name": "CID_364",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.3346144510494407,
-      "pc2": -1.8764891526196752
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.16441877620804832,
+      "pc2": -1.935159099983128
     },
     {
       "chembl_id": "CHEMBL6",
       "compound_name": "CID_3715",
       "family": "Herbicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.533276592694557,
-      "pc2": 3.7476531425350412
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.839082279495585,
+      "pc2": 3.372045712826287
     },
     {
       "chembl_id": "CHEMBL601",
       "compound_name": "CID_137",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.3801319818061158,
-      "pc2": -0.9399294161241453
-    },
-    {
-      "chembl_id": "CHEMBL64147",
-      "compound_name": "Lambda-cyhalothrin",
-      "family": "mixed",
       "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 3.5042859975862246,
-      "pc2": 0.02504023531166427
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.3135118715857199,
+      "pc2": -0.9992931409935387
     },
     {
       "chembl_id": "CHEMBL692",
       "compound_name": "CID_753",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.07441523653105109,
-      "pc2": -1.7748252423544149
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.24088966211962984,
+      "pc2": -1.7794485501725674
     },
     {
       "chembl_id": "CHEMBL71595",
       "compound_name": "CID_784",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.5029014172832098,
-      "pc2": -1.170928254713714
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.610681664987553,
+      "pc2": -1.1199923827716927
     },
     {
       "chembl_id": "CHEMBL730",
       "compound_name": "CID_4510",
       "family": "Herbicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 3.4072310380203015,
-      "pc2": -0.2440074864503997
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 3.4992613536152994,
+      "pc2": -0.5498594368630796
     },
     {
       "chembl_id": "CHEMBL74063",
       "compound_name": "CID_1326",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.31515149904065193,
-      "pc2": 0.7803087948700538
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.3953894793921293,
+      "pc2": 0.6586340115248714
+    },
+    {
+      "chembl_id": "CHEMBL74469",
+      "compound_name": "Paraquat",
+      "family": "Herbicides",
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.6512844409434733,
+      "pc2": 1.8483093159360213
     },
     {
       "chembl_id": "CHEMBL75967",
       "compound_name": "CID_992",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.325425085672684,
-      "pc2": 2.3754832290551087
-    },
-    {
-      "chembl_id": "CHEMBL7715",
-      "compound_name": "2,4-D",
-      "family": "mixed",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 0.3184469808757454,
-      "pc2": 1.1800474895550346
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.173789697099017,
+      "pc2": 2.2270057601264246
     },
     {
       "chembl_id": "CHEMBL773",
       "compound_name": "CID_750",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.8259989130123562,
-      "pc2": -1.413326988472339
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.9536043855102526,
+      "pc2": -1.3849759618172386
     },
     {
       "chembl_id": "CHEMBL78",
       "compound_name": "CID_596",
       "family": "Carbamates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 3.1469586767052546,
-      "pc2": -1.508915162227646
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 3.0017727074265355,
+      "pc2": -1.8510335448534139
     },
     {
       "chembl_id": "CHEMBL79041",
       "compound_name": "CID_346",
       "family": "Carbamates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 3.2702028260157707,
-      "pc2": -1.1450095913789076
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 3.133219837554228,
+      "pc2": -1.5220159527103234
     },
     {
       "chembl_id": "CHEMBL851",
       "compound_name": "CID_107",
       "family": "Carbamates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.9168817516277854,
-      "pc2": 0.9955434725136142
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.8356590947340816,
+      "pc2": 0.9711535049520953
     },
     {
       "chembl_id": "CHEMBL87788",
       "compound_name": "CID_724",
       "family": "Organophosphates",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.9634665280087107,
-      "pc2": -1.8089629012516404
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.7948113343032701,
+      "pc2": -2.0205765828544853
     },
     {
       "chembl_id": "CHEMBL89306",
       "compound_name": "CID_660",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.6098645248961065,
-      "pc2": 1.0594707705058457
-    },
-    {
-      "chembl_id": "CHEMBL8937",
-      "compound_name": "Tebuconazole",
-      "family": "mixed",
       "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 3.85893816710667,
-      "pc2": 4.785222947253945
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.5250336043550778,
+      "pc2": 1.0611201114494473
     },
     {
       "chembl_id": "CHEMBL9113",
       "compound_name": "CID_1140",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -2.6775927401386093,
-      "pc2": 1.1323737054370087
-    },
-    {
-      "chembl_id": "CHEMBL91495",
-      "compound_name": "Difenoconazole",
-      "family": "mixed",
       "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 2.1749367126540653,
-      "pc2": 3.2983518306357444
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -2.592996066460433,
+      "pc2": 1.2374577846285635
     },
     {
       "chembl_id": "CHEMBL91732",
       "compound_name": "Aldicarb",
-      "family": "mixed",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.0432653031908675,
-      "pc2": 0.40697901765741096
+      "family": "Carbamates",
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 0.0032828443269351864,
+      "pc2": 0.30422630486780167
     },
     {
       "chembl_id": "CHEMBL920",
       "compound_name": "CID_305",
       "family": "Azole_fungicides",
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.658973533682736,
+      "pc2": -0.36841112766534007
+    },
+    {
+      "chembl_id": "CHEMBL95764",
+      "compound_name": "Glyphosate",
+      "family": "Herbicides",
       "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.6088095271085432,
-      "pc2": -0.4885642605178765
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.2530798652611976,
+      "pc2": -1.8533274331356409
     },
     {
       "chembl_id": "CHEMBL96",
       "compound_name": "CID_119",
       "family": "Organophosphates",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -0.39015188698336534,
-      "pc2": -0.8833315062515041
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -0.46296319417287096,
+      "pc2": -0.8918805375312228
     },
     {
       "chembl_id": "CHEMBL979",
       "compound_name": "CID_4064",
       "family": "Herbicides",
-      "cluster": 0,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": 1.5698069018465193,
-      "pc2": -0.015589436948872331
+      "cluster": 1,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": 1.5929456898588101,
+      "pc2": -0.23082192651758118
     },
     {
       "chembl_id": "CHEMBL985",
       "compound_name": "CID_1176",
       "family": "Pyrethroids",
-      "cluster": 1,
-      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)",
-      "pc1": -1.2356558216264282,
-      "pc2": -1.5879951576664408
+      "cluster": 0,
+      "cluster_label": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+      "pc1": -1.3872585967905815,
+      "pc2": -1.5380222199668296
     }
   ],
   "explained_variance_ratio": [
-    0.46534770740377246,
-    0.3166631714816365
+    0.44701956374501145,
+    0.35744210510770674
   ],
   "summary": {
     "best_k": 2,
     "silhouette_by_k": {
-      "2": 0.3632759428412794,
-      "3": 0.34298680799747033,
-      "4": 0.2773740244406572,
-      "5": 0.27958725107673005,
-      "6": 0.2934569746884627,
-      "7": 0.29516600568744594,
-      "8": 0.28091407676913777
+      "2": 0.36017044974923623,
+      "3": 0.34563668260403135,
+      "4": 0.2965077959654524,
+      "5": 0.29652745048069346,
+      "6": 0.30851888220104945,
+      "7": 0.31911969113161937,
+      "8": 0.3191913152894936
     },
-    "silhouette_best": 0.3632759428412794,
-    "ari_vs_family": 0.01782535200709751,
-    "pca_var_explained": 0.782010878885409,
+    "silhouette_best": 0.36017044974923623,
+    "ari_vs_family": 0.007557590570076765,
+    "pca_var_explained": 0.8044616688527182,
     "features_used": [
       "mw_freebase",
       "alogp",
@@ -1355,11 +1391,13 @@
       "num_ro5_violations"
     ],
     "features_dropped_reason": "near-zero variance (nunique < 3)",
-    "cluster_validity_note": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)"
+    "cluster_validity_note": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+    "corpus_structural_n": 151,
+    "corpus_potency_n": 94
   },
   "cluster_validity": {
-    "ari_vs_family": 0.01782535200709751,
-    "silhouette_best": 0.3632759428412794,
-    "note": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)"
+    "ari_vs_family": 0.007557590570076765,
+    "silhouette_best": 0.36017044974923623,
+    "note": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)"
   }
 }

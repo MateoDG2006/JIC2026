@@ -2,82 +2,82 @@
   "kruskal_tests": [
     {
       "value_col": "mw_freebase",
-      "H": 18.18053366454188,
-      "p": 0.00272845160098,
-      "p_adjusted": 0.0074037122761233,
-      "epsilon2": 0.1046074100360466,
+      "H": 13.206990472748355,
+      "p": 0.0215143620010416,
+      "p_adjusted": 0.0330343054653471,
+      "epsilon2": 0.0569929893940858,
       "k_groups": 6,
-      "n": 132,
-      "n_excluded_groups": 15
+      "n": 150,
+      "n_excluded_groups": 0
     },
     {
       "value_col": "alogp",
-      "H": 30.55341183623724,
-      "p": 1.1474330528024955e-05,
-      "p_adjusted": 8.03203136961747e-05,
-      "epsilon2": 0.2028048558431527,
+      "H": 22.93729780901504,
+      "p": 0.0003470112151162,
+      "p_adjusted": 0.0024290785058139,
+      "epsilon2": 0.12456456811816,
       "k_groups": 6,
-      "n": 132,
-      "n_excluded_groups": 15
+      "n": 150,
+      "n_excluded_groups": 0
     },
     {
       "value_col": "psa",
-      "H": 12.470049194529713,
-      "p": 0.0288848626552571,
-      "p_adjusted": 0.0336990064311332,
-      "epsilon2": 0.0592861047184897,
+      "H": 12.768603833378185,
+      "p": 0.0256464361947353,
+      "p_adjusted": 0.0330343054653471,
+      "epsilon2": 0.0539486377317929,
       "k_groups": 6,
-      "n": 132,
-      "n_excluded_groups": 15
+      "n": 150,
+      "n_excluded_groups": 0
     },
     {
       "value_col": "hba",
-      "H": 9.431135103824952,
-      "p": 0.0930548257124033,
-      "p_adjusted": 0.0930548257124033,
-      "epsilon2": 0.0351677389192456,
+      "H": 7.694689682904612,
+      "p": 0.1738840092895223,
+      "p_adjusted": 0.1738840092895223,
+      "epsilon2": 0.0187131227979486,
       "k_groups": 6,
-      "n": 132,
-      "n_excluded_groups": 15
+      "n": 150,
+      "n_excluded_groups": 0
     },
     {
       "value_col": "hbd",
-      "H": 17.146209940736153,
-      "p": 0.0042306927292133,
-      "p_adjusted": 0.0074037122761233,
-      "epsilon2": 0.096398491593144,
+      "H": 15.642600657014556,
+      "p": 0.007942117727799,
+      "p_adjusted": 0.0277974120472965,
+      "epsilon2": 0.0739069490070455,
       "k_groups": 6,
-      "n": 132,
-      "n_excluded_groups": 15
+      "n": 150,
+      "n_excluded_groups": 0
     },
     {
       "value_col": "aromatic_rings",
-      "H": 13.272508303166694,
-      "p": 0.0209545994165755,
-      "p_adjusted": 0.0293364391832058,
-      "epsilon2": 0.0656548278029102,
+      "H": 13.051572743239277,
+      "p": 0.0229002392803159,
+      "p_adjusted": 0.0330343054653471,
+      "epsilon2": 0.0559136996058282,
       "k_groups": 6,
-      "n": 132,
-      "n_excluded_groups": 15
+      "n": 150,
+      "n_excluded_groups": 0
     },
     {
       "value_col": "rtb",
-      "H": 17.545986151077173,
-      "p": 0.0035726848063641,
-      "p_adjusted": 0.0074037122761233,
-      "epsilon2": 0.0995713186593426,
+      "H": 12.52017407946622,
+      "p": 0.0283151189702975,
+      "p_adjusted": 0.0330343054653471,
+      "epsilon2": 0.0522234311074043,
       "k_groups": 6,
-      "n": 132,
-      "n_excluded_groups": 15
+      "n": 150,
+      "n_excluded_groups": 0
     }
   ],
   "n_by_family": {
-    "Azole_fungicides": 13,
-    "Carbamates": 21,
-    "Herbicides": 24,
-    "Organophosphates": 29,
-    "Pyrethroids": 26,
-    "Triazines": 19,
-    "mixed": 15
+    "Azole_fungicides": 16,
+    "Carbamates": 24,
+    "Fungicides": 1,
+    "Herbicides": 27,
+    "Organophosphates": 33,
+    "Pyrethroids": 29,
+    "Triazines": 21
   }
 }

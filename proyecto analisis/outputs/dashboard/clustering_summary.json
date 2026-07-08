@@ -1,17 +1,17 @@
 {
   "best_k": 2,
   "silhouette_by_k": {
-    "2": 0.3632759428412794,
-    "3": 0.34298680799747033,
-    "4": 0.2773740244406572,
-    "5": 0.27958725107673005,
-    "6": 0.2934569746884627,
-    "7": 0.29516600568744594,
-    "8": 0.28091407676913777
+    "2": 0.36017044974923623,
+    "3": 0.34563668260403135,
+    "4": 0.2965077959654524,
+    "5": 0.29652745048069346,
+    "6": 0.30851888220104945,
+    "7": 0.31911969113161937,
+    "8": 0.3191913152894936
   },
-  "silhouette_best": 0.3632759428412794,
-  "ari_vs_family": 0.01782535200709751,
-  "pca_var_explained": 0.782010878885409,
+  "silhouette_best": 0.36017044974923623,
+  "ari_vs_family": 0.007557590570076765,
+  "pca_var_explained": 0.8044616688527182,
   "features_used": [
     "mw_freebase",
     "alogp",
@@ -25,5 +25,7 @@
     "num_ro5_violations"
   ],
   "features_dropped_reason": "near-zero variance (nunique < 3)",
-  "cluster_validity_note": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.018, silhouette=0.36)"
+  "cluster_validity_note": "Partici\u00f3n exploratoria \u2014 no corresponde a familias (ARI=0.008, silhouette=0.36)",
+  "corpus_structural_n": 151,
+  "corpus_potency_n": 94
 }
