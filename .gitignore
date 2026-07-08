@@ -28,7 +28,7 @@ data/external/
 !/viz/data/.gitkeep
 
 # Bundle legacy de despliegue
-dashboard/
+/dashboard/
 
 # Proyecto análisis — datos
 proyecto analisis/data/raw/*
