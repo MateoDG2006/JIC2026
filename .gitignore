@@ -33,6 +33,8 @@ data/external/
 # Proyecto análisis — datos
 proyecto analisis/data/raw/*
 !proyecto analisis/data/raw/.gitkeep
+!proyecto analisis/data/raw/chembl_corpus_mapping.csv
+!proyecto analisis/data/raw/chembl_panama_bioactivity_raw.csv
 proyecto analisis/data/processed/
 proyecto analisis/data/external/*
 !proyecto analisis/data/external/**/.gitkeep
