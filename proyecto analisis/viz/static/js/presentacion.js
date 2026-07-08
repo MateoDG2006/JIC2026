@@ -236,14 +236,15 @@ async function initBaseline() {
   } catch (e) { fail("plot-baseline", e.message); }
 }
 
-// Mapa índice de diapositiva -> inicializador (0-based; 5 diapositivas de fase antes de equipo)
+// Mapa índice de diapositiva -> inicializador (0-based)
+// Orden: 0 portada · 1 equipo · 2 stack · 3 pregunta · 4-12 conceptos · 13-17 fases · 18 pipeline · 19-23 resultados
 const SLIDE_INIT = {
-  9: initFunnel,      // slide 10 — embudo corpus
-  10: initEda,        // slide 11 — EDA interactivo
-  11: initCorrBig,    // slide 12 — correlación
-  12: initKruskal,    // slide 13 — Kruskal
-  13: initPca,        // slide 14 — PCA
-  14: initBaseline,   // slide 15 — baseline
+  18: initFunnel,     // Pipeline — embudo corpus
+  19: initEda,        // EDA interactivo
+  20: initCorrBig,    // Correlación
+  21: initKruskal,    // Diferencias entre familias (Kruskal)
+  22: initPca,        // PCA / clustering
+  23: initBaseline,   // Hallazgo central — baseline
 };
 
 /** Reinicia animaciones CSS del pipeline al entrar en una diapositiva de fase. */
