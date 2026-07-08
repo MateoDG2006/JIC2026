@@ -226,7 +226,7 @@ async function initLimpieza() {
 let EDA = null;
 async function initExploracion() {
   await loadGlossary();
-  EDA = await (await fetch("/api/analytics/eda/dataset")).json();
+  EDA = await (await fetch("/api/analytics/dashboard/dataset")).json();
   const cols = EDA.numeric_cols;
   const opt = (c) => `<option value="${c}">${colLabel(c)}</option>`;
   document.getElementById("eda-variable").innerHTML = cols.map(opt).join("");
@@ -451,7 +451,7 @@ async function initModelado() {
     const [info, compounds, ds] = await Promise.all([
       fetch("/api/analytics/model/info").then((r) => r.json()),
       fetch("/api/analytics/model/compounds").then((r) => r.json()),
-      fetch("/api/analytics/eda/dataset").then((r) => r.json()),
+      fetch("/api/analytics/dashboard/dataset").then((r) => r.json()),
     ]);
     MODEL = { ...info, compounds: compounds.compounds || [], compoundFeatures: compounds.features || [], _rows: ds.rows || [] };
   } catch (e) { return; }

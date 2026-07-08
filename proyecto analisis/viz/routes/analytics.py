@@ -71,12 +71,6 @@ def page_dashboard(request: Request):
     return templates.TemplateResponse(request, "dashboard.html", {"active_nav": "dashboard"})
 
 
-@router.get("/eda", response_class=HTMLResponse)
-def page_eda(request: Request):
-    """EDA: histogramas, boxplots, correlación y scatter de compuestos."""
-    return templates.TemplateResponse(request, "analytics_exploration.html", {"active_nav": "eda"})
-
-
 @router.get("/presentacion", response_class=HTMLResponse)
 def page_presentacion(request: Request):
     """Presentación tipo diapositivas del proyecto (basada en el informe IEEE)."""
@@ -347,9 +341,9 @@ def families_stats():
     return load_family_stats()
 
 
-@router.get("/api/analytics/eda/dataset")
-def eda_dataset():
-    """Datos numéricos a nivel compuesto para EDA client-side (distribuciones, correlación, regresión)."""
+@router.get("/api/analytics/dashboard/dataset")
+def dashboard_dataset():
+    """Datos numéricos a nivel compuesto para el dashboard client-side."""
     df = load_chembl().copy()
     numeric = [c for c in NUMERIC_COLS if c in df.columns]
     # añade descriptores no incluidos en NUMERIC_COLS
