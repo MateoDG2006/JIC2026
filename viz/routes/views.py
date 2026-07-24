@@ -1,11 +1,8 @@
 """Rutas HTML (Jinja2) para el visor GNN 3D.
 
-Estas rutas sirven las páginas del visor — la lógica interactiva
-(predicción, XAI, render 3D con 3Dmol.js) la hace el JavaScript
-del cliente, que pega a los endpoints de ``viz.routes.api``.
-
 Endpoints:
-    GET /                       → corpus Panamá por familia
+    GET /                       → landing del proyecto
+    GET /visor                  → corpus Panamá por familia + buscador
     GET /molecule/{compound_id} → predicción en vivo de compuesto del catálogo
     GET /analyze?smiles=...     → análisis ad-hoc (SMILES / PubChem)
 """
@@ -24,8 +21,18 @@ templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 
 @router.get("/", response_class=HTMLResponse)
+def landing(request: Request):
+    """Landing profesional del proyecto JIC — punto de entrada."""
+    return templates.TemplateResponse(
+        request,
+        "landing.html",
+        {"active_nav": "home"},
+    )
+
+
+@router.get("/visor", response_class=HTMLResponse)
 def index(request: Request):
-    """Dashboard principal: corpus Panamá por familia + buscador."""
+    """Visor GNN: corpus Panamá por familia + buscador."""
     families = panama_corpus.list_by_family()
     total = sum(section["count"] for section in families)
     return templates.TemplateResponse(

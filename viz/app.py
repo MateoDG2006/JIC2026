@@ -1,16 +1,15 @@
-"""Aplicación FastAPI unificada del proyecto: visor GNN 3D + analytics ChEMBL/Panamá.
+"""Aplicación FastAPI del visor GNN 3D + XAI (proyecto JIC).
 
 Estructura:
-    /                        → visor GNN 3D (vistas Jinja2)
-    /eda, /chembl/models     → analytics ChEMBL (EDA, modelos)
-    /panama/{toxicity,map}   → análisis Panamá (toxicidad, mapa)
-    /panama/models           → comparativa baselines vs GIN (AUDIT P9)
-    /api/*                   → REST: predicción GIN, XAI, propiedades
-    /api/analytics/*         → REST: datos EDA, métricas, geo, comparativa
-    /api/analytics/refresh   → POST: invalida caché si artefactos cambiaron en disco (P3)
+    /                        → landing del proyecto
+    /visor                   → corpus Panamá + buscador PubChem/SMILES
+    /molecule/{id}, /analyze → predicción en vivo + XAI
+    /api/*                   → REST: predicción GIN, XAI, propiedades, PubChem
     /xai/<filename>          → SVGs precomputados (GNNExplainer/Grad-CAM)
-    /health                  → estado del servidor (P12)
+    /health                  → estado del servidor
     /static/*                → CSS, JS, imágenes
+
+Analytics ChEMBL viven en ``proyecto analisis/viz/`` (puerto 8001).
 """
 
 from __future__ import annotations

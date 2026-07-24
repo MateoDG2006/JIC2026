@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const els = {
         loading: document.getElementById("loading"),
         loadingMsg: document.getElementById("loading-msg"),
-        error: document.getElementById("error-banner"),
         viewer3d: document.getElementById("viewer-3d"),
         viewer3dStatus: document.getElementById("viewer-3d-status"),
         predictionsChart: document.getElementById("predictions-chart"),
@@ -69,8 +68,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("btn-toggle-style")?.addEventListener("click", (e) => {
         const style = MoleculeViewer3D.toggleStyle();
-        e.target.textContent = `Estilo: ${style}`;
+        const btn = e.currentTarget;
+        const label = btn?.querySelector(".style-label");
+        if (label) label.textContent = style || "Estilo";
+        else if (btn) btn.title = `Estilo: ${style}`;
     });
+
+    const exportBtn = document.getElementById("btn-export-menu");
+    const exportMenu = document.getElementById("export-menu");
+    if (exportBtn && exportMenu) {
+        exportBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const open = exportMenu.hidden;
+            exportMenu.hidden = !open;
+            exportBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        });
+        document.addEventListener("click", () => {
+            exportMenu.hidden = true;
+            exportBtn.setAttribute("aria-expanded", "false");
+        });
+        exportMenu.addEventListener("click", (e) => e.stopPropagation());
+    }
 
     async function downloadStl(style, btnId, defaultLabel) {
         if (!smiles) {
@@ -78,10 +96,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
         const btn = document.getElementById(btnId);
-        const originalText = btn?.textContent;
+        const labelEl = btn?.querySelector("span:last-of-type");
+        const originalText = labelEl?.textContent || defaultLabel;
         if (btn) {
             btn.disabled = true;
-            btn.textContent = "Generando…";
+            if (labelEl) labelEl.textContent = "Generando…";
         }
         try {
             const compoundName =
@@ -110,17 +129,21 @@ document.addEventListener("DOMContentLoaded", () => {
         } finally {
             if (btn) {
                 btn.disabled = false;
-                btn.textContent = originalText || defaultLabel;
+                if (labelEl) labelEl.textContent = originalText;
+            }
+            if (exportMenu) {
+                exportMenu.hidden = true;
+                exportBtn?.setAttribute("aria-expanded", "false");
             }
         }
     }
 
     document.getElementById("btn-download-stl")?.addEventListener("click", () => {
-        downloadStl("ballstick", "btn-download-stl", "↓ STL 3D");
+        downloadStl("ballstick", "btn-download-stl", "STL 3D");
     });
 
     document.getElementById("btn-download-stl-flat")?.addEventListener("click", () => {
-        downloadStl("flat_keychain", "btn-download-stl-flat", "↓ STL llavero");
+        downloadStl("flat_keychain", "btn-download-stl-flat", "STL llavero");
     });
 
     document.querySelectorAll("[data-method]").forEach((btn) => {
@@ -162,12 +185,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function showError(msg) {
-        els.error.textContent = msg;
-        els.error.hidden = false;
+        if (!msg) return;
+        if (window.GnnToxToast?.showToast) {
+            window.GnnToxToast.showToast(String(msg), "warn", 6500);
+        } else {
+            console.warn(msg);
+        }
     }
 
     function hideError() {
-        els.error.hidden = true;
+        /* errores van a toast; no hay banner en la UI principal */
     }
 
     function riskLevel(maxProb) {

@@ -15,13 +15,13 @@
      data-tasks='{{ task_names | tojson }}'
      data-task-descriptions='{{ task_descriptions | tojson }}'>
 
-    <nav class="breadcrumb">
-        <a href="/">Corpus</a>
-        <span>/</span>
+    <nav class="breadcrumb" aria-label="Miga de pan">
+        <a href="/visor">Corpus</a>
+        <span aria-hidden="true">/</span>
         <span id="breadcrumb-name">{{ compound_name or (compound.name if compound else 'Análisis') }}</span>
     </nav>
 
-    <header class="molecule-header">
+    <header class="molecule-identity">
         <div>
             <h1 id="compound-name">{{ compound_name or (compound.name if compound else 'Análisis de molécula') }}</h1>
             {% if compound_family %}
@@ -40,8 +40,6 @@
         <p id="loading-msg">Cargando análisis…</p>
     </div>
 
-    <div id="error-banner" class="error-banner" hidden></div>
-
     {% if compound and compound.demo %}
     <div id="demo-banner" class="demo-banner" role="note">
         <strong>Ejemplo de prueba.</strong>
@@ -52,18 +50,36 @@
     {% endif %}
 
     <div class="molecule-layout">
-        <!-- Panel izquierdo: visualización 3D + 2D -->
         <div class="viz-panel card">
             <div class="viz-toolbar">
-                <button type="button" class="btn btn-sm" id="btn-reset-view" title="Resetear vista">⟳ Vista</button>
-                <button type="button" class="btn btn-sm" id="btn-toggle-style" title="Alternar estilo">Estilo</button>
-                <button type="button" class="btn btn-sm" id="btn-download-stl" title="Modelo 3D ball-and-stick" hidden>
-                    ↓ STL 3D
-                </button>
-                <button type="button" class="btn btn-sm" id="btn-download-stl-flat" title="Ball-and-stick plano con placa y nombre (~35 mm)" hidden>
-                    ↓ STL llavero
-                </button>
-                <span class="toolbar-label">Coloración XAI</span>
+                <div class="toolbar-group" role="group" aria-label="Vista">
+                    <button type="button" class="btn btn-sm" id="btn-reset-view" title="Resetear vista">
+                        <i data-lucide="rotate-ccw" class="btn-ico" aria-hidden="true"></i>
+                        <span>Vista</span>
+                    </button>
+                    <button type="button" class="btn btn-sm" id="btn-toggle-style" title="Alternar estilo">
+                        <i data-lucide="palette" class="btn-ico" aria-hidden="true"></i>
+                        <span class="style-label">Estilo</span>
+                    </button>
+                </div>
+                <div class="toolbar-divider" aria-hidden="true"></div>
+                <div class="export-menu-wrap">
+                    <button type="button" class="btn btn-sm" id="btn-export-menu" aria-expanded="false" aria-haspopup="true" aria-controls="export-menu" title="Exportar">
+                        <i data-lucide="download" class="btn-ico" aria-hidden="true"></i>
+                        <span>Exportar</span>
+                        <i data-lucide="chevron-down" class="btn-ico" aria-hidden="true"></i>
+                    </button>
+                    <div class="export-menu" id="export-menu" hidden role="menu">
+                        <button type="button" class="btn btn-sm" id="btn-download-stl" role="menuitem" title="Modelo 3D ball-and-stick">
+                            <i data-lucide="box" class="btn-ico" aria-hidden="true"></i>
+                            <span>STL 3D</span>
+                        </button>
+                        <button type="button" class="btn btn-sm" id="btn-download-stl-flat" role="menuitem" title="Ball-and-stick plano con placa (~35 mm)">
+                            <i data-lucide="key-round" class="btn-ico" aria-hidden="true"></i>
+                            <span>STL llavero</span>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="viewer-3d-wrap">
                 <div id="viewer-3d" class="viewer-3d"></div>
@@ -77,15 +93,10 @@
             </div>
         </div>
 
-        <!-- Panel derecho: predicciones + controles XAI -->
         <div class="data-panel">
-            <section class="card" id="props-section" hidden>
-                <h2>Propiedades</h2>
-                <dl class="props-grid" id="props-grid"></dl>
-            </section>
-
-            <section class="card">
+            <section class="card rail-card">
                 <h2>Predicciones Tox21</h2>
+                <p class="zone-sub">Elegí una diana para enfocar la explicación XAI.</p>
                 {% if compound and compound.demo %}
                 <p id="demo-predictions-note" class="demo-inline-note">
                     Valores de demostración — no son predicciones reales del modelo.
@@ -96,8 +107,9 @@
                 <div id="predictions-chart" class="predictions-chart"></div>
             </section>
 
-            <section class="card xai-controls">
-                <h2>Explicación XAI</h2>
+            <section class="card rail-card xai-controls">
+                <h2>Explicar</h2>
+                <p class="zone-sub">Identificá qué átomos impulsan la predicción.</p>
                 <div class="control-row">
                     <label for="task-select">Diana biológica</label>
                     <select id="task-select">
@@ -108,42 +120,52 @@
                 </div>
                 <div class="control-row method-toggle">
                     <span>Método</span>
-                    <div class="btn-group" role="group">
+                    <div class="btn-group" role="group" aria-label="Método XAI">
                         <button type="button" class="btn btn-sm active" data-method="gradcam">Grad-CAM</button>
                         <button type="button" class="btn btn-sm" data-method="gnnexplainer">GNNExplainer</button>
                         <button type="button" class="btn btn-sm" data-method="compare">Comparar</button>
                     </div>
                 </div>
                 <button type="button" class="btn btn-primary" id="btn-run-xai">
-                    Generar explicación
+                    <i data-lucide="sparkles" class="btn-ico" aria-hidden="true"></i>
+                    <span>Generar explicación</span>
                 </button>
                 <p class="hint" id="xai-hint">
                     Grad-CAM: rápido (~1 s). GNNExplainer: preciso (~30 s).
                 </p>
             </section>
 
-            <section class="card" id="atoms-section" hidden>
-                <h2>Importancia por átomo</h2>
-                <div class="atoms-table-wrap">
-                    <table class="atoms-table" id="atoms-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Átomo</th>
-                                <th id="col-gradcam">Grad-CAM</th>
-                                <th id="col-gnnexp" hidden>GNNExpl.</th>
-                                <th>Barra</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </section>
+            <details class="card rail-card rail-details" id="details-section" open>
+                <summary>
+                    <span class="chev" aria-hidden="true"><i data-lucide="chevron-right"></i></span>
+                    Detalles
+                </summary>
+                <section id="props-section" hidden>
+                    <h3 class="zone-title" style="font-size:.95rem;margin-bottom:.65rem">Propiedades</h3>
+                    <dl class="props-grid" id="props-grid"></dl>
+                </section>
+                <section id="atoms-section" hidden style="margin-top:1rem">
+                    <h3 class="zone-title" style="font-size:.95rem;margin-bottom:.65rem">Importancia por átomo</h3>
+                    <div class="atoms-table-wrap">
+                        <table class="atoms-table" id="atoms-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Átomo</th>
+                                    <th id="col-gradcam">Grad-CAM</th>
+                                    <th id="col-gnnexp" hidden>GNNExpl.</th>
+                                    <th>Barra</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+            </details>
         </div>
     </div>
 </div>
 
-{# Datos pre-computados del corpus (si existen) #}
 {% if compound %}
 <script id="corpus-data" type="application/json">{{ compound | tojson }}</script>
 {% endif %}
@@ -153,4 +175,7 @@
 <script src="/static/js/3Dmol-cdn.js"></script>
 <script src="/static/js/viewer3d.js"></script>
 <script src="/static/js/molecule.js"></script>
+<script>
+  if (window.lucide) lucide.createIcons();
+</script>
 {% endblock %}

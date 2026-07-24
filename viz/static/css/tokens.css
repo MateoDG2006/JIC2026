@@ -1,0 +1,98 @@
+/* Shared design tokens — landing + dashboard */
+:root {
+  --wrap: 1200px;
+  --disp: "Space Grotesk", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --body: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "Cascadia Code", "Fira Code", Consolas, monospace;
+  --tb: cubic-bezier(.16, 1, .3, 1);
+  --radius: 14px;
+
+  /* LIGHT (default) */
+  --ground: #F6F8FB;
+  --ground-alt: #ECF1F7;
+  --surface: #FFFFFF;
+  --ink: #0E1A2B;
+  --muted: #53637B;
+  --line: #E1E8F0;
+  --accent: #1B3A5F;
+  --accent-strong: #0F2744;
+  --accent-ink: #FFFFFF;
+  --agro: #0E9F6E;
+  --agro-ink: #0B7D57;
+  --grad: linear-gradient(120deg, #1B3A5F, #2A5A8A);
+  --brand-grad: linear-gradient(180deg, #0F2744, #1B3A5F, #3D6B9A);
+  --brand-glow: drop-shadow(0 4px 26px rgba(15, 39, 68, .22));
+  --glass: rgba(255, 255, 255, .46);
+  --glass-strong: rgba(255, 255, 255, .64);
+  --glass-border: rgba(255, 255, 255, .72);
+  --glass-blur: blur(20px) saturate(1.7);
+  --glass-sheen: rgba(255, 255, 255, .6);
+  --neon: #38BDF8;
+  --brand-ink: #1B3A5F;
+  --hi: #E5484D;
+  --hi-ink: #C4292E;
+  --hi-bg: #FDECEC;
+  --mod: #F59E0B;
+  --mod-ink: #B45309;
+  --mod-bg: #FEF3E2;
+  --lo: #16A34A;
+  --lo-ink: #15803D;
+  --lo-bg: #EAF7EE;
+  --sh-sm: 0 1px 2px rgba(15, 27, 45, .06);
+  --sh-md: 0 10px 30px rgba(15, 27, 45, .09);
+  --sh-lg: 0 28px 70px rgba(15, 27, 45, .14);
+  --nav-bg: rgba(246, 248, 251, .72);
+  --veil: rgba(246, 248, 251, .80);
+  --hero-glow: 0 0 20px #fff, 0 0 46px #fff, 0 1px 2px rgba(255, 255, 255, .9);
+  --graph-node: #5B6675;
+  --graph-node2: #8A94A3;
+  --graph-edge-rgb: 71, 85, 105;
+  --graph-pulse: #1B3A5F;
+  --viewer-bg: #E8EEF5;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --ground: #0F1419;
+  --ground-alt: #161D28;
+  --surface: #1A2332;
+  --ink: #E8EDF4;
+  --muted: #8B9CB3;
+  --line: #2D3A4F;
+  --accent: #5B8FC7;
+  --accent-strong: #7AA8D9;
+  --accent-ink: #0A1628;
+  --agro: #22C55E;
+  --agro-ink: #4ADE80;
+  --grad: linear-gradient(120deg, #5B8FC7, #2A5A8A);
+  --brand-grad: linear-gradient(180deg, #E8F0FA, #A8C4E0, #5B8FC7);
+  --brand-glow: drop-shadow(0 0 38px rgba(91, 143, 199, .42)) drop-shadow(0 0 12px rgba(91, 143, 199, .28));
+  --glass: rgba(30, 41, 59, .38);
+  --glass-strong: rgba(15, 20, 25, .55);
+  --glass-border: rgba(255, 255, 255, .16);
+  --glass-blur: blur(20px) saturate(1.4);
+  --glass-sheen: rgba(255, 255, 255, .14);
+  --neon: #38BDF8;
+  --brand-ink: #DAE2ED;
+  --hi: #F87171;
+  --hi-ink: #FCA5A5;
+  --hi-bg: #3A1E20;
+  --mod: #FBBF24;
+  --mod-ink: #FCD34D;
+  --mod-bg: #3A2E14;
+  --lo: #4ADE80;
+  --lo-ink: #86EFAC;
+  --lo-bg: #14321F;
+  --sh-sm: 0 1px 2px rgba(0, 0, 0, .4);
+  --sh-md: 0 10px 30px rgba(0, 0, 0, .5);
+  --sh-lg: 0 28px 70px rgba(0, 0, 0, .6);
+  --nav-bg: rgba(15, 20, 25, .72);
+  --veil: rgba(15, 20, 25, .72);
+  --hero-glow: 0 0 24px rgba(0, 0, 0, .75), 0 0 16px rgba(0, 0, 0, .6);
+  --graph-node: #94A3B8;
+  --graph-node2: #64748B;
+  --graph-edge-rgb: 148, 163, 184;
+  --graph-pulse: #CBD5E1;
+  --viewer-bg: #0a0e14;
+  color-scheme: dark;
+}

@@ -301,3 +301,118 @@ def search_compounds(query: str, limit: int = 10) -> list[dict[str, Any]]:
             break
 
     return _build_results(list(seen_cids), name_by_cid)
+
+
+_RANDOM_CACHE: dict[str, Any] = {"ts": 0.0, "results": []}
+_RANDOM_TTL_SEC = 30 * 60  # 30 minutos
+
+
+def _corpus_search_pool() -> list[dict[str, Any]]:
+    """Compuestos del corpus con CID y nombre conocidos (MIDA primero)."""
+    try:
+        from viz.services.panama_corpus import list_compounds
+    except Exception:
+        return []
+
+    mida: list[dict[str, Any]] = []
+    other: list[dict[str, Any]] = []
+    seen_cids: set[int] = set()
+
+    for c in list_compounds():
+        try:
+            cid = int(c["cid"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if cid in seen_cids:
+            continue
+
+        term = (c.get("name_en") or "").strip()
+        if not term:
+            # Usar nombre de display si parece un nombre real
+            display = (c.get("name") or "").strip()
+            if not display or display.upper().startswith("CID ") or "CID" in display:
+                continue
+            term = display
+
+        seen_cids.add(cid)
+        item = {
+            "name_en": term,
+            "cid": cid,
+            "smiles": c.get("smiles") or "",
+            "formula": c.get("formula") or "",
+            "image_url": c.get("image_url") or _compound_image_url(cid),
+        }
+        if c.get("mida"):
+            mida.append(item)
+        else:
+            other.append(item)
+
+    return mida + other
+
+
+def search_random_compounds(limit: int = 20) -> list[dict[str, Any]]:
+    """20 compuestos aleatorios del corpus enriquecidos vía PubChem por CID.
+
+    Método correcto PUG REST cuando ya conocemos el CID::
+
+        GET /rest/pug/compound/cid/{cids}/property/.../JSON
+    """
+    limit = max(1, min(int(limit), 20))
+    pool = _corpus_search_pool()
+    if not pool:
+        return []
+
+    sample = random.sample(pool, min(limit, len(pool)))
+    cids = [int(item["cid"]) for item in sample]
+    name_by_cid = {int(item["cid"]): item["name_en"] for item in sample}
+    corpus_by_cid = {int(item["cid"]): item for item in sample}
+
+    # Una sola petición batch a PubChem por CID (no búsqueda por letra/nombre)
+    props_map = _properties_for_cids(cids)
+    results: list[dict[str, Any]] = []
+
+    for cid in cids:
+        props = props_map.get(cid, {})
+        corpus = corpus_by_cid.get(cid, {})
+        smiles = props.get("smiles") or corpus.get("smiles") or ""
+        if not smiles:
+            continue
+        display_name = (
+            props.get("title")
+            or name_by_cid.get(cid)
+            or corpus.get("name_en")
+            or f"CID {cid}"
+        )
+        results.append({
+            "cid": cid,
+            "name": display_name,
+            "search_term": name_by_cid.get(cid, ""),
+            "iupac_name": props.get("iupac_name") or "",
+            "formula": props.get("formula") or corpus.get("formula") or "",
+            "molecular_weight": props.get("molecular_weight"),
+            "smiles": smiles,
+            "image_url": corpus.get("image_url") or _compound_image_url(cid),
+            "pubchem_url": f"https://pubchem.ncbi.nlm.nih.gov/compound/{cid}",
+        })
+
+    random.shuffle(results)
+    return results[:limit]
+
+
+def get_cached_random_compounds(limit: int = 20) -> list[dict[str, Any]]:
+    """Caché en memoria de sugerencias del corpus (TTL 30 min)."""
+    limit = max(1, min(int(limit), 20))
+    now = time.time()
+    cached = _RANDOM_CACHE.get("results") or []
+    if cached and (now - float(_RANDOM_CACHE.get("ts") or 0)) < _RANDOM_TTL_SEC:
+        pool = list(cached)
+        if len(pool) >= limit:
+            return random.sample(pool, limit) if len(pool) > limit else pool
+        return pool[:limit]
+
+    results = search_random_compounds(limit=20)
+    _RANDOM_CACHE["ts"] = now
+    _RANDOM_CACHE["results"] = results
+    if len(results) >= limit:
+        return random.sample(results, limit) if len(results) > limit else results
+    return results[:limit]

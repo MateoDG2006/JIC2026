@@ -21,6 +21,7 @@ Endpoints (montados bajo ``/api``):
     GET  /stl?smiles=...&style=...  → STL 3D (ballstick) o plano (flat_keychain)
     GET  /properties?smiles=  → MW, LogP, PSA, etc. (RDKit Descriptors)
     GET  /pubchem/search?q=   → búsqueda por nombre en PubChem (CID + imagen)
+    GET  /pubchem/random      → 20 compuestos aleatorios (caché servidor)
     GET  /tasks               → lista de 12 tareas Tox21 con descripción
 """
 
@@ -308,6 +309,27 @@ def get_stl(
         media_type="model/stl",
         headers={"Content-Disposition": f'attachment; filename="{safe_name}{suffix}.stl"'},
     )
+
+
+@router.get("/pubchem/random")
+def pubchem_random(limit: int = 20):
+    """20 compuestos aleatorios del corpus panameño, resueltos en PubChem."""
+    import requests
+
+    from viz.services.pubchem import get_cached_random_compounds
+
+    try:
+        results = get_cached_random_compounds(limit=limit)
+    except requests.RequestException as exc:
+        raise HTTPException(502, "No se pudo consultar PubChem. Intentalo de nuevo.") from exc
+
+    if not results:
+        raise HTTPException(
+            503,
+            "No hay compuestos del corpus disponibles para sugerencias.",
+        )
+
+    return {"count": len(results), "results": results, "cached": True}
 
 
 @router.get("/pubchem/search")

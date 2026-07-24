@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GNN-Tox · Predicción de toxicidad de agroquímicos</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <meta name="description" content="Predicción de toxicidad de agroquímicos con redes neuronales de grafos e inteligencia artificial explicable. JIC 2026 — Universidad Tecnológica de Panamá.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/tokens.css">
+  <link rel="stylesheet" href="/static/css/landing.css">
+  <script src="/static/js/theme.js"></script>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+<div class="bg-ambient" aria-hidden="true"></div>
+<div class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="/"><span class="dot"></span>GNN-Tox</a>
+    <nav class="nav-links">
+      <a class="link" href="#how" data-i18n="nav.how">Cómo funciona</a>
+      <a class="link" href="#results" data-i18n="nav.results">Resultados</a>
+      <a class="link" href="#team" data-i18n="nav.team">Equipo</a>
+      <div class="lang" role="group" aria-label="Idioma / Language">
+        <button data-lang="es" class="on">ES</button>
+        <button data-lang="en">EN</button>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="Cambiar tema / Toggle theme">
+        <i data-lucide="moon" class="moon" aria-hidden="true"></i>
+        <i data-lucide="sun" class="sun" aria-hidden="true"></i>
+      </button>
+      <a class="btn btn-primary go-visor" href="/visor">
+        <i data-lucide="sparkles" class="btn-ico" aria-hidden="true"></i>
+        <span data-i18n="nav.cta">Explorar el visor</span>
+      </a>
+    </nav>
+  </div>
+</div>
+
+<a id="top"></a>
+<section class="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero-veil" aria-hidden="true"></div>
+  <div class="wrap hero-content">
+    <h1 class="hero-brand">GNN-TOX</h1>
+    <p class="hero-sub" data-i18n="hero.title">Detectamos químicos peligrosos antes de que el mundo los catalogue como tales.</p>
+    <p class="hero-subsub" data-i18n="hero.sub">Predicción de toxicidad de agroquímicos con redes neuronales de grafos e inteligencia artificial explicable.</p>
+  </div>
+  <div class="hero-cta">
+    <a class="btn btn-primary go-visor" href="/visor">
+      <i data-lucide="sparkles" class="btn-ico" aria-hidden="true"></i>
+      <span data-i18n="hero.cta1">Explorar el visor</span>
+      <i data-lucide="arrow-right" class="arrow" aria-hidden="true"></i>
+    </a>
+    <a class="btn btn-ghost" href="#how">
+      <i data-lucide="circle-play" class="btn-ico" aria-hidden="true"></i>
+      <span data-i18n="hero.cta2">Ver cómo funciona</span>
+    </a>
+  </div>
+</section>
+
+<section class="alt" id="problem">
+  <div class="wrap">
+    <div class="prob-grid">
+      <div class="reveal">
+        <span class="eyebrow" data-i18n="problem.eyebrow">El problema</span>
+        <h2 class="h2" data-i18n="problem.title">En los campos de Panamá, no todo lo que protege es inofensivo.</h2>
+        <p class="lead" data-i18n="problem.body">La agricultura de exportación depende de cientos de plaguicidas. Evaluar su toxicidad en laboratorio es caro y lento, y muchos se usan sin un perfil de riesgo completo.</p>
+        <div class="facts">
+          <div class="fact"><span class="ic"><i data-lucide="flask-conical" aria-hidden="true"></i></span><div><b data-i18n="problem.f1t">Cientos en uso</b><div class="n" style="color:var(--muted);font-size:.9rem" data-i18n="problem.f1b">Muchos ingredientes activos circulan en el mercado agrícola.</div></div></div>
+          <div class="fact"><span class="ic"><i data-lucide="hourglass" aria-hidden="true"></i></span><div><b data-i18n="problem.f2t">Caro y lento</b><div class="n" style="color:var(--muted);font-size:.9rem" data-i18n="problem.f2b">Un ensayo de laboratorio toma meses y miles de dólares.</div></div></div>
+          <div class="fact"><span class="ic"><i data-lucide="circle-help" aria-hidden="true"></i></span><div><b data-i18n="problem.f3t">Sin perfil completo</b><div class="n" style="color:var(--muted);font-size:.9rem" data-i18n="problem.f3b">Buena parte se usa sin conocer todos sus riesgos.</div></div></div>
+        </div>
+      </div>
+      <div class="prob-art reveal d1">
+        <img class="prob-photo" src="/static/resources/laboratorio_agroquimico.jpg" alt="Laboratorio agroquímico" width="800" height="600">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="idea">
+  <div class="wrap reveal">
+    <span class="eyebrow" style="justify-content:center" data-i18n="idea.eyebrow">La idea</span>
+    <p class="big" data-i18n="idea.text">Una IA que identifica y alerta sobre <span class="u">químicos peligrosos</span> — antes de que siquiera se cataloguen como tales.</p>
+    <div class="sema" id="semaIdea" aria-hidden="true">
+      <div class="s hi"><span class="bulb"></span><span class="lb" data-i18n="risk.hi">Alto</span></div>
+      <div class="s mod"><span class="bulb"></span><span class="lb" data-i18n="risk.mod">Moderado</span></div>
+      <div class="s lo"><span class="bulb"></span><span class="lb" data-i18n="risk.lo">Bajo</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="how">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow" data-i18n="how.eyebrow">Cómo funciona</span>
+      <h2 class="h2" data-i18n="how.title">De la molécula al veredicto, en cuatro pasos.</h2>
+    </div>
+    <div class="pipe reveal d1" id="pipe">
+      <div class="step" data-step="1">
+        <span class="num">1</span>
+        <div class="viz"><svg class="mol-draw" width="90" height="80" viewBox="0 0 90 80"><path d="M45 12 L70 26 L70 54 L45 68 L20 54 L20 26 Z"/><line x1="45" y1="12" x2="45" y2="2"/><line x1="70" y1="54" x2="82" y2="62"/><line x1="20" y1="54" x2="8" y2="62"/></svg></div>
+        <h3 data-i18n="how.s1t">La molécula</h3><p data-i18n="how.s1b">Partimos de su estructura química.</p>
+      </div>
+      <div class="step" data-step="2">
+        <span class="num">2</span>
+        <div class="viz"><svg width="90" height="80" viewBox="0 0 90 80"><line class="edge" x1="45" y1="16" x2="70" y2="34"/><line class="edge" x1="70" y1="34" x2="60" y2="62"/><line class="edge" x1="60" y1="62" x2="30" y2="62"/><line class="edge" x1="30" y1="62" x2="20" y2="34"/><line class="edge" x1="20" y1="34" x2="45" y2="16"/><circle class="node" cx="45" cy="16" r="6"/><circle class="node" cx="70" cy="34" r="6"/><circle class="node" cx="60" cy="62" r="6"/><circle class="node" cx="30" cy="62" r="6"/><circle class="node" cx="20" cy="34" r="6"/></svg></div>
+        <h3 data-i18n="how.s2t">Se vuelve una red</h3><p data-i18n="how.s2b">Cada átomo es un punto; cada enlace, una conexión.</p>
+      </div>
+      <div class="step" data-step="3">
+        <span class="num">3</span>
+        <div class="viz"><svg width="90" height="80" viewBox="0 0 90 80"><path id="p3a" d="M45 16 L70 34 L60 62" fill="none" stroke="var(--line)" stroke-width="2"/><line class="edge" x1="30" y1="62" x2="20" y2="34"/><line class="edge" x1="20" y1="34" x2="45" y2="16"/><line class="edge" x1="60" y1="62" x2="30" y2="62"/><circle class="node" cx="45" cy="16" r="6"/><circle class="node" cx="70" cy="34" r="6"/><circle class="node" cx="60" cy="62" r="6"/><circle class="node" cx="30" cy="62" r="6"/><circle class="node" cx="20" cy="34" r="6"/><circle class="pulse" r="4" style="offset-path:path('M45 16 L70 34 L60 62 L30 62 L20 34 L45 16')"/></svg></div>
+        <h3 data-i18n="how.s3t">La IA la analiza</h3><p data-i18n="how.s3b">El modelo estudia cómo se conectan las partes.</p>
+      </div>
+      <div class="step" data-step="4">
+        <span class="num">4</span>
+        <div class="viz">
+          <div class="sema" style="padding:.6rem .8rem;box-shadow:none;border-radius:12px">
+            <div class="s hi lit"><span class="bulb" style="width:20px;height:20px"></span></div>
+            <div class="s mod"><span class="bulb" style="width:20px;height:20px"></span></div>
+            <div class="s lo"><span class="bulb" style="width:20px;height:20px"></span></div>
+          </div>
+        </div>
+        <h3 data-i18n="how.s4t">El veredicto</h3><p data-i18n="how.s4b">Un semáforo de riesgo en 12 vías de toxicidad.</p>
+      </div>
+    </div>
+
+    <div class="pipe-scrub reveal" id="pipeScrub">
+      <div class="scrub-row">
+        <button type="button" class="scrub-play" id="pipePlay" aria-pressed="false" aria-label="Reproducir / Pausar" title="Reproducir">
+          <i data-lucide="play" class="btn-ico ico-play" aria-hidden="true"></i>
+          <i data-lucide="pause" class="btn-ico ico-pause" aria-hidden="true"></i>
+        </button>
+        <div class="scrub-track-wrap">
+          <div class="scrub-rail" aria-hidden="true">
+            <div class="scrub-fill" id="scrubFill"></div>
+          </div>
+          <input type="range" id="pipeSlider" class="scrub-slider" min="0" max="100" value="0" step="0.25"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progreso del proceso">
+          <div class="scrub-marks" role="presentation">
+            <button type="button" class="scrub-mark" data-step="0" style="--p:0" aria-label="Paso 1"><span>1</span></button>
+            <button type="button" class="scrub-mark" data-step="1" style="--p:1" aria-label="Paso 2"><span>2</span></button>
+            <button type="button" class="scrub-mark" data-step="2" style="--p:2" aria-label="Paso 3"><span>3</span></button>
+            <button type="button" class="scrub-mark" data-step="3" style="--p:3" aria-label="Paso 4"><span>4</span></button>
+          </div>
+        </div>
+      </div>
+      <p class="scrub-hint" data-i18n="how.scrub">Arrastrá el slider o tocá un paso para explorarlo</p>
+    </div>
+
+    <div class="analogy">
+      <div class="ana reveal">
+        <div class="art">
+          <svg width="150" height="140" viewBox="0 0 150 140">
+            <circle cx="75" cy="60" r="42" fill="none" stroke="var(--muted)" stroke-width="2"/>
+            <circle cx="60" cy="52" r="5" fill="var(--ink)"/><circle cx="90" cy="52" r="5" fill="var(--ink)"/>
+            <circle cx="75" cy="70" r="4" fill="var(--ink)"/><path d="M63 84 Q75 92 87 84" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+            <line class="connect" x1="60" y1="52" x2="90" y2="52"/><line class="connect" x1="60" y1="52" x2="75" y2="70"/><line class="connect" x1="90" y1="52" x2="75" y2="70"/><line class="connect" x1="75" y1="70" x2="75" y2="84"/>
+          </svg>
+        </div>
+        <p data-i18n="how.anaL">Reconocés a una persona por <b>cómo se conectan</b> sus rasgos.</p>
+      </div>
+      <div class="ana reveal d1">
+        <div class="art">
+          <svg width="150" height="140" viewBox="0 0 150 140">
+            <line class="connect" x1="55" y1="45" x2="95" y2="45"/><line class="connect" x1="95" y1="45" x2="105" y2="85"/><line class="connect" x1="105" y1="85" x2="70" y2="100"/><line class="connect" x1="70" y1="100" x2="45" y2="75"/><line class="connect" x1="45" y1="75" x2="55" y2="45"/>
+            <circle cx="55" cy="45" r="8" fill="var(--accent)"/><circle cx="95" cy="45" r="8" fill="var(--agro)"/><circle cx="105" cy="85" r="8" fill="var(--accent)"/><circle cx="70" cy="100" r="8" fill="var(--hi)"/><circle cx="45" cy="75" r="8" fill="var(--accent)"/>
+          </svg>
+        </div>
+        <p data-i18n="how.anaR">La IA reconoce el peligro por <b>cómo se conectan</b> los átomos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow" data-i18n="results.eyebrow">Resultados</span>
+      <h2 class="h2" data-i18n="results.title">Rigor científico, en números.</h2>
+    </div>
+    <div class="kpis">
+      <div class="kpi reveal"><div class="v" data-count="0.785" data-dec="3">0.785</div><div class="k" data-i18n="results.k1">AUC-ROC</div><div class="n" data-i18n="results.k1n">Validación cruzada 5-fold · acierta ~8 de cada 10 veces al distinguir tóxico de no tóxico.</div></div>
+      <div class="kpi reveal d1"><div class="v" data-count="235" data-dec="0">235</div><div class="k" data-i18n="results.k2">agroquímicos analizados</div><div class="n" data-i18n="results.k2n">Corpus del registro panameño y familias químicas.</div></div>
+      <div class="kpi reveal d2"><div class="v">×3</div><div class="k" data-i18n="results.k3">supera a métodos clásicos</div><div class="n" data-i18n="results.k3n">Mejor que Random Forest, MLP y SMILES2vec.</div></div>
+    </div>
+    <div class="res-lower">
+      <div class="card reveal">
+        <h3 data-i18n="results.dist">Distribución de riesgo del corpus</h3>
+        <div class="dist-bar" id="distBar">
+          <span style="background:var(--hi)" data-w="14.5">34</span>
+          <span style="background:var(--mod)" data-w="12.8">30</span>
+          <span style="background:var(--lo)" data-w="72.7">171</span>
+        </div>
+        <div class="dist-legend">
+          <span><i style="background:var(--hi)"></i><span data-i18n="risk.hi">Alto</span> · 34</span>
+          <span><i style="background:var(--mod)"></i><span data-i18n="risk.mod">Moderado</span> · 30</span>
+          <span><i style="background:var(--lo)"></i><span data-i18n="risk.lo">Bajo</span> · 171</span>
+        </div>
+      </div>
+      <div class="card reveal d1">
+        <h3 data-i18n="results.cmp">AUC-ROC vs. otros modelos</h3>
+        <div class="cmp">
+          <div class="cmp-row win"><span class="lab">GNN-GIN</span><div class="cmp-track"><div class="cmp-fill" data-w="78.5"></div></div><span class="val">0.785</span></div>
+          <div class="cmp-row"><span class="lab">Random Forest</span><div class="cmp-track"><div class="cmp-fill" data-w="74.3"></div></div><span class="val">0.743</span></div>
+          <div class="cmp-row"><span class="lab">SMILES2vec</span><div class="cmp-track"><div class="cmp-fill" data-w="72.7"></div></div><span class="val">0.727</span></div>
+          <div class="cmp-row"><span class="lab">MLP</span><div class="cmp-track"><div class="cmp-fill" data-w="70.7"></div></div><span class="val">0.707</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="cases">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow" data-i18n="cases.eyebrow">Casos de estudio</span>
+      <h2 class="h2" data-i18n="cases.title">Probalo con químicos reales.</h2>
+    </div>
+    <div class="cases">
+      <div class="case reveal">
+        <div class="case-top">
+          <div><h3>Atrazina</h3><span class="fam" data-i18n="cases.fam1">Herbicida · triazina</span></div>
+          <span class="risk-pill hi"><span class="ic"><i data-lucide="triangle-alert" aria-hidden="true"></i></span> <span data-i18n="risk.hi">Alto</span></span>
+        </div>
+        <div class="mol-live-wrap">
+          <div class="mol-live" id="molAtrazine" data-smiles="CCNc1nc(Cl)nc(NC(C)C)n1" data-name="Atrazina"
+            role="img" aria-label="Estructura 3D interactiva de Atrazina">
+            <span class="mol-live-loading" data-i18n="cases.loading">Cargando molécula…</span>
+          </div>
+          <div class="mol-live-meta">
+            <span class="mol-live-hint" data-i18n="cases.drag">Arrastrá para rotar · scroll para zoom</span>
+            <div class="mol-legend" aria-hidden="true">
+              <span><i style="background:#909090"></i>C</span>
+              <span><i style="background:#3050F8"></i>N</span>
+              <span><i style="background:#FF0D0D"></i>O</span>
+              <span><i style="background:#1FF01F"></i>Cl</span>
+              <span><i style="background:#FFFFFF;border:1px solid #bbb"></i>H</span>
+            </div>
+          </div>
+        </div>
+        <p data-i18n="cases.desc1">Herbicida de amplio uso, señalado como disruptor endocrino.</p>
+        <a class="go" href="/analyze?smiles=CCNc1nc%28Cl%29nc%28NC%28C%29C%29n1&name=Atrazina&family=Triazinas"><span data-i18n="cases.go">Analizar en el visor</span> <i data-lucide="arrow-right" class="arrow" aria-hidden="true"></i></a>
+      </div>
+      <div class="case reveal d1">
+        <div class="case-top">
+          <div><h3>Glifosato</h3><span class="fam" data-i18n="cases.fam2">Herbicida · fosfonato</span></div>
+          <span class="risk-pill mod"><span class="ic"><i data-lucide="circle-dot" aria-hidden="true"></i></span> <span data-i18n="risk.mod">Moderado</span></span>
+        </div>
+        <div class="mol-live-wrap">
+          <div class="mol-live" id="molGlyphosate" data-smiles="C(C(=O)O)NCP(=O)(O)O" data-name="Glifosato"
+            role="img" aria-label="Estructura 3D interactiva de Glifosato">
+            <span class="mol-live-loading" data-i18n="cases.loading">Cargando molécula…</span>
+          </div>
+          <div class="mol-live-meta">
+            <span class="mol-live-hint" data-i18n="cases.drag">Arrastrá para rotar · scroll para zoom</span>
+            <div class="mol-legend" aria-hidden="true">
+              <span><i style="background:#909090"></i>C</span>
+              <span><i style="background:#3050F8"></i>N</span>
+              <span><i style="background:#FF0D0D"></i>O</span>
+              <span><i style="background:#FF8000"></i>P</span>
+              <span><i style="background:#FFFFFF;border:1px solid #bbb"></i>H</span>
+            </div>
+          </div>
+        </div>
+        <p data-i18n="cases.desc2">El herbicida más vendido del mundo, en debate por su seguridad.</p>
+        <a class="go" href="/analyze?smiles=C%28C%28%3DO%29O%29NCP%28%3DO%29%28O%29O&name=Glifosato&family=Herbicidas"><span data-i18n="cases.go">Analizar en el visor</span> <i data-lucide="arrow-right" class="arrow" aria-hidden="true"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="xai">
+  <div class="wrap">
+    <div class="xai-grid">
+      <div class="xai-panel reveal">
+        <div class="xai-stage">
+          <div class="xai-scale" aria-hidden="true">
+            <span class="xai-scale-end">1</span>
+            <div class="xai-scale-bar" title="Importancia 0 → 1"></div>
+            <span class="xai-scale-end">0</span>
+          </div>
+          <div class="mol-live xai-mol" id="xaiMol"
+            data-smiles="CCNc1nc(Cl)nc(NC(C)C)n1"
+            data-name="Atrazina"
+            role="img" aria-label="Molécula 3D coloreada por importancia XAI">
+            <span class="mol-live-loading" data-i18n="cases.loading">Cargando molécula…</span>
+          </div>
+        </div>
+        <div class="xai-controls">
+          <div class="xai-task-row">
+            <div class="xai-task-glass">
+              <div class="xai-task-label">
+                <span data-i18n="xai.taskLabel">Diana biológica</span>
+                <strong id="xaiTaskDesc" class="xai-task-desc">Receptor de estrógenos</strong>
+              </div>
+              <div class="xai-combo" id="xaiCombo">
+                <button type="button" class="xai-combo-btn" id="xaiTaskBtn"
+                  aria-haspopup="listbox" aria-expanded="false" aria-controls="xaiTaskList">
+                  <span class="xai-combo-value" id="xaiTaskValue">NR-ER</span>
+                  <i data-lucide="chevron-down" class="xai-combo-chevron" aria-hidden="true"></i>
+                </button>
+                <ul class="xai-combo-list" id="xaiTaskList" role="listbox" hidden>
+                  <li role="option" data-value="NR-AR" tabindex="-1">NR-AR</li>
+                  <li role="option" data-value="NR-AR-LBD" tabindex="-1">NR-AR-LBD</li>
+                  <li role="option" data-value="NR-AhR" tabindex="-1">NR-AhR</li>
+                  <li role="option" data-value="NR-Aromatase" tabindex="-1">NR-Aromatase</li>
+                  <li role="option" data-value="NR-ER" tabindex="-1" aria-selected="true" class="on">NR-ER</li>
+                  <li role="option" data-value="NR-ER-LBD" tabindex="-1">NR-ER-LBD</li>
+                  <li role="option" data-value="NR-PPAR-gamma" tabindex="-1">NR-PPAR-gamma</li>
+                  <li role="option" data-value="SR-ARE" tabindex="-1">SR-ARE</li>
+                  <li role="option" data-value="SR-AtAD5" tabindex="-1">SR-AtAD5</li>
+                  <li role="option" data-value="SR-HSE" tabindex="-1">SR-HSE</li>
+                  <li role="option" data-value="SR-MMP" tabindex="-1">SR-MMP</li>
+                  <li role="option" data-value="SR-p53" tabindex="-1">SR-p53</li>
+                </ul>
+                <input type="hidden" id="xaiTask" value="NR-ER">
+              </div>
+            </div>
+          </div>
+          <p class="xai-scale-cap"><span data-i18n="xai.cap">Importancia por átomo</span> · <span data-i18n="cases.drag">Arrastrá para rotar · scroll para zoom</span></p>
+          <p class="xai-status" id="xaiStatus" hidden></p>
+        </div>
+      </div>
+      <div class="reveal d1">
+        <span class="eyebrow" data-i18n="xai.eyebrow">No es una caja negra</span>
+        <h2 class="h2" data-i18n="xai.title">El modelo muestra su razonamiento.</h2>
+        <p class="lead" data-i18n="xai.body">Para cada predicción resalta qué parte de la molécula la hace peligrosa — de modo que un experto puede verificar el porqué, no solo el resultado.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="team">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow" data-i18n="team.eyebrow">Equipo</span>
+      <h2 class="h2" data-i18n="team.title">Quiénes lo hacen.</h2>
+    </div>
+    <div class="team">
+      <div class="mem reveal">
+        <div class="ph"><img src="/static/resources/Frida2.jpeg" alt="Frida Leis" width="240" height="240"></div>
+        <h3>Frida Leis</h3><div class="aff">FISC · Universidad Tecnológica de Panamá</div>
+      </div>
+      <div class="mem reveal d1">
+        <div class="ph"><img src="/static/resources/Mateo.jpeg" alt="Mateo Del Giudice" width="240" height="240"></div>
+        <h3>Mateo Del Giudice</h3><div class="aff">FISC · Universidad Tecnológica de Panamá</div>
+      </div>
+      <div class="mem reveal d2">
+        <div class="ph"><img src="/static/resources/javier_sanchez_galan.jpg" alt="Javier Sánchez-Galán" width="240" height="240"></div>
+        <h3>Javier Sánchez-Galán, Ph.D.</h3><div class="aff">FISC · Universidad Tecnológica de Panamá</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap reveal">
+    <h2 data-i18n="final.title">Explorá el sistema vos mismo.</h2>
+    <p class="lead" data-i18n="final.body">Buscá un plaguicida, dibujá una molécula, y mirá cómo la IA la evalúa en vivo.</p>
+    <a class="btn btn-primary go-visor" href="/visor">
+      <i data-lucide="sparkles" class="btn-ico" aria-hidden="true"></i>
+      <span data-i18n="final.cta">Abrir el visor</span>
+      <i data-lucide="arrow-right" class="arrow" aria-hidden="true"></i>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>JIC 2026 · Universidad Tecnológica de Panamá · FISC</span>
+    <span class="note" data-i18n="footer.note">Prototipo de diseño — contenido y cifras sujetos a verificación.</span>
+  </div>
+</footer>
+
+<div class="lightsout" id="lightsout"><div class="msg" data-i18n="lights">Entrando al visor (tema oscuro)…</div></div>
+
+<script src="/static/js/3Dmol-cdn.js"></script>
+<script src="/static/js/landing.js"></script>
+<script>if (window.lucide) lucide.createIcons();</script>
+</body>
+</html>
